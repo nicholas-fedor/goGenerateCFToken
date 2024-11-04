@@ -45,3 +45,18 @@ Specify the particular zone, i.e. `example.com`, that is linked to the API token
 - [Cloudflare's API Endpoints](https://developers.cloudflare.com/api-next)
 - [Cloudflare's Go SDK](https://github.com/cloudflare/cloudflare-go)
 - [Joho's DotENV Library](https://github.com/joho/godotenv)
+
+## Development
+
+### GitHub releases
+
+Using [GoReleaser](https://github.com/goreleaser/goreleaser-action) to build the release files.
+
+[Quick Start](https://goreleaser.com/quick-start/)
+
+To run a new build, update the tag, as follows:
+
+```console
+git tag -a v0.1.0 -m "First release"
+git push origin v0.1.0
+```
