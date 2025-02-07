@@ -3,7 +3,7 @@ module github.com/nicholas-fedor/goGenerateCFToken
 go 1.23.6
 
 require (
-	github.com/cloudflare/cloudflare-go v0.115.0
+	github.com/cloudflare/cloudflare-go/v4 v4.0.0
 	github.com/cloudflare/cloudflare-go/v4 v4.0.0
 	github.com/joho/godotenv v1.5.1
 )
