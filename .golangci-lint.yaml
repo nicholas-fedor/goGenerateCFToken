@@ -1,0 +1,34 @@
+linters:
+  enable-all: true
+  disable-all: false
+  fast: true
+  disable:
+    - cyclop
+    - depguard
+    - funlen
+    - gci
+    - gochecknoinits
+    - gocognit
+    - lll
+    - nestif
+    - testpackage
+
+linters-settings:
+  gci:
+    skip-generated: true
+    no-inline-comments: true
+    no-prefix-comments: true
+    custom-order: false
+    no-lex-order: false
+    sections:
+      - standard
+      - default
+  gofmt:
+    simplify: true
+
+output:
+  print-issued-lines: true
+  print-linter-name: false
+  path-prefix: ""
+  show-stats: false
+  sort-results: true
