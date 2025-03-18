@@ -1,0 +1,56 @@
+linters:
+  enable-all: true
+  disable-all: false
+  fast: true
+  disable:
+    - gochecknoinits # Checks that no init functions are present in Go code.
+    - depguard # Go linter that checks if package imports are in a list of acceptable packages.
+    - tenv # Duplicate feature in another linter. Replaced by usetesting.
+    - testpackage # Linter that makes you use a separate _test package.
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - cyclop # Checks function and package cyclomatic complexity.
+        - gocognit # Computes and checks the cognitive complexity of functions.
+        - funlen # Checks for long functions.
+        - gocyclo # Computes and checks the cyclomatic complexity of functions.
+        - lll # Reports long lines.
+
+linters-settings:
+  godot:
+    # Comments to be checked: `declarations`, `toplevel`, `noinline` or `all`.
+    # Default: declarations
+    scope: declarations
+    # List of regexps for excluding particular comment lines from check.
+    # Default: []
+    # exclude:
+    # Exclude todo and fixme comments.
+    # - "^fixme:"
+    # - "^todo:"
+    # Check that each sentence ends with a period.
+    # Default: true
+    period: true
+    # Check that each sentence starts with a capital letter.
+    # Default: false
+    capital: true
+  gofmt:
+    # Simplify code: gofmt with `-s` option.
+    # Default: true
+    simplify: false
+    # Apply the rewrite rules to the source before reformatting.
+    # https://pkg.go.dev/cmd/gofmt
+    # Default: []
+    rewrite-rules:
+      - pattern: "interface{}"
+        replacement: "any"
+      - pattern: "a[b:len(a)]"
+        replacement: "a[b:]"
+
+output:
+  print-issued-lines: true
+  print-linter-name: false
+  path-prefix: ""
+  show-stats: false
+  sort-results: true

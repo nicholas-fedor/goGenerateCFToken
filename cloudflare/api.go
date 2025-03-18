@@ -14,10 +14,12 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-package main
+package cloudflare
 
-import "github.com/nicholas-fedor/goGenerateCFToken/cmd"
+import "github.com/cloudflare/cloudflare-go"
 
-func main() {
-	cmd.Execute()
+var newWithAPITokenFunc = cloudflare.NewWithAPIToken
+
+func NewAPIClient(token string) (*cloudflare.API, error) {
+	return newWithAPITokenFunc(token)
 }

@@ -21,8 +21,8 @@
 go.work
 go.work.sum
 
-# env file
-.env
+# YAML Config
+config.yaml
 
 # VSCode dotfile directory
 .vscode
