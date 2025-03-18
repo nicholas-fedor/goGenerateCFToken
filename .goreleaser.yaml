@@ -31,7 +31,7 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}_
       {{- .Version -}}
     files:
-      - LICENSE.md
+      - LICENSE
     builds:
       - goGenerateCFToken
     formats: ["tar.gz"]
