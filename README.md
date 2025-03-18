@@ -6,7 +6,7 @@ A simple CLI tool for generating Cloudflare API tokens.
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/goGenerateCFToken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/goGenerateCFToken/tree/main)
 [![codecov](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken)
-[![GoDoc](https://godoc.org/github.com/nicholas-fedor/goGenerateCFToken?status.svg)](https://godoc.org/github.com/nicholas-fedor/goGenerateCFToken)
+[![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nicholas-fedor/goGenerateCFToken)](https://goreportcard.com/report/github.com/nicholas-fedor/goGenerateCFToken)
 [![latest version](https://img.shields.io/github/tag/nicholas-fedor/goGenerateCFToken.svg)](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
 [![AGPLv3 License](https://img.shields.io/github/license/nicholas-fedor/goGenerateCFToken.svg)](https://www.gnu.org/licenses/agpl-3.0)
