@@ -35,4 +35,4 @@ jobs:
         uses: nicholas-fedor/go-proxy-pull-action@96d97dd65179161a3d0a38e65a49ebfd55dcfd69
         with:
           goproxy: https://proxy.golang.org
-          import_path: github.com/nicholas-fedor/goGenerateCFToken
+          import_path: github.com/nicholas-fedor/gogeneratecftoken
