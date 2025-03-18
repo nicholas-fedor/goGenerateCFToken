@@ -1,0 +1,66 @@
+version: 2
+project_name: goGenerateCFToken
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - main: ./main.go
+    binary: goGenerateCFToken
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - "386"
+      - arm
+      - arm64
+    ldflags:
+      - -s -w -X github.com/nicholas-fedor/goGenerateCFToken/cmd.version={{.Version}}
+
+archives:
+  - id: default
+    name_template: >-
+      {{- .ProjectName }}_
+      {{- if eq .Os "darwin" }}macOS
+      {{- else }}{{ .Os }}{{ end }}_
+      {{- if eq .Arch "amd64" }}amd64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm" }}armhf
+      {{- else if eq .Arch "arm64" }}arm64v8
+      {{- else }}{{ .Arch }}{{ end }}_
+      {{- .Version -}}
+    files:
+      - LICENSE.md
+    builds:
+      - goGenerateCFToken
+    formats: ["tar.gz"]
+  - id: windows
+    name_template: >-
+      {{- .ProjectName }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}amd64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm" }}armhf
+      {{- else if eq .Arch "arm64" }}arm64v8
+      {{- else }}{{ .Arch }}{{ end }}_
+      {{- .Version -}}
+    files:
+      - LICENSE.md
+    builds:
+      - goGenerateCFToken
+    formats: ["zip"]
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  github:
+    owner: nicholas-fedor
+    name: goGenerateCFToken
+  draft: false
+  prerelease: auto

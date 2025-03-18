@@ -1,0 +1,8 @@
+# goGenerateCFToken Configuration File
+# https://github.com/nicholas-fedor/goGenerateCFToken
+
+# https://dash.cloudflare.com/profile/api-tokens
+# Token Name: [Add your token name here for reference]
+# Permissions: Zone: Read & API Tokens: Edit
+api_token: "your-cloudflare-api-token-here"
+zone: "example.com"
