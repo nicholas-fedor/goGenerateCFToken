@@ -18,21 +18,29 @@ package cloudflare
 
 import (
 	"context"
+	"errors"
 	"fmt"
 )
 
-func GetZoneID(zone string, api APIInterface, ctx context.Context) (string, error) {
+// Static error variables.
+var (
+	ErrListZonesFailed = errors.New("failed to list zones")
+	ErrMultipleZones   = errors.New("multiple zones found")
+	ErrNoZonesFound    = errors.New("no zones found")
+)
+
+func GetZoneID(ctx context.Context, zone string, api APIInterface) (string, error) {
 	zones, err := api.ListZones(ctx, zone)
 	if err != nil {
-		return "", fmt.Errorf("failed to list zones: %v", err)
+		return "", fmt.Errorf("%w: %w", ErrListZonesFailed, err)
 	}
 
 	if len(zones) > 1 {
-		return "", fmt.Errorf("multiple zones found for %q", zone)
+		return "", fmt.Errorf("%w for %q", ErrMultipleZones, zone)
 	}
 
 	if len(zones) == 0 {
-		return "", fmt.Errorf("no zones found for %q", zone)
+		return "", fmt.Errorf("%w for %q", ErrNoZonesFound, zone)
 	}
 
 	return zones[0].ID, nil

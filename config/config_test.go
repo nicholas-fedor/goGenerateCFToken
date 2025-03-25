@@ -29,10 +29,7 @@ func TestInitConfig(t *testing.T) {
 	viper.Reset()
 
 	// Create a temporary directory for testing
-	tempDir, err := os.MkdirTemp("", "config_test")
-	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
-	}
+	tempDir := t.TempDir()
 	defer os.RemoveAll(tempDir)
 
 	// Create a test config file
@@ -87,7 +84,7 @@ func TestInitConfig(t *testing.T) {
 
 			// Set environment variables if provided
 			for key, value := range tt.envVars {
-				os.Setenv(key, value)
+				t.Setenv(key, value)
 				defer os.Unsetenv(key)
 			}
 

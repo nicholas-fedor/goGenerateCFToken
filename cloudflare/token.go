@@ -18,23 +18,34 @@ package cloudflare
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/cloudflare/cloudflare-go"
 )
 
-func GenerateToken(serviceName string, zone string, api APIInterface, ctx context.Context) (string, error) {
+// Static error variables.
+var (
+	ErrCreateTokenFailed = errors.New("failed to create API token")
+)
+
+func GenerateToken(
+	ctx context.Context,
+	serviceName string,
+	zone string,
+	api APIInterface,
+) (string, error) {
 	// Get the Zone ID from the zone name
-	zoneID, err := GetZoneID(zone, api, ctx)
+	zoneID, err := GetZoneID(ctx, zone, api)
 	if err != nil {
-		return "", err
+		return "", err // Propagate the error from GetZoneID
 	}
 
 	// Specify token name
 	tokenName := serviceName + "." + zone
 
 	// Output input values
-	fmt.Printf("Generating API token: %s\n", tokenName)
+	fmt.Println("Generating API token:", tokenName) //nolint:forbidigo // Intended output behavior
 
 	// Specify API token to create
 	resources := make(map[string]any)
@@ -60,7 +71,7 @@ func GenerateToken(serviceName string, zone string, api APIInterface, ctx contex
 	// Send the request to the Cloudflare API
 	generatedToken, err := api.CreateAPIToken(ctx, tokenToCreate)
 	if err != nil {
-		return "", fmt.Errorf("failed to create API token: %v", err)
+		return "", fmt.Errorf("%w: %w", ErrCreateTokenFailed, err)
 	}
 
 	return generatedToken.Value, nil

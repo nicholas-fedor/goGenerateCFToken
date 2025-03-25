@@ -29,12 +29,18 @@ type mockZoneAPIForGetZoneID struct {
 	listZones func(ctx context.Context, zone ...string) ([]cloudflare.Zone, error)
 }
 
-func (m *mockZoneAPIForGetZoneID) ListZones(ctx context.Context, zone ...string) ([]cloudflare.Zone, error) {
+func (m *mockZoneAPIForGetZoneID) ListZones(
+	ctx context.Context,
+	zone ...string,
+) ([]cloudflare.Zone, error) {
 	return m.listZones(ctx, zone...)
 }
 
 // CreateAPIToken is required by APIInterface but not used in GetZoneID tests.
-func (m *mockZoneAPIForGetZoneID) CreateAPIToken(ctx context.Context, token cloudflare.APIToken) (cloudflare.APIToken, error) {
+func (m *mockZoneAPIForGetZoneID) CreateAPIToken(
+	_ context.Context,
+	_ cloudflare.APIToken,
+) (cloudflare.APIToken, error) {
 	return cloudflare.APIToken{}, nil // No-op for GetZoneID tests
 }
 
@@ -86,9 +92,9 @@ func TestGetZoneID(t *testing.T) {
 				listZones: tt.listFunc,
 			}
 
-			ctx := context.Background()
+			ctx := t.Context()
 
-			gotID, err := GetZoneID(tt.zone, api, ctx)
+			gotID, err := GetZoneID(ctx, tt.zone, api)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetZoneID() error = %v, wantErr %v", err, tt.wantErr)
 

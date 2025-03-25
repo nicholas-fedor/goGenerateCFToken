@@ -19,8 +19,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/config"
 	"github.com/spf13/cobra"
+
+	"github.com/nicholas-fedor/goGenerateCFToken/config"
 )
 
 var version = "0.0.1"

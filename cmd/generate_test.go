@@ -18,14 +18,15 @@ package cmd
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"os"
 	"testing"
 
-	"github.com/cloudflare/cloudflare-go"                                  // For cloudflare.API
-	cloudflarePkg "github.com/nicholas-fedor/goGenerateCFToken/cloudflare" // Alias to avoid conflict
+	"github.com/cloudflare/cloudflare-go" // For cloudflare.API
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	cloudflarePkg "github.com/nicholas-fedor/goGenerateCFToken/cloudflare" // Alias to avoid conflict
 )
 
 // MockAPI implements cloudflarePkg.APIInterface.
@@ -40,7 +41,7 @@ func TestGenerateCmd(t *testing.T) {
 		apiToken   string
 		zone       string
 		clientFunc func(token string) (*cloudflare.API, error)
-		genFunc    func(serviceName, zone string, api cloudflarePkg.APIInterface, ctx context.Context) (string, error)
+		genFunc    func(ctx context.Context, serviceName string, zone string, api cloudflarePkg.APIInterface) (string, error)
 		wantErr    bool
 		wantOutput string
 	}{
@@ -49,10 +50,10 @@ func TestGenerateCmd(t *testing.T) {
 			args:     []string{"generate", "test-service"},
 			apiToken: "valid-token",
 			zone:     "example.com",
-			clientFunc: func(token string) (*cloudflare.API, error) {
+			clientFunc: func(_ string) (*cloudflare.API, error) {
 				return &cloudflare.API{}, nil
 			},
-			genFunc: func(_, _ string, _ cloudflarePkg.APIInterface, _ context.Context) (string, error) {
+			genFunc: func(_ context.Context, _ string, _ string, _ cloudflarePkg.APIInterface) (string, error) {
 				return "new-token", nil
 			},
 			wantOutput: "new-token\n",
@@ -79,8 +80,8 @@ func TestGenerateCmd(t *testing.T) {
 			args:     []string{"generate", "test-service"},
 			apiToken: "valid-token",
 			zone:     "example.com",
-			clientFunc: func(token string) (*cloudflare.API, error) {
-				return nil, fmt.Errorf("client error")
+			clientFunc: func(_ string) (*cloudflare.API, error) {
+				return nil, errors.New("client error")
 			},
 			wantErr: true,
 		},
@@ -89,11 +90,11 @@ func TestGenerateCmd(t *testing.T) {
 			args:     []string{"generate", "test-service"},
 			apiToken: "valid-token",
 			zone:     "example.com",
-			clientFunc: func(token string) (*cloudflare.API, error) {
+			clientFunc: func(_ string) (*cloudflare.API, error) {
 				return &cloudflare.API{}, nil
 			},
-			genFunc: func(_, _ string, _ cloudflarePkg.APIInterface, _ context.Context) (string, error) {
-				return "", fmt.Errorf("generate error")
+			genFunc: func(_ context.Context, _ string, _ string, _ cloudflarePkg.APIInterface) (string, error) {
+				return "", errors.New("generate error")
 			},
 			wantErr: true,
 		},
@@ -119,7 +120,7 @@ func TestGenerateCmd(t *testing.T) {
 			if tt.clientFunc != nil {
 				NewAPIClientFunc = tt.clientFunc
 			} else {
-				NewAPIClientFunc = func(token string) (*cloudflare.API, error) {
+				NewAPIClientFunc = func(_ string) (*cloudflare.API, error) {
 					return &cloudflare.API{}, nil
 				}
 			}
@@ -127,7 +128,7 @@ func TestGenerateCmd(t *testing.T) {
 			if tt.genFunc != nil {
 				GenerateTokenFunc = tt.genFunc
 			} else {
-				GenerateTokenFunc = func(_, _ string, _ cloudflarePkg.APIInterface, _ context.Context) (string, error) {
+				GenerateTokenFunc = func(_ context.Context, _ string, _ string, _ cloudflarePkg.APIInterface) (string, error) {
 					return "new-token", nil
 				}
 			}
