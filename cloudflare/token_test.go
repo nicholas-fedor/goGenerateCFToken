@@ -35,7 +35,10 @@ func (m *mockAPI) ListZones(ctx context.Context, zone ...string) ([]cloudflare.Z
 	return m.listZones(ctx, zone...)
 }
 
-func (m *mockAPI) CreateAPIToken(ctx context.Context, token cloudflare.APIToken) (cloudflare.APIToken, error) {
+func (m *mockAPI) CreateAPIToken(
+	ctx context.Context,
+	token cloudflare.APIToken,
+) (cloudflare.APIToken, error) {
 	return m.createToken(ctx, token)
 }
 
@@ -53,7 +56,7 @@ func TestGenerateToken(t *testing.T) {
 			name:        "Success",
 			serviceName: "test-service",
 			zone:        "example.com",
-			listZones: func(_ context.Context, zone ...string) ([]cloudflare.Zone, error) {
+			listZones: func(_ context.Context, _ ...string) ([]cloudflare.Zone, error) {
 				return []cloudflare.Zone{{ID: "zone-id-123", Name: "example.com"}}, nil
 			},
 			createToken: func(_ context.Context, _ cloudflare.APIToken) (cloudflare.APIToken, error) {
@@ -77,7 +80,7 @@ func TestGenerateToken(t *testing.T) {
 			name:        "CreateTokenError",
 			serviceName: "test-service",
 			zone:        "example.com",
-			listZones: func(_ context.Context, zone ...string) ([]cloudflare.Zone, error) {
+			listZones: func(_ context.Context, _ ...string) ([]cloudflare.Zone, error) {
 				return []cloudflare.Zone{{ID: "zone-id-123", Name: "example.com"}}, nil
 			},
 			createToken: func(_ context.Context, _ cloudflare.APIToken) (cloudflare.APIToken, error) {
@@ -125,7 +128,7 @@ func TestGenerateToken(t *testing.T) {
 
 			defer func() { os.Stdout = oldStdout }()
 
-			gotToken, err := GenerateToken(tt.serviceName, tt.zone, api, context.Background())
+			gotToken, err := GenerateToken(t.Context(), tt.serviceName, tt.zone, api)
 
 			w.Close()
 
@@ -145,7 +148,11 @@ func TestGenerateToken(t *testing.T) {
 				}
 
 				if output != "Generating API token: "+tt.serviceName+"."+tt.zone+"\n" {
-					t.Errorf("GenerateToken() output = %q, want %q", output, "Generating API token: "+tt.serviceName+"."+tt.zone+"\n")
+					t.Errorf(
+						"GenerateToken() output = %q, want %q",
+						output,
+						"Generating API token: "+tt.serviceName+"."+tt.zone+"\n",
+					)
 				}
 			}
 		})

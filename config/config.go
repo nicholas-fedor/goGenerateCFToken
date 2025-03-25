@@ -17,6 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -53,7 +54,8 @@ func InitConfig() {
 	viper.SetDefault("zone", "")
 
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+		var configNotFoundErr viper.ConfigFileNotFoundError
+		if !errors.As(err, &configNotFoundErr) {
 			fmt.Fprintf(os.Stderr, "Error reading config file: %v\n", err)
 		}
 	} else {

@@ -18,12 +18,14 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/cloudflare"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/nicholas-fedor/goGenerateCFToken/cloudflare"
 )
 
 var (
@@ -31,39 +33,51 @@ var (
 	GenerateTokenFunc = cloudflare.GenerateToken
 )
 
+// Static error variables.
+var (
+	ErrMissingAPIToken = errors.New(
+		"missing API token: set via --token, CF_API_TOKEN, or config file",
+	)
+	ErrMissingZone         = errors.New("missing zone: set via --zone, CF_ZONE, or config file")
+	ErrCreateClientFailed  = errors.New("failed to create API client")
+	ErrGenerateTokenFailed = errors.New("failed to generate token")
+	ErrBindAPITokenFlag    = errors.New("failed to bind api_token flag")
+	ErrBindZoneFlag        = errors.New("failed to bind zone flag")
+)
+
 // generateCmd represents the generate command.
 var generateCmd = &cobra.Command{
 	Use:   "generate [service name]",
 	Short: "Generate a new Cloudflare API token",
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		serviceName := strings.ToLower(args[0])
 		token := viper.GetString("api_token")
 		zone := viper.GetString("zone")
 
 		if token == "" {
-			return fmt.Errorf("missing API token: set via --token, CF_API_TOKEN, or config file")
+			return ErrMissingAPIToken
 		}
 		if zone == "" {
-			return fmt.Errorf("missing zone: set via --zone, CF_ZONE, or config file")
+			return ErrMissingZone
 		}
 
 		// Create API client using the scoped API token
 		client, err := NewAPIClientFunc(token)
 		if err != nil {
-			return fmt.Errorf("failed to create API client: %v", err)
+			return fmt.Errorf("%w: %w", ErrCreateClientFailed, err)
 		}
 
 		// Most API calls require a Context
 		ctx := context.Background()
 
 		// Generate an API token
-		newAPIToken, err := GenerateTokenFunc(serviceName, zone, client, ctx)
+		newAPIToken, err := GenerateTokenFunc(ctx, serviceName, zone, client)
 		if err != nil {
-			return fmt.Errorf("failed to generate token: %v", err)
+			return fmt.Errorf("%w: %w", ErrGenerateTokenFailed, err)
 		}
 
-		fmt.Println(newAPIToken)
+		fmt.Println(newAPIToken) //nolint:forbidigo // Intended output behavior
 
 		return nil
 	},
@@ -71,15 +85,15 @@ var generateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
-	// Here you will define your flags and configuration settings.
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// generateCmd.PersistentFlags().String("foo", "", "A help for foo")
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// generateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	generateCmd.Flags().StringP("token", "t", "", "Cloudflare API token")
 	generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
-	viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token"))
-	viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone"))
+
+	// Bind flags to viper and check for errors
+	if err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token")); err != nil {
+		panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
+	}
+
+	if err := viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone")); err != nil {
+		panic(fmt.Errorf("%w: %w", ErrBindZoneFlag, err))
+	}
 }

@@ -59,10 +59,16 @@ func TestRootCmd(t *testing.T) {
 	configFileFlag := rootCmd.PersistentFlags().Lookup("config")
 	if configFileFlag == nil {
 		t.Errorf("rootCmd missing 'config' persistent flag")
+
+		return // Exit early to avoid dereferencing nil
 	}
 
 	if configFileFlag.Value.String() != config.ConfigFile {
-		t.Errorf("rootCmd 'config' flag value = %q, want %q", configFileFlag.Value.String(), config.ConfigFile)
+		t.Errorf(
+			"rootCmd 'config' flag value = %q, want %q",
+			configFileFlag.Value.String(),
+			config.ConfigFile,
+		)
 	}
 }
 
