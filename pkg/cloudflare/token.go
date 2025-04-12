@@ -23,94 +23,72 @@ import (
 	"os"
 
 	"github.com/cloudflare/cloudflare-go/v4"
-	"github.com/cloudflare/cloudflare-go/v4/packages/pagination"
 	"github.com/cloudflare/cloudflare-go/v4/shared"
 	"github.com/cloudflare/cloudflare-go/v4/user"
-	"github.com/cloudflare/cloudflare-go/v4/zones"
 )
 
+// Constants defining Cloudflare permission IDs for zone read and DNS write.
 const (
+	// ZoneReadPermission grants read access to Cloudflare zones.
 	ZoneReadPermission = "c8fed203ed3043cba015a93ad1616f1f"
+	// DNSWritePermission grants write access to DNS records.
 	DNSWritePermission = "4755a26eedb94da69e1066d98aa820be"
 )
 
-var GenerateTokenFunc = (*Client).GenerateToken
+// GenerateTokenFunc generates a Cloudflare API token, defaulting to GenerateToken.
+var GenerateTokenFunc = GenerateToken
 
-type clientAdapter struct {
-	*cloudflare.Client
-}
-
-func (c *clientAdapter) ListZones(
+// GenerateToken creates a new Cloudflare API token for the specified service and zone.
+// It retrieves the zone ID, configures token policies, and returns the token ID.
+func GenerateToken(
 	ctx context.Context,
-	params zones.ZoneListParams,
-) (*pagination.V4PagePaginationArray[zones.Zone], error) {
-	if c.Client == nil || c.Zones == nil {
-		return nil, ErrZonesServiceNotInit
-	}
-
-	zones, err := c.Zones.List(ctx, params)
+	serviceName, zoneName string,
+	client *Client,
+	api APIInterface,
+) (string, error) {
+	// Retrieve the zone ID for the given zone name.
+	zoneID, err := client.GetZoneID(ctx, zoneName, api)
 	if err != nil {
-		return nil, fmt.Errorf("failed to list zones: %w", err)
+		return "", fmt.Errorf("%w: %w", ErrGetZoneIDFailed, err)
 	}
 
-	return zones, nil
-}
-
-func (c *clientAdapter) CreateAPIToken(
-	ctx context.Context,
-	params user.TokenNewParams,
-) (*user.TokenNewResponse, error) {
-	if c.Client == nil || c.User == nil || c.User.Tokens == nil {
-		return nil, ErrTokensServiceNotInit
-	}
-
-	token, err := c.User.Tokens.New(ctx, params)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create API token: %w", err)
-	}
-
-	return token, nil
-}
-
-func (c *Client) GenerateToken(ctx context.Context, serviceName, zoneName string) (string, error) {
-	if c.Client == nil {
-		return "", ErrClientNotInitialized
-	}
-
-	adapter := &clientAdapter{c.Client}
-
-	zoneID, err := c.GetZoneID(ctx, zoneName, adapter)
-	if err != nil {
-		return "", fmt.Errorf("failed to get zone ID: %w", err)
-	}
-
+	// Construct the token name from service and zone names.
 	tokenName := serviceName + "." + zoneName
+
+	// Define permissions for zone read and DNS write.
 	permissions := []shared.TokenPolicyPermissionGroupParam{{
 		ID: cloudflare.F(ZoneReadPermission),
 	}, {
 		ID: cloudflare.F(DNSWritePermission),
 	}}
+
+	// Specify resources to apply permissions to the zone.
 	resources := map[string]string{
 		"com.cloudflare.api.account.zone." + zoneID: "*",
 	}
 
+	// Configure token policy to allow the specified permissions and resources.
 	policies := []shared.TokenPolicyParam{{
 		Effect:           cloudflare.F(shared.TokenPolicyEffectAllow),
 		PermissionGroups: cloudflare.F(permissions),
 		Resources:        cloudflare.F(resources),
 	}}
 
+	// Set up parameters for creating the new token.
 	params := user.TokenNewParams{
 		Name:     cloudflare.F(tokenName),
 		Policies: cloudflare.F(policies),
 	}
 
+	// Log token generation intent.
 	fmt.Fprintln(os.Stdout, "Generating API token:", tokenName)
 
-	token, err := adapter.CreateAPIToken(ctx, params)
+	// Create the API token.
+	token, err := api.CreateAPIToken(ctx, params)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
+		return "", fmt.Errorf("%w: %w", ErrCreateTokenFailed, err)
 	}
 
+	// Return the generated token’s ID.
 	return token.ID, nil
 }

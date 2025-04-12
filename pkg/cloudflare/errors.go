@@ -20,10 +20,24 @@ package cloudflare
 import "errors"
 
 var (
-	ErrMissingCredentials   = errors.New("api_token must be provided")
+	// ErrMissingCredentials indicates that the API token is not provided.
+	ErrMissingCredentials = errors.New("api_token must be provided")
+
+	// ErrClientNotInitialized indicates that the Cloudflare client is not initialized.
 	ErrClientNotInitialized = errors.New("client not initialized")
-	ErrZonesServiceNotInit  = errors.New("zones service not initialized")
-	ErrTokensServiceNotInit = errors.New("tokens service not initialized")
-	ErrZoneNotFound         = errors.New("no zones found")
-	ErrMultipleZonesFound   = errors.New("multiple zones found")
+
+	// ErrGetZoneIDFailed indicates a failure to retrieve a Cloudflare zone ID.
+	ErrGetZoneIDFailed = errors.New("failed to get zone ID")
+
+	// ErrListZonesFailed indicates a failure to list Cloudflare zones.
+	ErrListZonesFailed = errors.New("failed to list zones")
+
+	// ErrZoneNotFound indicates that no zones were found for the given name.
+	ErrZoneNotFound = errors.New("no zones found")
+
+	// ErrMultipleZonesFound indicates that multiple zones were found for the given name.
+	ErrMultipleZonesFound = errors.New("multiple zones found")
+
+	// ErrCreateTokenFailed indicates a failure to create a Cloudflare API token.
+	ErrCreateTokenFailed = errors.New("failed to create API token")
 )

@@ -18,15 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cloudflare
 
 import (
-	"context"
 	"errors"
-	"fmt"
 	"os"
 	"testing"
 
 	"github.com/cloudflare/cloudflare-go/v4"
 	"github.com/cloudflare/cloudflare-go/v4/packages/pagination"
-	"github.com/cloudflare/cloudflare-go/v4/shared"
 	"github.com/cloudflare/cloudflare-go/v4/user"
 	"github.com/cloudflare/cloudflare-go/v4/zones"
 	"github.com/stretchr/testify/mock"
@@ -64,8 +61,8 @@ func TestGenerateToken(t *testing.T) {
 			serviceName: "test-service",
 			zone:        "example.com",
 			wantErr:     true,
-			setupMock: func(_m *mocks.MockAPIInterface) {
-				_m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
+			setupMock: func(m *mocks.MockAPIInterface) {
+				m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
 					Return(nil, errors.New("zone error")).
 					Once()
 			},
@@ -107,14 +104,6 @@ func TestGenerateToken(t *testing.T) {
 					Once()
 			},
 		},
-		{
-			name:        "NilClient",
-			serviceName: "test-service",
-			zone:        "example.com",
-			wantErr:     true,
-			setupMock: func(_m *mocks.MockAPIInterface) {
-			},
-		},
 	}
 
 	for _, tt := range tests {
@@ -122,12 +111,7 @@ func TestGenerateToken(t *testing.T) {
 			mockAPI := mocks.NewMockAPIInterface(t)
 			tt.setupMock(mockAPI)
 
-			var client *Client
-			if tt.name != "NilClient" {
-				client = &Client{
-					Client: &cloudflare.Client{},
-				}
-			}
+			client := &Client{Client: &cloudflare.Client{}}
 
 			oldStdout := os.Stdout
 			r, w, _ := os.Pipe()
@@ -135,19 +119,13 @@ func TestGenerateToken(t *testing.T) {
 
 			defer func() { os.Stdout = oldStdout }()
 
-			var gotToken string
-
-			var err error
-			if client != nil {
-				gotToken, err = generateTokenForTest(
-					t.Context(),
-					tt.serviceName,
-					tt.zone,
-					mockAPI,
-				)
-			} else {
-				_, err = (&Client{}).GenerateToken(t.Context(), tt.serviceName, tt.zone)
-			}
+			gotToken, err := GenerateToken(
+				t.Context(),
+				tt.serviceName,
+				tt.zone,
+				client,
+				mockAPI,
+			)
 
 			w.Close()
 
@@ -173,83 +151,6 @@ func TestGenerateToken(t *testing.T) {
 						"Generating API token: "+tt.serviceName+"."+tt.zone+"\n",
 					)
 				}
-			}
-		})
-	}
-}
-
-func generateTokenForTest(
-	ctx context.Context,
-	serviceName, zoneName string,
-	api APIInterface,
-) (string, error) {
-	client := &Client{}
-
-	zoneID, err := client.GetZoneID(ctx, zoneName, api)
-	if err != nil {
-		return "", fmt.Errorf("failed to get zone ID: %w", err)
-	}
-
-	tokenName := serviceName + "." + zoneName
-	fmt.Fprintln(os.Stdout, "Generating API token:", tokenName)
-	params := user.TokenNewParams{
-		Name: cloudflare.F(tokenName),
-		Policies: cloudflare.F([]shared.TokenPolicyParam{{
-			Effect: cloudflare.F(shared.TokenPolicyEffectAllow),
-			PermissionGroups: cloudflare.F([]shared.TokenPolicyPermissionGroupParam{{
-				ID: cloudflare.F("c8fed203ed3043cba015a93ad1616f1f"),
-			}, {
-				ID: cloudflare.F("4755a26eedb94da69e1066d98aa820be"),
-			}}),
-			Resources: cloudflare.F(map[string]string{
-				"com.cloudflare.api.account.zone." + zoneID: "*",
-			}),
-		}}),
-	}
-
-	token, err := api.CreateAPIToken(ctx, params)
-	if err != nil {
-		return "", fmt.Errorf("failed to generate token: %w", err)
-	}
-
-	return token.ID, nil
-}
-
-func TestClientAdapter(t *testing.T) {
-	tests := []struct {
-		name         string
-		client       *cloudflare.Client
-		wantListErr  string
-		wantTokenErr string
-	}{
-		{
-			name:         "NilClient",
-			client:       nil,
-			wantListErr:  ErrZonesServiceNotInit.Error(),
-			wantTokenErr: ErrTokensServiceNotInit.Error(),
-		},
-		{
-			name:         "EmptyClient",
-			client:       &cloudflare.Client{},
-			wantListErr:  ErrZonesServiceNotInit.Error(),
-			wantTokenErr: ErrTokensServiceNotInit.Error(),
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			adapter := &clientAdapter{tt.client}
-
-			// Test ListZones
-			_, err := adapter.ListZones(t.Context(), zones.ZoneListParams{})
-			if err == nil || err.Error() != tt.wantListErr {
-				t.Errorf("ListZones() error = %v, want %q", err, tt.wantListErr)
-			}
-
-			// Test CreateAPIToken
-			_, err = adapter.CreateAPIToken(t.Context(), user.TokenNewParams{})
-			if err == nil || err.Error() != tt.wantTokenErr {
-				t.Errorf("CreateAPIToken() error = %v, want %q", err, tt.wantTokenErr)
 			}
 		})
 	}

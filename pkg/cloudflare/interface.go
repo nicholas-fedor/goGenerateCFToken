@@ -25,10 +25,15 @@ import (
 	"github.com/cloudflare/cloudflare-go/v4/zones"
 )
 
+// APIInterface defines methods for interacting with the Cloudflare API.
+// It supports listing zones and creating API tokens.
 type APIInterface interface {
+	// ListZones retrieves a list of Cloudflare zones matching the given parameters.
 	ListZones(
 		ctx context.Context,
 		params zones.ZoneListParams,
 	) (*pagination.V4PagePaginationArray[zones.Zone], error)
+
+	// CreateAPIToken generates a new Cloudflare API token with the specified parameters.
 	CreateAPIToken(ctx context.Context, params user.TokenNewParams) (*user.TokenNewResponse, error)
 }

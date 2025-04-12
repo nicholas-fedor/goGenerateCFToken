@@ -25,20 +25,28 @@ import (
 	"github.com/cloudflare/cloudflare-go/v4/zones"
 )
 
+// GetZoneID retrieves the ID of a Cloudflare zone by its name.
+// It returns an error if no zone, multiple zones, or a listing error occurs.
 func (c *Client) GetZoneID(ctx context.Context, zoneName string, api APIInterface) (string, error) {
+	// Set up parameters to filter zones by name.
 	params := zones.ZoneListParams{Name: cloudflare.F(zoneName)}
 
+	// List zones matching the name.
 	response, err := api.ListZones(ctx, params)
 	if err != nil {
-		return "", fmt.Errorf("failed to list zones: %w", err)
+		return "", fmt.Errorf("%w: %w", ErrListZonesFailed, err)
 	}
 
+	// Check the number of matching zones.
 	switch len(response.Result) {
 	case 0:
+		// No zones found for the given name.
 		return "", fmt.Errorf("%w: %s", ErrZoneNotFound, zoneName)
 	case 1:
+		// Return the ID of the single matching zone.
 		return response.Result[0].ID, nil
 	default:
+		// Multiple zones found, which is ambiguous.
 		return "", fmt.Errorf("%w: %s", ErrMultipleZonesFound, zoneName)
 	}
 }

@@ -20,8 +20,21 @@ package cmd
 import "errors"
 
 var (
+	// ErrClientInitializationFailure indicates a failure to initialize the Cloudflare client.
+	ErrClientInitializationFailure = errors.New("failed to initialize Cloudflare client")
+
+	// ErrTokenGenerationFailure indicates a failure to generate a Cloudflare API token.
+	ErrTokenGenerationFailure = errors.New("failed to generate token")
+
+	// ErrMissingConfigAuth indicates missing API token credentials in the configuration.
 	ErrMissingConfigAuth = errors.New("missing required credentials in config")
+
+	// ErrMissingConfigZone indicates a missing zone name in the configuration.
 	ErrMissingConfigZone = errors.New("missing required zone in config")
-	ErrBindAPITokenFlag  = errors.New("failed to bind api_token flag")
-	ErrBindZoneFlag      = errors.New("failed to bind zone flag")
+
+	// ErrBindAPITokenFlag indicates a failure to bind the API token flag to the configuration.
+	ErrBindAPITokenFlag = errors.New("failed to bind api_token flag")
+
+	// ErrBindZoneFlag indicates a failure to bind the zone flag to the configuration.
+	ErrBindZoneFlag = errors.New("failed to bind zone flag")
 )

@@ -144,6 +144,7 @@ linters:
         - c
         - ctx
         - i
+        - v
       ignore-decls:
         - c echo.Context
         - t testing.T
@@ -158,6 +159,7 @@ linters:
         - r http.Request
         - r *net/http/Request
         - r *mux.Router
+        - v Viper
 
   ######################################################################################################
   # Defines a set of rules to ignore issues.

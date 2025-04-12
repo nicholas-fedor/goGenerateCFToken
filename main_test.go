@@ -24,6 +24,11 @@ import (
 	"github.com/nicholas-fedor/goGenerateCFToken/cmd"
 )
 
+var (
+	cmdExecute = cmd.Execute
+	osExit     = os.Exit
+)
+
 func TestMain(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -43,11 +48,7 @@ func TestMain(t *testing.T) {
 	main()
 }
 
-var osExit = os.Exit
-
 func init() {
 	cmdExecute = func() {
 	}
 }
-
-var cmdExecute = cmd.Execute

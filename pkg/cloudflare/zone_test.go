@@ -43,7 +43,8 @@ func TestGetZoneID(t *testing.T) {
 			wantID: "zone-id-123",
 			setupMock: func(m *mocks.MockAPIInterface) {
 				m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
-					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{{ID: "zone-id-123"}}}, nil)
+					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{{ID: "zone-id-123"}}}, nil).
+					Once()
 			},
 		},
 		{
@@ -52,7 +53,8 @@ func TestGetZoneID(t *testing.T) {
 			wantErr: true,
 			setupMock: func(m *mocks.MockAPIInterface) {
 				m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
-					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{}}, nil)
+					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{}}, nil).
+					Once()
 			},
 		},
 		{
@@ -61,7 +63,8 @@ func TestGetZoneID(t *testing.T) {
 			wantErr: true,
 			setupMock: func(m *mocks.MockAPIInterface) {
 				m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
-					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{{ID: "zone1"}, {ID: "zone2"}}}, nil)
+					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{{ID: "zone1"}, {ID: "zone2"}}}, nil).
+					Once()
 			},
 		},
 		{
@@ -70,7 +73,8 @@ func TestGetZoneID(t *testing.T) {
 			wantErr: true,
 			setupMock: func(m *mocks.MockAPIInterface) {
 				m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
-					Return(nil, errors.New("list error"))
+					Return(nil, errors.New("list error")).
+					Once()
 			},
 		},
 	}

@@ -30,19 +30,28 @@ import (
 )
 
 var (
-	NewClientFunc     = cloudflare.NewClient
-	GenerateTokenFunc = (*cloudflare.Client).GenerateToken
+	// BindPFlagFunc binds a flag to a Viper key, defaulting to viper.BindPFlag.
+	BindPFlagFunc = viper.BindPFlag
+	// NewClientFunc creates a new Cloudflare client, defaulting to cloudflare.NewClient.
+	NewClientFunc = cloudflare.NewClient
+	// GenerateTokenFunc generates a Cloudflare API token, defaulting to cloudflare.GenerateToken.
+	GenerateTokenFunc = cloudflare.GenerateToken
 )
 
+// generateCmd defines the command to generate a new Cloudflare API token.
 var generateCmd = &cobra.Command{
 	Use:   "generate [service name]",
 	Short: "Generate a new Cloudflare API token",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(_ *cobra.Command, args []string) error {
+		// Convert service name to lowercase for consistency.
 		serviceName := strings.ToLower(args[0])
+
+		// Retrieve API token and zone name from configuration.
 		token := viper.GetString("api_token")
 		zoneName := viper.GetString("zone")
 
+		// Validate required configuration values.
 		if token == "" {
 			return ErrMissingConfigAuth
 		}
@@ -50,34 +59,46 @@ var generateCmd = &cobra.Command{
 			return ErrMissingConfigZone
 		}
 
+		// Initialize Cloudflare client with the API token.
 		client, err := NewClientFunc(token)
 		if err != nil {
-			return fmt.Errorf("failed to initialize Cloudflare client: %w", err)
+			return fmt.Errorf("%w: %w", ErrClientInitializationFailure, err)
 		}
 
+		// Create a context for the API call.
 		ctx := context.Background()
 
-		newAPIToken, err := GenerateTokenFunc(client, ctx, serviceName, zoneName)
+		// Generate the new API token.
+		newAPIToken, err := GenerateTokenFunc(ctx, serviceName, zoneName, client, client)
 		if err != nil {
-			return fmt.Errorf("failed to generate token: %w", err)
+			return fmt.Errorf("%w: %w", ErrTokenGenerationFailure, err)
 		}
 
+		// Output the generated token.
 		fmt.Fprintln(os.Stdout, newAPIToken)
 
 		return nil
 	},
 }
 
+// init configures the generate command before execution.
 func init() {
+	// Add the generate command to the root command.
 	rootCmd.AddCommand(generateCmd)
+
+	// Define flags for API token and zone name.
 	generateCmd.Flags().StringP("token", "t", "", "Cloudflare API token")
 	generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
 
+	// Bind the token flag to the api_token configuration key.
 	if err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token")); err != nil {
+		// Panic on binding failure, as it indicates a critical setup error.
 		panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
 	}
 
+	// Bind the zone flag to the zone configuration key.
 	if err := viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone")); err != nil {
+		// Panic on binding failure, as it indicates a critical setup error.
 		panic(fmt.Errorf("%w: %w", ErrBindZoneFlag, err))
 	}
 }

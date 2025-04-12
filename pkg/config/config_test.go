@@ -18,162 +18,386 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package config
 
 import (
+	"bytes"
 	"errors"
-	"fmt"
+	"io"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/spf13/viper"
 )
 
+type mockViper struct {
+	configFile      string
+	configName      string
+	configType      string
+	configPaths     []string
+	envPrefix       string
+	keyReplacer     *strings.Replacer
+	defaults        map[string]any
+	readConfigError error
+	configFileUsed  string
+}
+
+func (m *mockViper) SetConfigFile(file string) {
+	m.configFile = file
+}
+
+func (m *mockViper) AddConfigPath(path string) {
+	m.configPaths = append(m.configPaths, path)
+}
+
+func (m *mockViper) SetConfigName(name string) {
+	m.configName = name
+}
+
+func (m *mockViper) SetConfigType(typ string) {
+	m.configType = typ
+}
+
+func (m *mockViper) SetEnvPrefix(prefix string) {
+	m.envPrefix = prefix
+}
+
+func (m *mockViper) SetEnvKeyReplacer(r *strings.Replacer) {
+	m.keyReplacer = r
+}
+
+func (m *mockViper) AutomaticEnv() {}
+
+func (m *mockViper) SetDefault(key string, value any) {
+	if m.defaults == nil {
+		m.defaults = make(map[string]any)
+	}
+
+	m.defaults[key] = value
+}
+
+func (m *mockViper) ReadInConfig() error {
+	return m.readConfigError
+}
+
+func (m *mockViper) ConfigFileUsed() string {
+	return m.configFileUsed
+}
+
 func TestInitConfig(t *testing.T) {
+	originalInitConfigFunc := InitConfigFunc
+	defer func() { InitConfigFunc = originalInitConfigFunc }()
+
+	called := false
+	InitConfigFunc = func(_ Viper) { called = true }
+
+	InitConfig()
+
+	if !called {
+		t.Error("InitConfig did not call InitConfigFunc")
+	}
+}
+
+func TestInitConfig_NilFunc(t *testing.T) {
+	originalInitConfigFunc := InitConfigFunc
+	defer func() { InitConfigFunc = originalInitConfigFunc }()
+
+	viper.Reset()
+
+	InitConfigFunc = nil
+
+	var buf bytes.Buffer
+
+	originalStderr := os.Stderr
+	r, w, _ := os.Pipe()
+	os.Stderr = w
+
+	go func() {
+		defer w.Close()
+		InitConfig()
+	}()
+
+	_, err := io.Copy(&buf, r)
+	if err != nil {
+		t.Fatalf("Failed to copy stderr: %v", err)
+	}
+
+	os.Stderr = originalStderr
+
+	v := viper.GetViper()
+
+	if InitConfigFunc == nil {
+		t.Error("Expected InitConfigFunc to be set, but it is nil")
+	}
+
+	if v.ConfigFileUsed() == "" {
+		t.Log("Config name not verifiable directly; consider mock adjustment")
+	}
+}
+
+func Test_initConfig(t *testing.T) {
+	mock := &mockViper{
+		readConfigError: viper.ConfigFileNotFoundError{},
+	}
+	originalUserHomeDir := osUserHomeDir
+
+	defer func() { osUserHomeDir = originalUserHomeDir }()
+
+	osUserHomeDir = func() (string, error) { return "/home/test", nil }
+
+	var buf bytes.Buffer
+
+	originalStderr := os.Stderr
+	r, w, _ := os.Pipe()
+	os.Stderr = w
+
+	go func() {
+		defer w.Close()
+		initConfig(mock)
+	}()
+
+	_, err := io.Copy(&buf, r)
+	if err != nil {
+		t.Fatalf("Failed to copy stderr: %v", err)
+	}
+
+	os.Stderr = originalStderr
+
+	if mock.configName != "config" {
+		t.Errorf("Expected config name 'config', got '%s'", mock.configName)
+	}
+
+	if mock.configType != "yaml" {
+		t.Errorf("Expected config type 'yaml', got '%s'", mock.configType)
+	}
+
+	if len(mock.configPaths) != 2 {
+		t.Errorf("Expected 2 config paths, got %d", len(mock.configPaths))
+	}
+
+	expectedPath0 := "/home/test/.goGenerateCFToken"
+	actualPath0 := strings.ReplaceAll(mock.configPaths[0], string(os.PathSeparator), "/")
+
+	if actualPath0 != expectedPath0 {
+		t.Errorf("Expected first path '%s', got '%s'", expectedPath0, actualPath0)
+	}
+
+	if mock.configPaths[1] != "." {
+		t.Errorf("Expected second path '.', got '%s'", mock.configPaths[1])
+	}
+
+	if mock.envPrefix != "CF" {
+		t.Errorf("Expected env prefix 'CF', got '%s'", mock.envPrefix)
+	}
+
+	if mock.defaults["api_token"] != "" || mock.defaults["zone"] != "" {
+		t.Errorf("Unexpected defaults: %v", mock.defaults)
+	}
+
+	if buf.String() != "" {
+		t.Errorf("Expected no stderr output, got '%q'", buf.String())
+	}
+}
+
+func Test_initConfig_Error(t *testing.T) {
+	mock := &mockViper{}
+	originalUserHomeDir := osUserHomeDir
+	originalExit := osExit
+
+	defer func() {
+		osUserHomeDir = originalUserHomeDir
+		osExit = originalExit
+	}()
+
+	osUserHomeDir = func() (string, error) { return "", errors.New("no home dir") }
+
+	var exitCode int
+
+	osExit = func(code int) { exitCode = code }
+
+	var buf bytes.Buffer
+
+	originalStderr := os.Stderr
+	r, w, _ := os.Pipe()
+	os.Stderr = w
+
+	go func() {
+		defer w.Close()
+		initConfig(mock)
+	}()
+
+	_, err := io.Copy(&buf, r)
+	if err != nil {
+		t.Fatalf("Failed to copy stderr: %v", err)
+	}
+
+	os.Stderr = originalStderr
+
+	if exitCode != 1 {
+		t.Errorf("Expected exit code 1, got %d", exitCode)
+	}
+
+	if !strings.Contains(buf.String(), "Failed to set config file") {
+		t.Errorf("Expected stderr to contain 'Failed to set config file', got '%q'", buf.String())
+	}
+
+	if !strings.Contains(buf.String(), "no home dir") {
+		t.Errorf("Expected stderr to contain 'no home dir', got '%q'", buf.String())
+	}
+}
+
+func Test_setConfigFile(t *testing.T) {
 	tests := []struct {
-		name       string
-		configFile string
-		envVars    map[string]string
-		wantToken  string
-		wantZone   string
-		wantOutput string
-		wantErrOut bool
-		useMock    bool
+		name        string
+		configFile  string
+		homeDir     string
+		homeDirErr  error
+		expectFile  string
+		expectPaths []string
+		expectName  string
+		expectType  string
+		expectErr   bool
 	}{
 		{
-			name:       "ConfigFileSpecified",
-			configFile: "config.yaml",
-			wantToken:  "test-api-token",
-			wantZone:   "example.com",
-			wantOutput: "",
-			useMock:    false,
+			name:       "CustomConfigFile",
+			configFile: "/custom/config.yaml",
+			expectFile: "/custom/config.yaml",
 		},
 		{
-			name: "NoConfigFileWithEnvVars",
-			envVars: map[string]string{
-				"CF_API_TOKEN": "env-api-token",
-				"CF_ZONE":      "env-example.com",
-			},
-			wantToken:  "env-api-token",
-			wantZone:   "env-example.com",
-			wantOutput: "",
-			useMock:    true,
-		},
-		{
-			name:       "DefaultConfigNotFound",
-			configFile: "",
-			wantToken:  "",
-			wantZone:   "",
-			wantOutput: "",
-			useMock:    true,
-		},
-		{
-			name:       "InvalidConfigFile",
-			configFile: "invalid.yaml",
-			wantErrOut: true,
-			useMock:    false,
+			name:        "DefaultConfig",
+			homeDir:     "/home/test",
+			expectPaths: []string{"/home/test/.goGenerateCFToken", "."},
+			expectName:  "config",
+			expectType:  "yaml",
 		},
 		{
 			name:       "HomeDirError",
-			configFile: "",
-			wantErrOut: true,
-			useMock:    true,
+			homeDirErr: errors.New("no home dir"),
+			expectErr:  true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tempDir := t.TempDir()
+			mock := &mockViper{}
+			originalUserHomeDir := osUserHomeDir
 
-			if tt.configFile != "" && !tt.wantErrOut {
-				configContent := []byte("api_token: test-api-token\nzone: example.com")
-				configPath := filepath.Join(tempDir, "config.yaml")
+			defer func() { osUserHomeDir = originalUserHomeDir }()
 
-				if err := os.WriteFile(configPath, configContent, 0o644); err != nil {
-					t.Fatalf("Failed to write config file: %v", err)
-				}
-
-				tt.configFile = configPath
-				tt.wantOutput = "Using config file: " + configPath + "\n"
-			} else if tt.configFile != "" {
-				tt.configFile = filepath.Join(tempDir, tt.configFile)
-			}
-
-			viper.Reset()
-
-			os.Unsetenv("CF_API_TOKEN")
-			os.Unsetenv("CF_ZONE")
-
-			for key, value := range tt.envVars {
-				t.Setenv(key, value)
-			}
+			osUserHomeDir = func() (string, error) { return tt.homeDir, tt.homeDirErr }
 
 			ConfigFile = tt.configFile
+			defer func() { ConfigFile = "" }()
 
-			oldStderr := os.Stderr
+			err := setConfigFile(mock)
+
+			if tt.expectErr {
+				if err == nil {
+					t.Error("Expected error, got none")
+				} else if !strings.Contains(err.Error(), "no home dir") {
+					t.Errorf("Expected error containing 'no home dir', got '%v'", err)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Unexpected error: %v", err)
+				}
+
+				if tt.expectFile != "" && mock.configFile != tt.expectFile {
+					t.Errorf("Expected config file '%s', got '%s'", tt.expectFile, mock.configFile)
+				}
+
+				if len(tt.expectPaths) > 0 && len(mock.configPaths) != len(tt.expectPaths) {
+					t.Errorf("Expected %d paths, got %d", len(tt.expectPaths), len(mock.configPaths))
+				}
+
+				for i, path := range tt.expectPaths {
+					if i < len(mock.configPaths) {
+						actualPath := strings.ReplaceAll(mock.configPaths[i], string(os.PathSeparator), "/")
+						if actualPath != path {
+							t.Errorf("Expected path %d to be '%s', got '%s'", i, path, actualPath)
+						}
+					}
+				}
+
+				if tt.expectName != "" && mock.configName != tt.expectName {
+					t.Errorf("Expected config name '%s', got '%s'", tt.expectName, mock.configName)
+				}
+
+				if tt.expectType != "" && mock.configType != tt.expectType {
+					t.Errorf("Expected config type '%s', got '%s'", tt.expectType, mock.configType)
+				}
+			}
+		})
+	}
+}
+
+func Test_setEnv(t *testing.T) {
+	mock := &mockViper{}
+	setEnv(mock)
+
+	if mock.envPrefix != "CF" {
+		t.Errorf("Expected env prefix 'CF', got '%s'", mock.envPrefix)
+	}
+
+	if mock.keyReplacer == nil || mock.keyReplacer.Replace("a.b") != "a_b" {
+		t.Errorf("Expected key replacer to replace '.' with '_', got %v", mock.keyReplacer)
+	}
+
+	if mock.defaults["api_token"] != "" || mock.defaults["zone"] != "" {
+		t.Errorf("Unexpected defaults: %v", mock.defaults)
+	}
+}
+
+func Test_loadConfig(t *testing.T) {
+	tests := []struct {
+		name            string
+		readConfigError error
+		configFileUsed  string
+		expectOutput    string
+	}{
+		{
+			name:           "ConfigFound",
+			configFileUsed: "/test/config.yaml",
+			expectOutput:   "Using config file: /test/config.yaml\n",
+		},
+		{
+			name:            "ConfigNotFound",
+			readConfigError: viper.ConfigFileNotFoundError{},
+			expectOutput:    "",
+		},
+		{
+			name:            "ConfigReadError",
+			readConfigError: errors.New("read error"),
+			expectOutput:    "Error reading config file: read error\n",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mock := &mockViper{
+				readConfigError: tt.readConfigError,
+				configFileUsed:  tt.configFileUsed,
+			}
+
+			var buf bytes.Buffer
+
+			originalStderr := os.Stderr
 			r, w, _ := os.Pipe()
 			os.Stderr = w
 
-			defer func() { os.Stderr = oldStderr }()
+			go func() {
+				defer w.Close()
+				loadConfig(mock)
+			}()
 
-			if tt.useMock {
-				origInitConfig := InitConfigFunc
-				defer func() { InitConfigFunc = origInitConfig }()
-
-				InitConfigFunc = func() {
-					if tt.name == "HomeDirError" {
-						fmt.Fprintf(os.Stderr, "Error: no home directory\n")
-
-						return
-					}
-
-					if ConfigFile != "" {
-						viper.SetConfigFile(ConfigFile)
-					} else {
-						viper.AddConfigPath(tempDir)
-						viper.SetConfigName("nonexistent")
-						viper.SetConfigType("yaml")
-					}
-
-					viper.SetEnvPrefix("CF")
-					viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-					viper.AutomaticEnv()
-
-					viper.SetDefault("api_token", "")
-					viper.SetDefault("zone", "")
-
-					if err := viper.ReadInConfig(); err != nil {
-						var configNotFoundErr viper.ConfigFileNotFoundError
-						if !errors.As(err, &configNotFoundErr) {
-							fmt.Fprintf(os.Stderr, "Error reading config file: %v\n", err)
-						}
-					} else {
-						fmt.Fprintf(os.Stderr, "Using config file: %s\n", viper.ConfigFileUsed())
-					}
-				}
+			_, err := io.Copy(&buf, r)
+			if err != nil {
+				t.Fatalf("Failed to copy stderr: %v", err)
 			}
 
-			InitConfig()
+			os.Stderr = originalStderr
 
-			w.Close()
-
-			buf := make([]byte, 1024)
-			n, _ := r.Read(buf)
-			output := string(buf[:n])
-
-			if gotToken := viper.GetString("api_token"); gotToken != tt.wantToken {
-				t.Errorf("InitConfig() api_token = %q, want %q", gotToken, tt.wantToken)
-			}
-
-			if gotZone := viper.GetString("zone"); gotZone != tt.wantZone {
-				t.Errorf("InitConfig() zone = %q, want %q", gotZone, tt.wantZone)
-			}
-
-			if tt.wantErrOut && output == "" {
-				t.Errorf("InitConfig() expected error output, got none")
-			}
-
-			if !tt.wantErrOut && output != tt.wantOutput {
-				t.Errorf("InitConfig() output = %q, want %q", output, tt.wantOutput)
+			output := buf.String()
+			if output != tt.expectOutput {
+				t.Errorf("Expected output '%q', got '%q'", tt.expectOutput, output)
 			}
 		})
 	}
