@@ -107,21 +107,31 @@ func TestInitConfig_NilFunc(t *testing.T) {
 	var buf bytes.Buffer
 
 	originalStderr := os.Stderr
-	r, w, _ := os.Pipe()
+
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("Failed to create pipe: %v", err)
+	}
+
 	os.Stderr = w
 
-	go func() {
-		defer w.Close()
-		InitConfig()
-	}()
+	defer func() { os.Stderr = originalStderr }()
 
-	_, err := io.Copy(&buf, r)
+	originalUserHomeDir := osUserHomeDir
+	osUserHomeDir = func() (string, error) { return "", nil }
+
+	defer func() { osUserHomeDir = originalUserHomeDir }()
+
+	InitConfig()
+
+	w.Close()
+
+	_, err = io.Copy(&buf, r)
 	if err != nil {
 		t.Fatalf("Failed to copy stderr: %v", err)
 	}
 
-	os.Stderr = originalStderr
-
+	output := buf.String()
 	v := viper.GetViper()
 
 	if InitConfigFunc == nil {
@@ -130,6 +140,10 @@ func TestInitConfig_NilFunc(t *testing.T) {
 
 	if v.ConfigFileUsed() == "" {
 		t.Log("Config name not verifiable directly; consider mock adjustment")
+	}
+
+	if output != "" {
+		t.Errorf("Expected no stderr output, got '%q'", output)
 	}
 }
 
@@ -146,20 +160,26 @@ func Test_initConfig(t *testing.T) {
 	var buf bytes.Buffer
 
 	originalStderr := os.Stderr
-	r, w, _ := os.Pipe()
+
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("Failed to create pipe: %v", err)
+	}
+
 	os.Stderr = w
 
-	go func() {
-		defer w.Close()
-		initConfig(mock)
-	}()
+	defer func() { os.Stderr = originalStderr }()
 
-	_, err := io.Copy(&buf, r)
+	initConfig(mock)
+
+	w.Close()
+
+	_, err = io.Copy(&buf, r)
 	if err != nil {
 		t.Fatalf("Failed to copy stderr: %v", err)
 	}
 
-	os.Stderr = originalStderr
+	output := buf.String()
 
 	if mock.configName != "config" {
 		t.Errorf("Expected config name 'config', got '%s'", mock.configName)
@@ -192,8 +212,8 @@ func Test_initConfig(t *testing.T) {
 		t.Errorf("Unexpected defaults: %v", mock.defaults)
 	}
 
-	if buf.String() != "" {
-		t.Errorf("Expected no stderr output, got '%q'", buf.String())
+	if output != "" {
+		t.Errorf("Expected no stderr output, got '%q'", output)
 	}
 }
 
@@ -216,31 +236,37 @@ func Test_initConfig_Error(t *testing.T) {
 	var buf bytes.Buffer
 
 	originalStderr := os.Stderr
-	r, w, _ := os.Pipe()
+
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("Failed to create pipe: %v", err)
+	}
+
 	os.Stderr = w
 
-	go func() {
-		defer w.Close()
-		initConfig(mock)
-	}()
+	defer func() { os.Stderr = originalStderr }()
 
-	_, err := io.Copy(&buf, r)
+	initConfig(mock)
+
+	w.Close()
+
+	_, err = io.Copy(&buf, r)
 	if err != nil {
 		t.Fatalf("Failed to copy stderr: %v", err)
 	}
 
-	os.Stderr = originalStderr
+	output := buf.String()
 
 	if exitCode != 1 {
 		t.Errorf("Expected exit code 1, got %d", exitCode)
 	}
 
-	if !strings.Contains(buf.String(), "Failed to set config file") {
-		t.Errorf("Expected stderr to contain 'Failed to set config file', got '%q'", buf.String())
+	if !strings.Contains(output, "Failed to set config file") {
+		t.Errorf("Expected stderr to contain 'Failed to set config file', got '%q'", output)
 	}
 
-	if !strings.Contains(buf.String(), "no home dir") {
-		t.Errorf("Expected stderr to contain 'no home dir', got '%q'", buf.String())
+	if !strings.Contains(output, "no home dir") {
+		t.Errorf("Expected stderr to contain 'no home dir', got '%q'", output)
 	}
 }
 
@@ -380,20 +406,24 @@ func Test_loadConfig(t *testing.T) {
 			var buf bytes.Buffer
 
 			originalStderr := os.Stderr
-			r, w, _ := os.Pipe()
+
+			r, w, err := os.Pipe()
+			if err != nil {
+				t.Fatalf("Failed to create pipe: %v", err)
+			}
+
 			os.Stderr = w
 
-			go func() {
-				defer w.Close()
-				loadConfig(mock)
-			}()
+			defer func() { os.Stderr = originalStderr }()
 
-			_, err := io.Copy(&buf, r)
+			loadConfig(mock)
+
+			w.Close()
+
+			_, err = io.Copy(&buf, r)
 			if err != nil {
 				t.Fatalf("Failed to copy stderr: %v", err)
 			}
-
-			os.Stderr = originalStderr
 
 			output := buf.String()
 			if output != tt.expectOutput {
