@@ -17,7 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package main
 
-import "github.com/nicholas-fedor/goGenerateCFToken/cmd"
+import "github.com/nicholas-fedor/gogeneratecftoken/cmd"
 
 func main() {
 	cmd.Execute()

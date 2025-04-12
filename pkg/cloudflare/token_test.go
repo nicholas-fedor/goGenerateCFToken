@@ -28,7 +28,7 @@ import (
 	"github.com/cloudflare/cloudflare-go/v4/zones"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/pkg/cloudflare/mocks"
+	"github.com/nicholas-fedor/gogeneratecftoken/pkg/cloudflare/mocks"
 )
 
 func TestGenerateToken(t *testing.T) {

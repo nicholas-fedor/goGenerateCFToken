@@ -21,7 +21,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/cmd"
+	"github.com/nicholas-fedor/gogeneratecftoken/cmd"
 )
 
 var (

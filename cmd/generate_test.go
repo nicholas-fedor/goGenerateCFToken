@@ -29,8 +29,8 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/pkg/cloudflare"
-	"github.com/nicholas-fedor/goGenerateCFToken/pkg/config"
+	"github.com/nicholas-fedor/gogeneratecftoken/pkg/cloudflare"
+	"github.com/nicholas-fedor/gogeneratecftoken/pkg/config"
 )
 
 var newToken = "new-token"
