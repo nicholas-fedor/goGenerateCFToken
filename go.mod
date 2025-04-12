@@ -1,4 +1,4 @@
-module github.com/nicholas-fedor/goGenerateCFToken
+module github.com/nicholas-fedor/gogeneratecftoken
 
 go 1.24.2
 

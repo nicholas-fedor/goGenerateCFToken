@@ -25,7 +25,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/pkg/config"
+	"github.com/nicholas-fedor/gogeneratecftoken/pkg/config"
 )
 
 var (
