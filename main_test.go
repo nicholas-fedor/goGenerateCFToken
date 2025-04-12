@@ -1,3 +1,20 @@
+/*
+Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package main
 
 import (
@@ -7,17 +24,18 @@ import (
 	"github.com/nicholas-fedor/goGenerateCFToken/cmd"
 )
 
+var (
+	cmdExecute = cmd.Execute
+	osExit     = os.Exit
+)
+
 func TestMain(t *testing.T) {
-	// Since main() only calls cmd.Execute(), we test that it doesn't panic
-	// and rely on cmd package tests for detailed behavior.
-	// This is a minimal test as main() has no direct logic to test.
 	defer func() {
 		if r := recover(); r != nil {
 			t.Errorf("main() panicked: %v", r)
 		}
 	}()
 
-	// Replace os.Exit to prevent test termination
 	oldExit := osExit
 	osExit = func(code int) {
 		if code != 0 {
@@ -30,14 +48,7 @@ func TestMain(t *testing.T) {
 	main()
 }
 
-// osExit is a variable to mock os.Exit.
-var osExit = os.Exit
-
-// Mock cmd.Execute to avoid actual execution in main_test.
 func init() {
 	cmdExecute = func() {
-		// Do nothing, just return to allow testing main()
 	}
 }
-
-var cmdExecute = cmd.Execute

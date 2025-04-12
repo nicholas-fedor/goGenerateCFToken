@@ -14,86 +14,91 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/cloudflare"
+	"github.com/nicholas-fedor/goGenerateCFToken/pkg/cloudflare"
 )
 
 var (
-	NewAPIClientFunc  = cloudflare.NewAPIClient
+	// BindPFlagFunc binds a flag to a Viper key, defaulting to viper.BindPFlag.
+	BindPFlagFunc = viper.BindPFlag
+	// NewClientFunc creates a new Cloudflare client, defaulting to cloudflare.NewClient.
+	NewClientFunc = cloudflare.NewClient
+	// GenerateTokenFunc generates a Cloudflare API token, defaulting to cloudflare.GenerateToken.
 	GenerateTokenFunc = cloudflare.GenerateToken
 )
 
-// Static error variables.
-var (
-	ErrMissingAPIToken = errors.New(
-		"missing API token: set via --token, CF_API_TOKEN, or config file",
-	)
-	ErrMissingZone         = errors.New("missing zone: set via --zone, CF_ZONE, or config file")
-	ErrCreateClientFailed  = errors.New("failed to create API client")
-	ErrGenerateTokenFailed = errors.New("failed to generate token")
-	ErrBindAPITokenFlag    = errors.New("failed to bind api_token flag")
-	ErrBindZoneFlag        = errors.New("failed to bind zone flag")
-)
-
-// generateCmd represents the generate command.
+// generateCmd defines the command to generate a new Cloudflare API token.
 var generateCmd = &cobra.Command{
 	Use:   "generate [service name]",
 	Short: "Generate a new Cloudflare API token",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(_ *cobra.Command, args []string) error {
+		// Convert service name to lowercase for consistency.
 		serviceName := strings.ToLower(args[0])
+
+		// Retrieve API token and zone name from configuration.
 		token := viper.GetString("api_token")
-		zone := viper.GetString("zone")
+		zoneName := viper.GetString("zone")
 
+		// Validate required configuration values.
 		if token == "" {
-			return ErrMissingAPIToken
+			return ErrMissingConfigAuth
 		}
-		if zone == "" {
-			return ErrMissingZone
+		if zoneName == "" {
+			return ErrMissingConfigZone
 		}
 
-		// Create API client using the scoped API token
-		client, err := NewAPIClientFunc(token)
+		// Initialize Cloudflare client with the API token.
+		client, err := NewClientFunc(token)
 		if err != nil {
-			return fmt.Errorf("%w: %w", ErrCreateClientFailed, err)
+			return fmt.Errorf("%w: %w", ErrClientInitializationFailure, err)
 		}
 
-		// Most API calls require a Context
+		// Create a context for the API call.
 		ctx := context.Background()
 
-		// Generate an API token
-		newAPIToken, err := GenerateTokenFunc(ctx, serviceName, zone, client)
+		// Generate the new API token.
+		newAPIToken, err := GenerateTokenFunc(ctx, serviceName, zoneName, client, client)
 		if err != nil {
-			return fmt.Errorf("%w: %w", ErrGenerateTokenFailed, err)
+			return fmt.Errorf("%w: %w", ErrTokenGenerationFailure, err)
 		}
 
-		fmt.Println(newAPIToken) //nolint:forbidigo // Intended output behavior
+		// Output the generated token.
+		fmt.Fprintln(os.Stdout, newAPIToken)
 
 		return nil
 	},
 }
 
+// init configures the generate command before execution.
 func init() {
+	// Add the generate command to the root command.
 	rootCmd.AddCommand(generateCmd)
+
+	// Define flags for API token and zone name.
 	generateCmd.Flags().StringP("token", "t", "", "Cloudflare API token")
 	generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
 
-	// Bind flags to viper and check for errors
+	// Bind the token flag to the api_token configuration key.
 	if err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token")); err != nil {
+		// Panic on binding failure, as it indicates a critical setup error.
 		panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
 	}
 
+	// Bind the zone flag to the zone configuration key.
 	if err := viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone")); err != nil {
+		// Panic on binding failure, as it indicates a critical setup error.
 		panic(fmt.Errorf("%w: %w", ErrBindZoneFlag, err))
 	}
 }

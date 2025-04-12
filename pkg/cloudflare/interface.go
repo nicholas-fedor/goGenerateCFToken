@@ -14,34 +14,26 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cloudflare
 
 import (
 	"context"
-	"errors"
-	"fmt"
+
+	"github.com/cloudflare/cloudflare-go/v4/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v4/user"
+	"github.com/cloudflare/cloudflare-go/v4/zones"
 )
 
-// Static error variables.
-var (
-	ErrListZonesFailed = errors.New("failed to list zones")
-	ErrMultipleZones   = errors.New("multiple zones found")
-	ErrNoZonesFound    = errors.New("no zones found")
-)
+// APIInterface defines methods for interacting with the Cloudflare API.
+// It supports listing zones and creating API tokens.
+type APIInterface interface {
+	// ListZones retrieves a list of Cloudflare zones matching the given parameters.
+	ListZones(
+		ctx context.Context,
+		params zones.ZoneListParams,
+	) (*pagination.V4PagePaginationArray[zones.Zone], error)
 
-func GetZoneID(ctx context.Context, zone string, api APIInterface) (string, error) {
-	zones, err := api.ListZones(ctx, zone)
-	if err != nil {
-		return "", fmt.Errorf("%w: %w", ErrListZonesFailed, err)
-	}
-
-	if len(zones) > 1 {
-		return "", fmt.Errorf("%w for %q", ErrMultipleZones, zone)
-	}
-
-	if len(zones) == 0 {
-		return "", fmt.Errorf("%w for %q", ErrNoZonesFound, zone)
-	}
-
-	return zones[0].ID, nil
+	// CreateAPIToken generates a new Cloudflare API token with the specified parameters.
+	CreateAPIToken(ctx context.Context, params user.TokenNewParams) (*user.TokenNewResponse, error)
 }

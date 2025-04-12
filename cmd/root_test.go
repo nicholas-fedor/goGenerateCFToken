@@ -14,17 +14,22 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/config"
+	"github.com/spf13/cobra"
+
+	"github.com/nicholas-fedor/goGenerateCFToken/pkg/config"
 )
 
+var osExit = os.Exit
+
 func TestRootCmd(t *testing.T) {
-	// Test that rootCmd is initialized correctly
 	if rootCmd.Use != "goGenerateCFToken" {
 		t.Errorf("rootCmd.Use = %q, want %q", rootCmd.Use, "goGenerateCFToken")
 	}
@@ -37,17 +42,14 @@ func TestRootCmd(t *testing.T) {
 		t.Errorf("rootCmd Short or Long description is empty")
 	}
 
-	// Test Execute with mocked os.Exit
-	oldExit := osExit
+	var exitCode int
+
 	osExit = func(code int) {
-		if code != 0 {
-			t.Errorf("Execute() exited with code %d", code)
-		}
+		exitCode = code
 	}
 
-	defer func() { osExit = oldExit }()
+	defer func() { osExit = os.Exit }()
 
-	// Set a dummy config file to avoid real config loading
 	oldConfigFile := config.ConfigFile
 	config.ConfigFile = "dummy.yaml"
 
@@ -55,12 +57,15 @@ func TestRootCmd(t *testing.T) {
 
 	Execute()
 
-	// Test persistent flags
+	if exitCode != 0 {
+		t.Errorf("Execute() exited with code %d, want 0", exitCode)
+	}
+
 	configFileFlag := rootCmd.PersistentFlags().Lookup("config")
 	if configFileFlag == nil {
 		t.Errorf("rootCmd missing 'config' persistent flag")
 
-		return // Exit early to avoid dereferencing nil
+		return
 	}
 
 	if configFileFlag.Value.String() != config.ConfigFile {
@@ -72,5 +77,119 @@ func TestRootCmd(t *testing.T) {
 	}
 }
 
-// Mock os.Exit.
-var osExit = os.Exit
+func TestUserHomeDir(t *testing.T) {
+	tests := []struct {
+		name     string
+		goos     string
+		wantPath string
+	}{
+		{
+			name:     "Windows",
+			goos:     "windows",
+			wantPath: "%userprofile%",
+		},
+		{
+			name:     "Linux",
+			goos:     "linux",
+			wantPath: "$HOME",
+		},
+		{
+			name:     "iOS",
+			goos:     "ios",
+			wantPath: "/",
+		},
+		{
+			name:     "Plan9",
+			goos:     "plan9",
+			wantPath: "$home",
+		},
+		{
+			name:     "Android",
+			goos:     "android",
+			wantPath: "/sdcard",
+		},
+		{
+			name:     "Unknown",
+			goos:     "unknown",
+			wantPath: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			origGOOS := goos
+			goos = tt.goos
+
+			defer func() { goos = origGOOS }()
+
+			got := userHomeDir()
+			if got != tt.wantPath {
+				t.Errorf("userHomeDir() = %q, want %q", got, tt.wantPath)
+			}
+		})
+	}
+}
+
+func TestConfigPath(t *testing.T) {
+	tests := []struct {
+		name     string
+		goos     string
+		wantPath string
+	}{
+		{
+			name:     "Windows",
+			goos:     "windows",
+			wantPath: filepath.Join("%userprofile%", ".goGenerateCFToken", "config.yaml"),
+		},
+		{
+			name:     "Linux",
+			goos:     "linux",
+			wantPath: filepath.Join("$HOME", ".goGenerateCFToken", "config.yaml"),
+		},
+		{
+			name:     "Unknown",
+			goos:     "unknown",
+			wantPath: filepath.Join("", ".goGenerateCFToken", "config.yaml"),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			origGOOS := goos
+			goos = tt.goos
+
+			defer func() { goos = origGOOS }()
+
+			got := configPath()
+			if got != tt.wantPath {
+				t.Errorf("configPath() = %q, want %q", got, tt.wantPath)
+			}
+		})
+	}
+}
+
+func TestRootCmd_ConfigFlag(t *testing.T) {
+	origConfigFile := config.ConfigFile
+	defer func() { config.ConfigFile = origConfigFile }()
+
+	config.ConfigFile = "test-config.yaml"
+	rootCmd := &cobra.Command{Use: "goGenerateCFToken"}
+	rootCmd.PersistentFlags().StringVar(&config.ConfigFile, "config", "", "config file")
+
+	if err := rootCmd.ParseFlags([]string{"--config", "custom-config.yaml"}); err != nil {
+		t.Fatalf("ParseFlags() error = %v", err)
+	}
+
+	if config.ConfigFile != "custom-config.yaml" {
+		t.Errorf("config.ConfigFile = %q, want %q", config.ConfigFile, "custom-config.yaml")
+	}
+
+	configFileFlag := rootCmd.PersistentFlags().Lookup("config")
+	if configFileFlag.Value.String() != "custom-config.yaml" {
+		t.Errorf(
+			"config flag value = %q, want %q",
+			configFileFlag.Value.String(),
+			"custom-config.yaml",
+		)
+	}
+}
