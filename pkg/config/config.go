@@ -14,12 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package config
 
 import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -28,28 +30,31 @@ import (
 
 var ConfigFile string
 
-// InitConfig reads in config file and ENV variables if set.
+var InitConfigFunc = initConfig
+
 func InitConfig() {
+	InitConfigFunc()
+}
+
+func initConfig() {
 	if ConfigFile != "" {
-		// Use config file from the flag.
 		viper.SetConfigFile(ConfigFile)
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
+		homeDir, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".goGenerateCFToken" (without extension).
+		home := filepath.Join(homeDir, ".goGenerateCFToken")
+
 		viper.AddConfigPath(home)
-		viper.AddConfigPath(".") // Allow local config file
+		viper.AddConfigPath(".")
 		viper.SetConfigName("config")
 		viper.SetConfigType("yaml")
 	}
 
 	viper.SetEnvPrefix("CF")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.AutomaticEnv() // read in environment variables that match
+	viper.AutomaticEnv()
 
-	// Set defaults
 	viper.SetDefault("api_token", "")
 	viper.SetDefault("zone", "")
 

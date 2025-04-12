@@ -15,10 +15,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package main
+package cloudflare
 
-import "github.com/nicholas-fedor/goGenerateCFToken/cmd"
+import (
+	"context"
 
-func main() {
-	cmd.Execute()
+	"github.com/cloudflare/cloudflare-go/v4/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v4/user"
+	"github.com/cloudflare/cloudflare-go/v4/zones"
+)
+
+type APIInterface interface {
+	ListZones(
+		ctx context.Context,
+		params zones.ZoneListParams,
+	) (*pagination.V4PagePaginationArray[zones.Zone], error)
+	CreateAPIToken(ctx context.Context, params user.TokenNewParams) (*user.TokenNewResponse, error)
 }

@@ -15,10 +15,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package main
+package cloudflare
 
-import "github.com/nicholas-fedor/goGenerateCFToken/cmd"
+import (
+	"context"
+	"fmt"
 
-func main() {
-	cmd.Execute()
+	"github.com/cloudflare/cloudflare-go/v4"
+	"github.com/cloudflare/cloudflare-go/v4/zones"
+)
+
+func (c *Client) GetZoneID(ctx context.Context, zoneName string, api APIInterface) (string, error) {
+	params := zones.ZoneListParams{Name: cloudflare.F(zoneName)}
+
+	response, err := api.ListZones(ctx, params)
+	if err != nil {
+		return "", fmt.Errorf("failed to list zones: %w", err)
+	}
+
+	switch len(response.Result) {
+	case 0:
+		return "", fmt.Errorf("%w: %s", ErrZoneNotFound, zoneName)
+	case 1:
+		return response.Result[0].ID, nil
+	default:
+		return "", fmt.Errorf("%w: %s", ErrMultipleZonesFound, zoneName)
+	}
 }

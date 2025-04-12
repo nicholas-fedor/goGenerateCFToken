@@ -14,17 +14,17 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cmd
 
 import (
 	"os"
 	"testing"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/config"
+	"github.com/nicholas-fedor/goGenerateCFToken/pkg/config"
 )
 
 func TestRootCmd(t *testing.T) {
-	// Test that rootCmd is initialized correctly
 	if rootCmd.Use != "goGenerateCFToken" {
 		t.Errorf("rootCmd.Use = %q, want %q", rootCmd.Use, "goGenerateCFToken")
 	}
@@ -37,7 +37,6 @@ func TestRootCmd(t *testing.T) {
 		t.Errorf("rootCmd Short or Long description is empty")
 	}
 
-	// Test Execute with mocked os.Exit
 	oldExit := osExit
 	osExit = func(code int) {
 		if code != 0 {
@@ -47,7 +46,6 @@ func TestRootCmd(t *testing.T) {
 
 	defer func() { osExit = oldExit }()
 
-	// Set a dummy config file to avoid real config loading
 	oldConfigFile := config.ConfigFile
 	config.ConfigFile = "dummy.yaml"
 
@@ -55,12 +53,11 @@ func TestRootCmd(t *testing.T) {
 
 	Execute()
 
-	// Test persistent flags
 	configFileFlag := rootCmd.PersistentFlags().Lookup("config")
 	if configFileFlag == nil {
 		t.Errorf("rootCmd missing 'config' persistent flag")
 
-		return // Exit early to avoid dereferencing nil
+		return
 	}
 
 	if configFileFlag.Value.String() != config.ConfigFile {
@@ -72,5 +69,4 @@ func TestRootCmd(t *testing.T) {
 	}
 }
 
-// Mock os.Exit.
 var osExit = os.Exit

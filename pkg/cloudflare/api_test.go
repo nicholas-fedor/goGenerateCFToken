@@ -14,47 +14,53 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cloudflare
 
 import (
-	"errors"
 	"testing"
 
-	"github.com/cloudflare/cloudflare-go"
+	"github.com/cloudflare/cloudflare-go/v4"
 )
 
-func TestNewAPIClient(t *testing.T) {
+func TestNewClient(t *testing.T) {
 	tests := []struct {
 		name    string
 		token   string
-		newFunc func(token string, opts ...cloudflare.Option) (*cloudflare.API, error)
 		wantErr bool
 	}{
 		{
-			name:    "Success",
-			token:   "valid-token",
-			newFunc: func(_ string, _ ...cloudflare.Option) (*cloudflare.API, error) { return &cloudflare.API{}, nil },
+			name:  "Success",
+			token: "valid-token",
 		},
 		{
-			name:    "Error",
-			token:   "invalid-token",
-			newFunc: func(_ string, _ ...cloudflare.Option) (*cloudflare.API, error) { return nil, errors.New("auth error") },
+			name:    "MissingToken",
+			token:   "",
 			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Save the original function and restore it after the test
-			origFunc := newWithAPITokenFunc
-			defer func() { newWithAPITokenFunc = origFunc }()
+			origFunc := NewAPIClientFunc
 
-			// Mock the underlying cloudflare function
-			newWithAPITokenFunc = tt.newFunc
+			if tt.name == "Success" {
+				NewAPIClientFunc = func(_ string) (*Client, error) {
+					return &Client{Client: &cloudflare.Client{}}, nil
+				}
+			}
 
-			_, err := NewAPIClient(tt.token)
+			defer func() { NewAPIClientFunc = origFunc }()
+
+			client, err := NewClient(tt.token)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewAPIClient() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("NewClient() error = %v, wantErr %v", err, tt.wantErr)
+
+				return
+			}
+
+			if !tt.wantErr && client == nil {
+				t.Errorf("NewClient() returned nil client")
 			}
 		})
 	}

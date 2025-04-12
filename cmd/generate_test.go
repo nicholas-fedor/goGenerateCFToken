@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cmd
 
 import (
@@ -22,17 +23,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cloudflare/cloudflare-go" // For cloudflare.API
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	cloudflarePkg "github.com/nicholas-fedor/goGenerateCFToken/cloudflare" // Alias to avoid conflict
+	"github.com/nicholas-fedor/goGenerateCFToken/pkg/cloudflare"
+	"github.com/nicholas-fedor/goGenerateCFToken/pkg/config"
 )
-
-// MockAPI implements cloudflarePkg.APIInterface.
-type MockAPI struct {
-	cloudflarePkg.APIInterface
-}
 
 func TestGenerateCmd(t *testing.T) {
 	tests := []struct {
@@ -40,8 +36,8 @@ func TestGenerateCmd(t *testing.T) {
 		args       []string
 		apiToken   string
 		zone       string
-		clientFunc func(token string) (*cloudflare.API, error)
-		genFunc    func(ctx context.Context, serviceName string, zone string, api cloudflarePkg.APIInterface) (string, error)
+		clientFunc func(apiToken string) (*cloudflare.Client, error)
+		genFunc    func(c *cloudflare.Client, ctx context.Context, serviceName string, zone string) (string, error)
 		wantErr    bool
 		wantOutput string
 	}{
@@ -50,10 +46,10 @@ func TestGenerateCmd(t *testing.T) {
 			args:     []string{"generate", "test-service"},
 			apiToken: "valid-token",
 			zone:     "example.com",
-			clientFunc: func(_ string) (*cloudflare.API, error) {
-				return &cloudflare.API{}, nil
+			clientFunc: func(_ string) (*cloudflare.Client, error) {
+				return &cloudflare.Client{}, nil
 			},
-			genFunc: func(_ context.Context, _ string, _ string, _ cloudflarePkg.APIInterface) (string, error) {
+			genFunc: func(_ *cloudflare.Client, _ context.Context, _ string, _ string) (string, error) {
 				return "new-token", nil
 			},
 			wantOutput: "new-token\n",
@@ -80,7 +76,7 @@ func TestGenerateCmd(t *testing.T) {
 			args:     []string{"generate", "test-service"},
 			apiToken: "valid-token",
 			zone:     "example.com",
-			clientFunc: func(_ string) (*cloudflare.API, error) {
+			clientFunc: func(_ string) (*cloudflare.Client, error) {
 				return nil, errors.New("client error")
 			},
 			wantErr: true,
@@ -90,10 +86,10 @@ func TestGenerateCmd(t *testing.T) {
 			args:     []string{"generate", "test-service"},
 			apiToken: "valid-token",
 			zone:     "example.com",
-			clientFunc: func(_ string) (*cloudflare.API, error) {
-				return &cloudflare.API{}, nil
+			clientFunc: func(_ string) (*cloudflare.Client, error) {
+				return &cloudflare.Client{}, nil
 			},
-			genFunc: func(_ context.Context, _ string, _ string, _ cloudflarePkg.APIInterface) (string, error) {
+			genFunc: func(_ *cloudflare.Client, _ context.Context, _ string, _ string) (string, error) {
 				return "", errors.New("generate error")
 			},
 			wantErr: true,
@@ -102,40 +98,44 @@ func TestGenerateCmd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Reset viper for each test
 			viper.Reset()
 			viper.Set("api_token", tt.apiToken)
 			viper.Set("zone", tt.zone)
 
-			// Save and restore original functions
-			origNewAPIClient := NewAPIClientFunc
+			origInitConfig := config.InitConfigFunc
+			defer func() { config.InitConfigFunc = origInitConfig }()
+
+			config.InitConfigFunc = func() {
+				viper.Set("api_token", tt.apiToken)
+				viper.Set("zone", tt.zone)
+			}
+
+			origNewClient := NewClientFunc
 			origGenerateToken := GenerateTokenFunc
 
 			defer func() {
-				NewAPIClientFunc = origNewAPIClient
+				NewClientFunc = origNewClient
 				GenerateTokenFunc = origGenerateToken
 			}()
 
-			// Apply mocks explicitly
 			if tt.clientFunc != nil {
-				NewAPIClientFunc = tt.clientFunc
+				NewClientFunc = tt.clientFunc
 			} else {
-				NewAPIClientFunc = func(_ string) (*cloudflare.API, error) {
-					return &cloudflare.API{}, nil
+				NewClientFunc = func(_ string) (*cloudflare.Client, error) {
+					return &cloudflare.Client{}, nil
 				}
 			}
 
 			if tt.genFunc != nil {
 				GenerateTokenFunc = tt.genFunc
 			} else {
-				GenerateTokenFunc = func(_ context.Context, _ string, _ string, _ cloudflarePkg.APIInterface) (string, error) {
+				GenerateTokenFunc = func(_ *cloudflare.Client, _ context.Context, _ string, _ string) (string, error) {
 					return "new-token", nil
 				}
 			}
 
-			// Create a fresh rootCmd and add the real generateCmd
 			rootCmd := &cobra.Command{Use: "goGenerateCFToken"}
-			// Reset flags and rebind to avoid interference
+
 			generateCmd.ResetFlags()
 			generateCmd.Flags().StringP("token", "t", "", "Cloudflare API token")
 			generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
@@ -143,14 +143,12 @@ func TestGenerateCmd(t *testing.T) {
 			viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone"))
 			rootCmd.AddCommand(generateCmd)
 
-			// Capture output
 			oldStdout := os.Stdout
 			r, w, _ := os.Pipe()
 			os.Stdout = w
 
 			defer func() { os.Stdout = oldStdout }()
 
-			// Execute the command
 			rootCmd.SetArgs(tt.args)
 			err := rootCmd.Execute()
 

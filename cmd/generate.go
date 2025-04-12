@@ -14,38 +14,26 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/nicholas-fedor/goGenerateCFToken/cloudflare"
+	"github.com/nicholas-fedor/goGenerateCFToken/pkg/cloudflare"
 )
 
 var (
-	NewAPIClientFunc  = cloudflare.NewAPIClient
-	GenerateTokenFunc = cloudflare.GenerateToken
+	NewClientFunc     = cloudflare.NewClient
+	GenerateTokenFunc = (*cloudflare.Client).GenerateToken
 )
 
-// Static error variables.
-var (
-	ErrMissingAPIToken = errors.New(
-		"missing API token: set via --token, CF_API_TOKEN, or config file",
-	)
-	ErrMissingZone         = errors.New("missing zone: set via --zone, CF_ZONE, or config file")
-	ErrCreateClientFailed  = errors.New("failed to create API client")
-	ErrGenerateTokenFailed = errors.New("failed to generate token")
-	ErrBindAPITokenFlag    = errors.New("failed to bind api_token flag")
-	ErrBindZoneFlag        = errors.New("failed to bind zone flag")
-)
-
-// generateCmd represents the generate command.
 var generateCmd = &cobra.Command{
 	Use:   "generate [service name]",
 	Short: "Generate a new Cloudflare API token",
@@ -53,31 +41,28 @@ var generateCmd = &cobra.Command{
 	RunE: func(_ *cobra.Command, args []string) error {
 		serviceName := strings.ToLower(args[0])
 		token := viper.GetString("api_token")
-		zone := viper.GetString("zone")
+		zoneName := viper.GetString("zone")
 
 		if token == "" {
-			return ErrMissingAPIToken
+			return ErrMissingConfigAuth
 		}
-		if zone == "" {
-			return ErrMissingZone
+		if zoneName == "" {
+			return ErrMissingConfigZone
 		}
 
-		// Create API client using the scoped API token
-		client, err := NewAPIClientFunc(token)
+		client, err := NewClientFunc(token)
 		if err != nil {
-			return fmt.Errorf("%w: %w", ErrCreateClientFailed, err)
+			return fmt.Errorf("failed to initialize Cloudflare client: %w", err)
 		}
 
-		// Most API calls require a Context
 		ctx := context.Background()
 
-		// Generate an API token
-		newAPIToken, err := GenerateTokenFunc(ctx, serviceName, zone, client)
+		newAPIToken, err := GenerateTokenFunc(client, ctx, serviceName, zoneName)
 		if err != nil {
-			return fmt.Errorf("%w: %w", ErrGenerateTokenFailed, err)
+			return fmt.Errorf("failed to generate token: %w", err)
 		}
 
-		fmt.Println(newAPIToken) //nolint:forbidigo // Intended output behavior
+		fmt.Fprintln(os.Stdout, newAPIToken)
 
 		return nil
 	},
@@ -88,7 +73,6 @@ func init() {
 	generateCmd.Flags().StringP("token", "t", "", "Cloudflare API token")
 	generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
 
-	// Bind flags to viper and check for errors
 	if err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token")); err != nil {
 		panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
 	}

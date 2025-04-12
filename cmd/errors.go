@@ -14,12 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-package cloudflare
 
-import "github.com/cloudflare/cloudflare-go"
+package cmd
 
-var newWithAPITokenFunc = cloudflare.NewWithAPIToken
+import "errors"
 
-func NewAPIClient(token string) (*cloudflare.API, error) {
-	return newWithAPITokenFunc(token)
-}
+var (
+	ErrMissingConfigAuth = errors.New("missing required credentials in config")
+	ErrMissingConfigZone = errors.New("missing required zone in config")
+	ErrBindAPITokenFlag  = errors.New("failed to bind api_token flag")
+	ErrBindZoneFlag      = errors.New("failed to bind zone flag")
+)

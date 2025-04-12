@@ -15,10 +15,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package main
+package cloudflare
 
-import "github.com/nicholas-fedor/goGenerateCFToken/cmd"
+import (
+	"github.com/cloudflare/cloudflare-go/v4"
+	"github.com/cloudflare/cloudflare-go/v4/option"
+)
 
-func main() {
-	cmd.Execute()
+var NewAPIClientFunc = NewClient
+
+type Client struct {
+	*cloudflare.Client
+}
+
+func NewClient(apiToken string) (*Client, error) {
+	var opts []option.RequestOption
+
+	switch {
+	case apiToken != "":
+		opts = append(opts, option.WithAPIToken(apiToken))
+	default:
+		return nil, ErrMissingCredentials
+	}
+
+	client := cloudflare.NewClient(opts...)
+
+	return &Client{client}, nil
 }
