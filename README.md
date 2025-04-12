@@ -6,11 +6,12 @@ A simple CLI tool for generating Cloudflare API tokens.
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/goGenerateCFToken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/goGenerateCFToken/tree/main)
 [![codecov](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken)
-[![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/goGenerateCFToken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/goGenerateCFToken&amp;utm_campaign=Badge_Grade)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nicholas-fedor/goGenerateCFToken)](https://goreportcard.com/report/github.com/nicholas-fedor/goGenerateCFToken)
+[![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/nicholas-fedor/go-remove)
 [![latest version](https://img.shields.io/github/tag/nicholas-fedor/goGenerateCFToken.svg)](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
 [![AGPLv3 License](https://img.shields.io/github/license/nicholas-fedor/goGenerateCFToken.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/goGenerateCFToken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/goGenerateCFToken&amp;utm_campaign=Badge_Grade)
 
 ----------
 
@@ -38,11 +39,19 @@ An API token needs to be manually created via the [Cloudflare account dashboard]
 5) Client IP Address Filtering: This limits usage of the token to a specified IP address
 6) Save the newly-created API token to a safe location
 
+## Installation
+
+```bash
+go install github.com/nicholas-fedor/gogeneratecftoken@latest
+```
+
+> Prebuilt binaries are also available [here](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
+
 ## Usage
 
 For access to usage instructions:
 
-```console
+```bash
 goGenerateCFToken -h
 ```
 
@@ -51,12 +60,12 @@ goGenerateCFToken -h
 There are several options for providing the `api_token` and `zone` to `goGenerateCFToken`, as it uses [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) to enable configuration functionality.
 
 - YAML Config File:  
-    Setup a configuration file, as shown in the provided `config.yaml.template`, in a location, such as the default `$HOME/config.yaml`.  
+    Setup a configuration file, as shown in the provided `config.yaml.template`, in a location, such as the default `$HOME/.goGenerateCFToken/config.yaml`.  
     If using a custom location, then use the `--config [path]` flag.
 - Environment Variables:  
     If no config file is found or specified, then the program falls back to environment variables.
 
-    ```console
+    ```bash
     export CF_API_TOKEN="your-cloudflare-api-token-here"
     export CF_ZONE="example.com"
     ```
@@ -65,22 +74,22 @@ There are several options for providing the `api_token` and `zone` to `goGenerat
 
     To see the available flags:
 
-    ```console
+    ```bash
     goGenerateCFToken generate -h
     ```
 
     Example Usage:
 
-    ```console
+    ```bash
     goGenearteCFToken generate [service name] -z [example.com] -t [supersecretcftoken]
     ```
 
 ### Recommended Usage
 
-1) Copy the template to `$HOME/config.yaml`:
+1) Copy the template to `$HOME/.goGenerateCFToken/config.yaml`:
 
-    ```console
-    cp ./config.yaml.template $HOME/config.yaml
+    ```bash
+    cp ./config.yaml.template $HOME/.goGenerateCFToken/config.yaml
     ```
 
 2) Obtain your master Cloudflare API token for creating additional service-specific tokens
@@ -89,13 +98,13 @@ There are several options for providing the `api_token` and `zone` to `goGenerat
 
 4) Generate a test API token to confirm configuration is successful:
 
-    ```console
+    ```bash
     goGenerateCFToken generate test
     ```
 
 5) If successful, you should see the following output:
 
-    ```console
+    ```bash
     Generating API token: test.example.com
     yoursuperlongandsecretserviceapitoken
     ```
@@ -117,7 +126,7 @@ Using [GoReleaser](https://github.com/goreleaser/goreleaser-action) to build the
 
 To run a new build, update the tag, as follows:
 
-```console
+```bash
 git tag -a v0.1.0 -m "First release"
 git push origin v0.1.0
 ```
