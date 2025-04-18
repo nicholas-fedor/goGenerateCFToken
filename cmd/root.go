@@ -29,8 +29,8 @@ import (
 )
 
 var (
-	// version defines the CLI tool's version.
-	version = "0.0.1"
+	// Version defines the CLI tool's Version.
+	Version = "0.0.1"
 	// goos holds the operating system type for determining configuration paths.
 	// It defaults to runtime.GOOS but can be overridden for testing.
 	goos = runtime.GOOS
@@ -62,7 +62,7 @@ Instructions:
 Example:
   Zone: example.com
   Command: goGenerateCFToken generate service
-  Output: 
+  Output:
 	Token Name: service.example.com
 	Token Value: (random token value)
 
@@ -72,7 +72,7 @@ Example:
 // rootCmd defines the root command for the CLI tool.
 var rootCmd = &cobra.Command{
 	Use:     "goGenerateCFToken",
-	Version: version,
+	Version: Version,
 	Short:   shortDescription,
 	Long:    longDescription,
 }

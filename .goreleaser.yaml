@@ -16,7 +16,7 @@ builds:
       - arm
       - arm64
     ldflags:
-      - -s -w -X github.com/nicholas-fedor/gogeneratecftoken/cmd.version={{.Version}}
+      - -s -w -X github.com/nicholas-fedor/gogeneratecftoken/cmd.Version={{.Version}}
 
 archives:
   - id: default
