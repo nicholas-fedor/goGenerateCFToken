@@ -34,8 +34,8 @@ func TestRootCmd(t *testing.T) {
 		t.Errorf("rootCmd.Use = %q, want %q", rootCmd.Use, "goGenerateCFToken")
 	}
 
-	if rootCmd.Version != version {
-		t.Errorf("rootCmd.Version = %q, want %q", rootCmd.Version, version)
+	if rootCmd.Version != Version {
+		t.Errorf("rootCmd.Version = %q, want %q", rootCmd.Version, Version)
 	}
 
 	if rootCmd.Short == "" || rootCmd.Long == "" {
