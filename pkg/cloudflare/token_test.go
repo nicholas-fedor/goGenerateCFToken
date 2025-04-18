@@ -46,13 +46,13 @@ func TestGenerateToken(t *testing.T) {
 			serviceName: "test-service",
 			zone:        "example.com",
 			zoneID:      "zone-id-123",
-			wantToken:   "new-token",
+			wantToken:   "abcdefghijklmnopqrstuvwxyz1234567890ABCD",
 			setupMock: func(m *mocks.MockAPIInterface) {
 				m.On("ListZones", mock.Anything, mock.AnythingOfType("zones.ZoneListParams")).
 					Return(&pagination.V4PagePaginationArray[zones.Zone]{Result: []zones.Zone{{ID: "zone-id-123", Name: "example.com"}}}, nil).
 					Once()
 				m.On("CreateAPIToken", mock.Anything, mock.AnythingOfType("user.TokenNewParams")).
-					Return(&user.TokenNewResponse{ID: "new-token"}, nil).
+					Return(&user.TokenNewResponse{Value: "abcdefghijklmnopqrstuvwxyz1234567890ABCD"}, nil).
 					Once()
 			},
 		},

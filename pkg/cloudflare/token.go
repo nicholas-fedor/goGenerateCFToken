@@ -89,6 +89,6 @@ func GenerateToken(
 		return "", fmt.Errorf("%w: %w", ErrCreateTokenFailed, err)
 	}
 
-	// Return the generated token’s ID.
-	return token.ID, nil
+	// Return the generated token’s Value.
+	return token.Value, nil
 }
