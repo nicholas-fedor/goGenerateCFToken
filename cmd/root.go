@@ -29,8 +29,6 @@ import (
 )
 
 var (
-	// Version defines the CLI tool's Version.
-	Version = "0.0.1"
 	// goos holds the operating system type for determining configuration paths.
 	// It defaults to runtime.GOOS but can be overridden for testing.
 	goos = runtime.GOOS
@@ -40,7 +38,6 @@ var (
 	shortDescription = "A CLI generator for Cloudflare API Tokens"
 	// longDescription provides detailed usage information for the CLI tool.
 	longDescription = fmt.Sprintf(
-
 		`
 			goGenerateCFToken
 
@@ -71,10 +68,9 @@ Example:
 
 // rootCmd defines the root command for the CLI tool.
 var rootCmd = &cobra.Command{
-	Use:     "goGenerateCFToken",
-	Version: Version,
-	Short:   shortDescription,
-	Long:    longDescription,
+	Use:   "goGenerateCFToken",
+	Short: shortDescription,
+	Long:  longDescription,
 }
 
 // Execute runs the root command, handling errors by exiting with a non-zero status.
@@ -84,6 +80,11 @@ func Execute() {
 		// Exit with status 1 on error.
 		os.Exit(1)
 	}
+}
+
+// SetVersionInfo sets the version information for the root command.
+func SetVersionInfo(version, commit, date string) {
+	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
 }
 
 // init configures the root command before execution.

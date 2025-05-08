@@ -17,8 +17,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package main
 
-import "github.com/nicholas-fedor/gogeneratecftoken/cmd"
+import (
+	"github.com/nicholas-fedor/gogeneratecftoken/cmd"
+	"github.com/nicholas-fedor/gogeneratecftoken/pkg/version"
+)
 
 func main() {
+	info := version.GetVersionInfo()
+	cmd.SetVersionInfo(info.Version, info.Commit, info.Date)
 	cmd.Execute()
 }
