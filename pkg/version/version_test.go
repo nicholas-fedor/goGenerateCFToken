@@ -72,23 +72,23 @@ func TestGetVersionInfo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.setVars()
+
 			info := GetVersionInfo()
 
 			if !tt.partialMatch {
 				if info.Version != tt.expect.Version {
 					t.Errorf("Version = %q, want %q", info.Version, tt.expect.Version)
 				}
+
 				if info.Commit != tt.expect.Commit {
 					t.Errorf("Commit = %q, want %q", info.Commit, tt.expect.Commit)
 				}
+
 				if info.Date != tt.expect.Date {
 					t.Errorf("Date = %q, want %q", info.Date, tt.expect.Date)
 				}
-			} else {
-				// For source builds, VCS data may vary; check at least the version
-				if info.Version != tt.expect.Version && !strings.Contains(info.Version, "+dirty") {
-					t.Errorf("Version = %q, want %q or dirty variant", info.Version, tt.expect.Version)
-				}
+			} else if info.Version != tt.expect.Version && !strings.Contains(info.Version, "+dirty") {
+				t.Errorf("Version = %q, want %q or dirty variant", info.Version, tt.expect.Version)
 			}
 		})
 	}
@@ -102,12 +102,8 @@ func TestGetVersionInfo_VCSData(t *testing.T) {
 	info := GetVersionInfo()
 
 	if buildInfo, ok := debug.ReadBuildInfo(); ok {
-		expectedVersion := buildInfo.Main.Version
-		if expectedVersion == "(devel)" || expectedVersion == "" {
-			expectedVersion = unknownValue
-		}
-
 		var vcsRevision, vcsTime, vcsModified string
+
 		for _, setting := range buildInfo.Settings {
 			switch setting.Key {
 			case "vcs.revision":
@@ -141,24 +137,22 @@ func TestGetVersionInfo_VCSData(t *testing.T) {
 						info.Date,
 					)
 				}
-			} else {
+			} else if info.Date != unknownValue {
 				t.Logf("vcs.time %q is invalid; date should remain %q", vcsTime, unknownValue)
-				if info.Date != unknownValue {
-					t.Errorf("Expected date %q, got %q for invalid vcs.time", unknownValue, info.Date)
-				}
+				t.Errorf("Expected date %q, got %q for invalid vcs.time", unknownValue, info.Date)
 			}
 		} else {
 			t.Logf("No vcs.time found; ensure repository has commit timestamps to cover date assignment")
 		}
 
-		if vcsModified == "true" && info.Version != unknownValue {
+		if vcsModified == trueValue && info.Version != unknownValue {
 			if !strings.Contains(info.Version, "+dirty") {
 				t.Errorf(
 					"Expected version to contain '+dirty', got %q; ensure repository has uncommitted changes",
 					info.Version,
 				)
 			}
-		} else if vcsModified != "true" {
+		} else if vcsModified != trueValue {
 			t.Logf("Repository is clean (vcs.modified=%q); make uncommitted changes to cover '+dirty' case", vcsModified)
 		}
 	} else {

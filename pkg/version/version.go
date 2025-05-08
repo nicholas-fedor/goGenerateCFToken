@@ -9,6 +9,7 @@ import (
 const (
 	devVersion   = "dev"
 	unknownValue = "unknown"
+	trueValue    = "true"
 )
 
 // These values are populated by GoReleaser during release builds.
@@ -54,7 +55,7 @@ func GetVersionInfo() Info {
 						date = t.Format(time.RFC3339)
 					}
 				case "vcs.modified":
-					if setting.Value == "true" && version != unknownValue &&
+					if setting.Value == trueValue && version != unknownValue &&
 						!contains(version, "+dirty") {
 						version += "+dirty"
 					}
@@ -72,9 +73,11 @@ func GetVersionInfo() Info {
 	if version == "" || version == devVersion || version == "v" {
 		version = unknownValue
 	}
+
 	if commit == "" {
 		commit = unknownValue
 	}
+
 	if date == "" {
 		date = unknownValue
 	}
@@ -93,5 +96,6 @@ func contains(s, substr string) bool {
 			return true
 		}
 	}
+
 	return false
 }
