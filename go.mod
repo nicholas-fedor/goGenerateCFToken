@@ -3,7 +3,7 @@ module github.com/nicholas-fedor/gogeneratecftoken
 go 1.24.4
 
 require (
-	github.com/cloudflare/cloudflare-go/v4 v4.5.1
+	github.com/cloudflare/cloudflare-go/v4 v4.6.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
