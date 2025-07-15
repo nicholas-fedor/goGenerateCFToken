@@ -63,8 +63,8 @@ func GenerateToken(
 	}}
 
 	// Specify resources to apply permissions to the zone.
-	resources := map[string]string{
-		"com.cloudflare.api.account.zone." + zoneID: "*",
+	resources := map[string]shared.TokenPolicyResourcesUnionParam{
+		"com.cloudflare.api.account.zone." + zoneID: shared.UnionString("*"),
 	}
 
 	// Configure token policy to allow the specified permissions and resources.

@@ -165,6 +165,7 @@ func TestGenerateCmd(t *testing.T) {
 			viper.Reset()
 
 			origInitConfig := config.InitConfigFunc
+
 			defer func() { config.InitConfigFunc = origInitConfig }()
 
 			config.InitConfigFunc = func(v config.Viper) {
@@ -183,6 +184,7 @@ func TestGenerateCmd(t *testing.T) {
 			}
 
 			origConfigFile := config.ConfigFile
+
 			defer func() { config.ConfigFile = origConfigFile }()
 
 			config.ConfigFile = tt.configFile
@@ -286,6 +288,7 @@ func TestGenerateCmd_BindErrors(t *testing.T) {
 			viper.Reset()
 
 			origBindPFlag := BindPFlagFunc
+
 			defer func() { BindPFlagFunc = origBindPFlag }()
 
 			if tt.name == "BindAPITokenFlagErrorMock" {

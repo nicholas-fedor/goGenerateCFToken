@@ -84,6 +84,7 @@ func (m *mockViper) ConfigFileUsed() string {
 
 func TestInitConfig(t *testing.T) {
 	originalInitConfigFunc := InitConfigFunc
+
 	defer func() { InitConfigFunc = originalInitConfigFunc }()
 
 	called := false
@@ -98,6 +99,7 @@ func TestInitConfig(t *testing.T) {
 
 func TestInitConfig_NilFunc(t *testing.T) {
 	originalInitConfigFunc := InitConfigFunc
+
 	defer func() { InitConfigFunc = originalInitConfigFunc }()
 
 	viper.Reset()
@@ -311,6 +313,7 @@ func Test_setConfigFile(t *testing.T) {
 			osUserHomeDir = func() (string, error) { return tt.homeDir, tt.homeDirErr }
 
 			ConfigFile = tt.configFile
+
 			defer func() { ConfigFile = "" }()
 
 			err := setConfigFile(mock)
