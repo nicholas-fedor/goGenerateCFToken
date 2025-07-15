@@ -173,6 +173,7 @@ func TestConfigPath(t *testing.T) {
 
 func TestRootCmd_ConfigFlag(t *testing.T) {
 	origConfigFile := config.ConfigFile
+
 	defer func() { config.ConfigFile = origConfigFile }()
 
 	config.ConfigFile = "test-config.yaml"
