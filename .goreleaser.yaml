@@ -67,3 +67,23 @@ release:
     name: goGenerateCFToken
   draft: false
   prerelease: auto
+
+checksum:
+  name_template: checksums.txt
+
+signs:
+  - id: default
+    artifacts: all
+    args:
+      - "--batch"
+      - "--local-user"
+      - "nick@nickfedor.com"
+      - "--yes"
+      - "--pinentry-mode"
+      - "loopback"
+      - "--passphrase"
+      - "${GPG_PASSPHRASE}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
