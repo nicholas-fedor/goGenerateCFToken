@@ -30,7 +30,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@8e57b58e57be52ac95949151e2777ffda8501267
         with:
-          go-version: 1.24.5
+          go-version: 1.24.x
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec
@@ -42,7 +42,7 @@ jobs:
         uses: goreleaser/goreleaser-action@0931acf1f7634c2ee911eea11a334fb00a5180ab
         with:
           distribution: goreleaser
-          version: v2.7.0
+          version: "~> v2"
           args: release --clean ${{ inputs.snapshot && '--snapshot' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
