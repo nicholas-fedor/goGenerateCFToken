@@ -21,8 +21,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cloudflare/cloudflare-go/v4"
-	"github.com/cloudflare/cloudflare-go/v4/zones"
+	"github.com/cloudflare/cloudflare-go/v5"
+	"github.com/cloudflare/cloudflare-go/v5/zones"
 )
 
 // GetZoneID retrieves the ID of a Cloudflare zone by its name.

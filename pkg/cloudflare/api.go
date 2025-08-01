@@ -21,11 +21,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cloudflare/cloudflare-go/v4"
-	"github.com/cloudflare/cloudflare-go/v4/option"
-	"github.com/cloudflare/cloudflare-go/v4/packages/pagination"
-	"github.com/cloudflare/cloudflare-go/v4/user"
-	"github.com/cloudflare/cloudflare-go/v4/zones"
+	"github.com/cloudflare/cloudflare-go/v5"
+	"github.com/cloudflare/cloudflare-go/v5/option"
+	"github.com/cloudflare/cloudflare-go/v5/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v5/user"
+	"github.com/cloudflare/cloudflare-go/v5/zones"
 )
 
 // NewAPIClientFunc creates a new Cloudflare client, defaulting to NewClient.
