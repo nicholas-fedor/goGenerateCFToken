@@ -22,9 +22,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cloudflare/cloudflare-go/v4"
-	"github.com/cloudflare/cloudflare-go/v4/shared"
-	"github.com/cloudflare/cloudflare-go/v4/user"
+	"github.com/cloudflare/cloudflare-go/v5"
+	"github.com/cloudflare/cloudflare-go/v5/shared"
+	"github.com/cloudflare/cloudflare-go/v5/user"
 )
 
 // Constants defining Cloudflare permission IDs for zone read and DNS write.
@@ -63,15 +63,16 @@ func GenerateToken(
 	}}
 
 	// Specify resources to apply permissions to the zone.
-	resources := map[string]shared.TokenPolicyResourcesUnionParam{
-		"com.cloudflare.api.account.zone." + zoneID: shared.UnionString("*"),
+	resources := shared.TokenPolicyResourcesIAMResourcesTypeObjectStringParam{
+		"com.cloudflare.api.account.zone." + zoneID: "*",
 	}
+	resourcesUnion := shared.TokenPolicyResourcesUnionParam(resources)
 
 	// Configure token policy to allow the specified permissions and resources.
 	policies := []shared.TokenPolicyParam{{
 		Effect:           cloudflare.F(shared.TokenPolicyEffectAllow),
 		PermissionGroups: cloudflare.F(permissions),
-		Resources:        cloudflare.F(resources),
+		Resources:        cloudflare.F(resourcesUnion),
 	}}
 
 	// Set up parameters for creating the new token.

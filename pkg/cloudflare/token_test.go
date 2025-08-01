@@ -22,10 +22,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cloudflare/cloudflare-go/v4"
-	"github.com/cloudflare/cloudflare-go/v4/packages/pagination"
-	"github.com/cloudflare/cloudflare-go/v4/user"
-	"github.com/cloudflare/cloudflare-go/v4/zones"
+	"github.com/cloudflare/cloudflare-go/v5"
+	"github.com/cloudflare/cloudflare-go/v5/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v5/user"
+	"github.com/cloudflare/cloudflare-go/v5/zones"
 	"github.com/stretchr/testify/mock"
 
 	"github.com/nicholas-fedor/gogeneratecftoken/pkg/cloudflare/mocks"
