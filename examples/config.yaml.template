@@ -1,5 +1,6 @@
 # goGenerateCFToken Configuration File
 # https://github.com/nicholas-fedor/goGenerateCFToken
+# ~/.goGenerateCFToken/config.yaml
 
 # https://dash.cloudflare.com/profile/api-tokens
 # Token Name: [Add your token name here for reference]

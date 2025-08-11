@@ -1,20 +1,27 @@
 version: 2
-project_name: goGenerateCFToken
+project_name: gogeneratecftoken
 before:
   hooks:
     - go mod download
 
 builds:
   - main: ./main.go
-    binary: goGenerateCFToken
+    env:
+      - CGO_ENABLED=0
+    binary: gogeneratecftoken
     goos:
       - linux
       - windows
+      - darwin
     goarch:
       - amd64
       - "386"
       - arm
       - arm64
+      - riscv64
+    ignore:
+      - goos: windows
+        goarch: riscv64
     ldflags:
       - -s -w
       - -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Version={{.Version}}
@@ -22,8 +29,7 @@ builds:
       - -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Date={{.Date}}
 
 archives:
-  - id: default
-    name_template: >-
+  - name_template: >-
       {{- .ProjectName }}_
       {{- if eq .Os "darwin" }}macOS
       {{- else }}{{ .Os }}{{ end }}_
@@ -31,42 +37,23 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else if eq .Arch "arm" }}armhf
       {{- else if eq .Arch "arm64" }}arm64v8
+      {{- else if eq .Arch "riscv64" }}riscv64
       {{- else }}{{ .Arch }}{{ end }}_
       {{- .Version -}}
-    files:
-      - LICENSE
-    builds:
-      - goGenerateCFToken
     formats: ["tar.gz"]
-  - id: windows
-    name_template: >-
-      {{- .ProjectName }}_
-      {{- .Os }}_
-      {{- if eq .Arch "amd64" }}amd64
-      {{- else if eq .Arch "386" }}i386
-      {{- else if eq .Arch "arm" }}armhf
-      {{- else if eq .Arch "arm64" }}arm64v8
-      {{- else }}{{ .Arch }}{{ end }}_
-      {{- .Version -}}
-    files:
-      - LICENSE
-    builds:
-      - goGenerateCFToken
-    formats: ["zip"]
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+    format_overrides:
+      - goos: windows
+        formats: ["zip"]
 
 release:
   github:
     owner: nicholas-fedor
-    name: goGenerateCFToken
+    name: gogeneratecftoken
   draft: false
   prerelease: auto
+
+sboms:
+  - artifacts: binary
 
 checksum:
   name_template: checksums.txt

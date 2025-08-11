@@ -1,4 +1,4 @@
-name: Release (Production)
+name: Release Binaries
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   lint:
-    uses: ./.github/workflows/lint.yaml
+    uses: ./.github/workflows/lint-go.yaml
 
   test:
     uses: ./.github/workflows/test.yaml

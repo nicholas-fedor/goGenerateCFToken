@@ -1,4 +1,4 @@
-name: Lint
+name: Lint Go
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@8e57b58e57be52ac95949151e2777ffda8501267
         with:
-          go-version: "1.24.6"
+          go-version: 1.24.x
 
       - name: Install dependencies
         run: go mod download
@@ -25,7 +25,7 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@9511564208289d6c9378c8852eec4ca6f9431220
         with:
-          args: --timeout=5m
+          args: --timeout=5m --config=build/golangci-lint/golangci.yaml
 
       - name: Format Go code
         run: |
