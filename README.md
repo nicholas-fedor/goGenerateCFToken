@@ -1,8 +1,7 @@
+<!-- markdownlint-disable -->
 <div align="center">
 
 # Cloudflare API Token Generator
-
-A simple CLI tool for generating Cloudflare API tokens.
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/goGenerateCFToken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/goGenerateCFToken/tree/main)
 [![codecov](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken)
@@ -15,118 +14,189 @@ A simple CLI tool for generating Cloudflare API tokens.
 
 ----------
 
+A simple CLI tool for generating Cloudflare API tokens for use by tools, such as [Traefik](https://traefik.io/traefik), [Caddy](https://caddyserver.com/), or [Certbot](https://certbot.eff.org/)
+
 </div>
+<!-- markdownlint-restore -->
 
-## Overview
+## Table of Contents
 
-The generated tokens are intended to be service-specific, i.e. Plex, Radarr, etc, for generating SSL certificates by tools, such as [Certbot](https://certbot.eff.org/) or [Lego](https://go-acme.github.io/lego/).
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+  - [Release Binaries](#release-binaries)
+  - [Source](#source)
+- [Usage](#usage)
+  - [Overview](#overview)
+  - [Configuration](#configuration)
+- [Contributing](#contributing)
 
-## Prerequisites
+## Quick Start
 
-### Cloudflare-managed Domain Name
+1. [Install](#installation) goGenerateCFToken
 
-You will need to own a domain name configured to use Cloudflare's nameservers.  
-Once that is setup, you will be able to specify the domain's zone (i.e. `example.com`) that you want linked to the API token.
+2. Create a Master API Token
 
-### Cloudflare API Token with `API Tokens: Edit` Permissions
+    <!-- markdownlint-disable -->
+    <ol type="a">
+      <li>Go to your <a href="https://dash.cloudflare.com/profile/api-tokens">Cloudflare Dashboard</a></li>
+      <li>Create a token with following permissions:</li>
+            <ul>
+                <li>Zone > Zone > Read</li>
+                <li>User > API Tokens > Edit</li>
+                <li>Include > Specific Zone > example.com</li>
+            </ul>
+      <li>Save/copy the token</li>
+    </ol>
+    <!-- markdownlint-restore -->
 
-An API token needs to be manually created via the [Cloudflare account dashboard](https://dash.cloudflare.com/profile/api-tokens) to be used by `goGenerateCFToken`.
+3. Setup the Configuration File
 
-1) Select the `Create Additional Tokens` template
-2) Update the `Token name`, as needed
-3) Add the following permission: `Zone` - `Zone` - `Read`
-4) Zone Resources: `Include` - `Specific Zone` - `example.com`
-5) Client IP Address Filtering: This limits usage of the token to a specified IP address
-6) Save the newly-created API token to a safe location
+    - Download the configuration file template to `$HOME/.goGenerateCFToken/config.yaml`:
 
-## Installation
+      - Windows
 
-```bash
-go install github.com/nicholas-fedor/gogeneratecftoken@latest
-```
+        ```powershell
+        New-Item -ItemType Directory -Path $HOME\.goGenerateCFToken -Force; iwr -Uri https://github.com/nicholas-fedor/   goGenerateCFToken/raw/main/config.yaml.template -OutFile $HOME\.goGenerateCFToken\config.yaml
+        ```
 
-> Prebuilt binaries are also available [here](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
+      - Linux
 
-## Usage
+        ```bash
+        mkdir -p $HOME/.goGenerateCFToken && curl -L https://github.com/nicholas-fedor/goGenerateCFToken/raw/main/config.   yaml.template -o $HOME/.goGenerateCFToken/config.yaml
+        ```
 
-For access to usage instructions:
+      - macOS
 
-```bash
-goGenerateCFToken -h
-```
+        ```bash
+        mkdir -p $HOME/.goGenerateCFToken && curl -L https://github.com/nicholas-fedor/goGenerateCFToken/raw/main/config.   yaml.template -o $HOME/.goGenerateCFToken/config.yaml
+        ```
 
-### Configuration
+    - Edit `$HOME/.goGenerateCFToken/config.yaml` to add your master API token and zone:
 
-There are several options for providing the `api_token` and `zone` to `goGenerateCFToken`, as it uses [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) to enable configuration functionality.
-
-- YAML Config File:  
-    Setup a configuration file, as shown in the provided `config.yaml.template`, in a location, such as the default `$HOME/.goGenerateCFToken/config.yaml`.  
-    If using a custom location, then use the `--config [path]` flag.
-- Environment Variables:  
-    If no config file is found or specified, then the program falls back to environment variables.
-
-    ```bash
-    export CF_API_TOKEN="your-cloudflare-api-token-here"
-    export CF_ZONE="example.com"
+    ```yaml
+    api_token: "your-master-api-token"
+    zone: "example.com"
     ```
 
-- CLI Flags:
-
-    To see the available flags:
-
-    ```bash
-    goGenerateCFToken generate -h
-    ```
-
-    Example Usage:
-
-    ```bash
-    goGenearteCFToken generate [service name] -z [example.com] -t [supersecretcftoken]
-    ```
-
-### Recommended Usage
-
-1) Copy the template to `$HOME/.goGenerateCFToken/config.yaml`:
-
-    ```bash
-    cp ./config.yaml.template $HOME/.goGenerateCFToken/config.yaml
-    ```
-
-2) Obtain your master Cloudflare API token for creating additional service-specific tokens
-
-3) Save the master token and associated zone to the configuration file
-
-4) Generate a test API token to confirm configuration is successful:
+4. Generate a Test Token
 
     ```bash
     goGenerateCFToken generate test
     ```
 
-5) If successful, you should see the following output:
+    **Expected Output:**
 
     ```bash
     Generating API token: test.example.com
     yoursuperlongandsecretserviceapitoken
     ```
 
-## Resources
+## Installation
 
-- [Cloudflare's API Endpoints](https://developers.cloudflare.com/api-next)
-- [Cloudflare's Go SDK](https://github.com/cloudflare/cloudflare-go)
-- [spf13/Cobra](https://github.com/spf13/cobra)
-- [spf13/Viper](https://github.com/spf13/viper)
+### Release Binaries
 
-## Development
+Download and install the latest binary for your platform from the [releases page](https://github.com/nicholas-fedor/goGenerateCFToken/releases).
 
-### GitHub releases
+The following are CLI scripts for installing to the user's `go/bin` directory:
 
-Using [GoReleaser](https://github.com/goreleaser/goreleaser-action) to build the release files.
+- Windows (amd64):
 
-[Quick Start](https://goreleaser.com/quick-start/)
+    ```powershell
+    New-Item -ItemType Directory -Path $HOME\go\bin -Force | Out-Null; iwr (iwr https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | ConvertFrom-Json).assets.where({$_.name -like "*windows_amd64*.zip"}).browser_download_url -OutFile goGenerateCFToken.zip; Add-Type -AssemblyName System.IO.Compression.FileSystem; ($z=[System.IO.Compression.ZipFile]::OpenRead("$PWD\goGenerateCFToken.zip")).Entries | ? {$_.Name -eq 'goGenerateCFToken.exe'} | % {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$HOME\go\bin\$($_.Name)", $true)}; $z.Dispose(); rm goGenerateCFToken.zip; if (Test-Path "$HOME\go\bin\goGenerateCFToken.exe") { Write-Host "Successfully installed goGenerateCFToken.exe to $HOME\go\bin" } else { Write-Host "Failed to install goGenerateCFToken.exe" }
+    ```
 
-To run a new build, update the tag, as follows:
+- Linux (amd64):
+
+    ```bash
+    mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | grep -o 'https://[^"]*linux_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin goGenerateCFToken
+    ```
+
+- macOS (amd64):
+
+    ```bash
+    mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | grep -o 'https://[^"]*darwin_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin goGenerateCFToken
+    ```
+
+### Source
 
 ```bash
-git tag -a v0.1.0 -m "First release"
-git push origin v0.1.0
+go install github.com/nicholas-fedor/gogeneratecftoken@latest
 ```
+
+## Usage
+
+### Overview
+
+Invoke the program and use the `generate` command with a subdomain as the argument to generate a Cloudflare API token.
+
+The token will be named using the `subdomain.domain.tld` convention.
+
+```bash
+goGenerateCFToken generate [SUBDOMAIN] [FLAGS]
+```
+
+| Flags         | Input Type | Description                               |
+|---------------|------------|-------------------------------------------|
+| `--config`    | String     | Specify a configuration file location     |
+| `-t, --token` | String     | Specify a Cloudflare API master token     |
+| `-z, --zone`  | String     | Specify a domain name, i.e. example.com   |
+| `-h, --help`  | None       | Show the help information for the command |
+
+> [!Warning]
+> The Cloudflare API token will only be shown via the standard output. Remember to save it in a secure location!
+
+### Configuration
+
+In order to generate Cloudflare API tokens, the program requires the following:
+
+- A master API token with the permissions to generate additional Cloudflare API tokens
+- A zone (i.e. example.com)
+- A sudomain (i.e. "test" from test.example.com)
+
+`goGenerateCFToken` uses [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) to enable configuration functionality.
+
+### Configuration File
+
+Default Location: `$HOME/.goGenerateCFToken/config.yaml`
+
+Example:
+
+```yaml
+# goGenerateCFToken Configuration File
+# https://github.com/nicholas-fedor/goGenerateCFToken
+
+# https://dash.cloudflare.com/profile/api-tokens
+# Token Name: [Add your token name here for reference]
+# Permissions: Zone: Read & API Tokens: Edit
+api_token: "your-cloudflare-api-token-here"
+zone: "example.com"
+```
+
+> [!Note]
+> If using a custom configuration file location, then specify the location using the `--config` flag.
+> Example:
+>
+> ```bash
+> goGenerateCFToken [SUBDOMAIN] --config [PATH]
+> ```
+
+### Environment Variables
+
+If no config file is found or specified, then the program falls back to environment variables.
+
+```bash
+export CF_API_TOKEN="your-master-api-token"
+export CF_ZONE="example.com"
+```
+
+### CLI Flags
+
+You can use CLI flags directly instead of using a configuration file or setting environment variables.
+
+- `t, --token`: Specify a master API token that has the permissions for creating additional tokens.
+- `-z, --zone` : Specify a specific zone, i.e. example.com
+
+## Contributing
+
+Contributions to this project are welcomed.
+Please see the [contributing documentation](/CONTRIBUTING.md) for more information.
