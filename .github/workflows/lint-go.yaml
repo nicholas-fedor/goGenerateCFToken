@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: Set up Go
         uses: actions/setup-go@8e57b58e57be52ac95949151e2777ffda8501267
@@ -23,7 +23,7 @@ jobs:
         run: go mod download
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@f9e969abf518e6dd0876e758f2ce8bf58bb5d56b
+        uses: golangci/golangci-lint-action@9511564208289d6c9378c8852eec4ca6f9431220
         with:
           args: --timeout=5m --config=build/golangci-lint/golangci.yaml
 
