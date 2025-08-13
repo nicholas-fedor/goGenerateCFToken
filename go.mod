@@ -1,6 +1,6 @@
 module github.com/nicholas-fedor/gogeneratecftoken
 
-go 1.24.6
+go 1.25.0
 
 require (
 	github.com/cloudflare/cloudflare-go/v5 v5.0.0
