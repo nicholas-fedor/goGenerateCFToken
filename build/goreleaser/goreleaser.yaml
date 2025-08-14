@@ -27,6 +27,9 @@ builds:
       - -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Version={{.Version}}
       - -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Commit={{.Commit}}
       - -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Date={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
 
 archives:
   - name_template: >-
