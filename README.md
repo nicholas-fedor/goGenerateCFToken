@@ -28,6 +28,9 @@ A simple CLI tool for generating Cloudflare API tokens for use by tools, such as
 - [Usage](#usage)
   - [Overview](#overview)
   - [Configuration](#configuration)
+    - [Configuration File](#configuration-file)
+    - [Environment Variables](#environment-variables)
+    - [CLI Flags](#cli-flags)
 - [Contributing](#contributing)
 
 ## Quick Start
@@ -155,7 +158,7 @@ In order to generate Cloudflare API tokens, the program requires the following:
 
 `goGenerateCFToken` uses [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) to enable configuration functionality.
 
-### Configuration File
+#### Configuration File
 
 Default Location: `$HOME/.goGenerateCFToken/config.yaml`
 
@@ -180,7 +183,7 @@ zone: "example.com"
 > goGenerateCFToken [SUBDOMAIN] --config [PATH]
 > ```
 
-### Environment Variables
+#### Environment Variables
 
 If no config file is found or specified, then the program falls back to environment variables.
 
@@ -189,7 +192,7 @@ export CF_API_TOKEN="your-master-api-token"
 export CF_ZONE="example.com"
 ```
 
-### CLI Flags
+#### CLI Flags
 
 You can use CLI flags directly instead of using a configuration file or setting environment variables.
 

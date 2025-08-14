@@ -19,8 +19,11 @@ Contributions to this project are welcomed.
   - [Pull Requests](#pull-requests)
   - [Building Releases](#building-releases)
   - [Linting](#linting)
-  - [Unit Testing](#go-source-code-unit-testing)
-- [Developer Resources](#resources)
+    - [Go](#go)
+    - [GitHub Actions](#github-actions)
+  - [Go Source Code Unit Testing](#go-source-code-unit-testing)
+  - [Security Scanning](#security-scanning)
+- [Resources](#resources)
 
 ## Development Environment Setup
 

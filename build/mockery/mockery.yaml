@@ -5,7 +5,7 @@
 # goGenerateCFToken: https://github.com/nicholas-fedor/goGenerateCFToken/                            #
 # Mockery: https://vektra.github.io/mockery/latest/                                                  #
 # Configuration: https://vektra.github.io/mockery/latest/configuration                               #
-# Mockery Version: 2.53                                                                              #
+# Mockery Version: 3.5.2                                                                              #
 #                                                                                                    #
 ######################################################################################################
 
@@ -13,7 +13,7 @@
 # Mockery Usage                                                                                      #
 #                                                                                                    #
 # Install Mockery:                                                                                   #
-# go install github.com/vektra/mockery/v2@v2.53.3                                                    #
+# go install github.com/vektra/mockery/v3@v3.5.2                                                    #
 #                                                                                                    #
 # Run CLI command from root:                                                                         #
 # mockery                                                                                            #
