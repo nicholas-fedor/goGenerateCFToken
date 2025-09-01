@@ -23,11 +23,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cloudflare/cloudflare-go/v5"
-	"github.com/cloudflare/cloudflare-go/v5/option"
-	"github.com/cloudflare/cloudflare-go/v5/packages/pagination"
-	"github.com/cloudflare/cloudflare-go/v5/user"
-	"github.com/cloudflare/cloudflare-go/v5/zones"
+	"github.com/cloudflare/cloudflare-go/v6"
+	"github.com/cloudflare/cloudflare-go/v6/option"
+	"github.com/cloudflare/cloudflare-go/v6/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v6/user"
+	"github.com/cloudflare/cloudflare-go/v6/zones"
 	"github.com/stretchr/testify/mock"
 
 	"github.com/nicholas-fedor/gogeneratecftoken/pkg/cloudflare/mocks"

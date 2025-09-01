@@ -22,9 +22,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cloudflare/cloudflare-go/v5"
-	"github.com/cloudflare/cloudflare-go/v5/shared"
-	"github.com/cloudflare/cloudflare-go/v5/user"
+	"github.com/cloudflare/cloudflare-go/v6"
+	"github.com/cloudflare/cloudflare-go/v6/shared"
+	"github.com/cloudflare/cloudflare-go/v6/user"
 )
 
 // Constants defining Cloudflare permission IDs for zone read and DNS write.
