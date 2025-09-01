@@ -73,14 +73,14 @@ func TestGenerateCmd(t *testing.T) {
 			args:       []string{"generate", "test-service"},
 			zone:       "example.com",
 			wantErr:    true,
-			wantErrMsg: "missing required credentials in config",
+			wantErrMsg: cloudflare.ErrMissingCredentials.Error(),
 		},
 		{
 			name:       "MissingZone",
 			args:       []string{"generate", "test-service"},
 			apiToken:   "valid-token",
 			wantErr:    true,
-			wantErrMsg: "missing required zone in config",
+			wantErrMsg: ErrMissingConfigZone.Error(),
 		},
 		{
 			name:     "ClientError",
@@ -156,7 +156,7 @@ func TestGenerateCmd(t *testing.T) {
 			configFile: "invalid.yaml",
 			configErr:  true,
 			wantErr:    true,
-			wantErrMsg: "missing required credentials in config",
+			wantErrMsg: cloudflare.ErrMissingCredentials.Error(),
 		},
 	}
 
