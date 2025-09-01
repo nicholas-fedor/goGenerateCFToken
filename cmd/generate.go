@@ -53,7 +53,7 @@ var generateCmd = &cobra.Command{
 
 		// Validate required configuration values.
 		if token == "" {
-			return ErrMissingConfigAuth
+			return cloudflare.ErrMissingCredentials
 		}
 		if zoneName == "" {
 			return ErrMissingConfigZone
@@ -62,7 +62,7 @@ var generateCmd = &cobra.Command{
 		// Initialize Cloudflare client with the API token.
 		client, err := NewClientFunc(token)
 		if err != nil {
-			return fmt.Errorf("%w: %w", ErrClientInitializationFailure, err)
+			return fmt.Errorf("failed to initialize Cloudflare client: %w", err)
 		}
 
 		// Create a context for the API call.
@@ -71,7 +71,7 @@ var generateCmd = &cobra.Command{
 		// Generate the new API token.
 		newAPIToken, err := GenerateTokenFunc(ctx, serviceName, zoneName, client, client)
 		if err != nil {
-			return fmt.Errorf("%w: %w", ErrTokenGenerationFailure, err)
+			return fmt.Errorf("failed to generate token: %w", err)
 		}
 
 		// Output the generated token.
