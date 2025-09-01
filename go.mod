@@ -33,3 +33,6 @@ require (
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+// Replace v1.9.1 with latest commit until v1.9.2 is released to resolve https://github.com/spf13/cobra/issues/2304
+replace github.com/spf13/cobra => github.com/spf13/cobra v0.0.0-20250831231508-51d675196729
