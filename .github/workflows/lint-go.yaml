@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+        uses: actions/checkout@069c6959146423d11cd0184e6accf28f9d45f06e
 
       - name: Set up Go
         uses: actions/setup-go@faf52423ec0d44c58f68e83b614bfcd99dded66f
