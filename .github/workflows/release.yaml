@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Pull new module version
-        uses: nicholas-fedor/go-proxy-pull-action@88b67b4b1a05fb4c3d109dac4db009c9ad19d4ed
+        uses: nicholas-fedor/go-proxy-pull-action@86893660590ea707d96b420252245f5f4e6eb46c
         with:
           goproxy: https://proxy.golang.org
           import_path: github.com/nicholas-fedor/gogeneratecftoken
