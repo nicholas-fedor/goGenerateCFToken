@@ -126,7 +126,9 @@ func TestGetVersionInfo_VCSData(t *testing.T) {
 				t.Errorf("Commit = %q, want %q", info.Commit, vcsRevision)
 			}
 		} else {
-			t.Logf("No vcs.revision found; ensure repository has Git metadata to cover commit assignment")
+			t.Logf(
+				"No vcs.revision found; ensure repository has Git metadata to cover commit assignment",
+			)
 		}
 
 		if vcsTime != "" {
@@ -142,7 +144,9 @@ func TestGetVersionInfo_VCSData(t *testing.T) {
 				t.Errorf("Expected date %q, got %q for invalid vcs.time", unknownValue, info.Date)
 			}
 		} else {
-			t.Logf("No vcs.time found; ensure repository has commit timestamps to cover date assignment")
+			t.Logf(
+				"No vcs.time found; ensure repository has commit timestamps to cover date assignment",
+			)
 		}
 
 		if vcsModified == trueValue && info.Version != unknownValue {
@@ -153,10 +157,15 @@ func TestGetVersionInfo_VCSData(t *testing.T) {
 				)
 			}
 		} else if vcsModified != trueValue {
-			t.Logf("Repository is clean (vcs.modified=%q); make uncommitted changes to cover '+dirty' case", vcsModified)
+			t.Logf(
+				"Repository is clean (vcs.modified=%q); make uncommitted changes to cover '+dirty' case",
+				vcsModified,
+			)
 		}
 	} else {
-		t.Logf("debug.ReadBuildInfo() failed; ensure tests run in a Git repository to cover VCS parsing")
+		t.Logf(
+			"debug.ReadBuildInfo() failed; ensure tests run in a Git repository to cover VCS parsing",
+		)
 	}
 }
 

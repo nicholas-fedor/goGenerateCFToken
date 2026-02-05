@@ -321,7 +321,10 @@ func TestGenerateCmd_BindErrors(t *testing.T) {
 				}
 			}()
 
-			if err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token")); err != nil {
+			if err := viper.BindPFlag(
+				"api_token",
+				generateCmd.Flags().Lookup("token"),
+			); err != nil {
 				panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
 			}
 

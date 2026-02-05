@@ -334,12 +334,20 @@ func Test_setConfigFile(t *testing.T) {
 				}
 
 				if len(tt.expectPaths) > 0 && len(mock.configPaths) != len(tt.expectPaths) {
-					t.Errorf("Expected %d paths, got %d", len(tt.expectPaths), len(mock.configPaths))
+					t.Errorf(
+						"Expected %d paths, got %d",
+						len(tt.expectPaths),
+						len(mock.configPaths),
+					)
 				}
 
 				for i, path := range tt.expectPaths {
 					if i < len(mock.configPaths) {
-						actualPath := strings.ReplaceAll(mock.configPaths[i], string(os.PathSeparator), "/")
+						actualPath := strings.ReplaceAll(
+							mock.configPaths[i],
+							string(os.PathSeparator),
+							"/",
+						)
 						if actualPath != path {
 							t.Errorf("Expected path %d to be '%s', got '%s'", i, path, actualPath)
 						}
