@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload binary SBOMs
         if: ${{ !inputs.dry-run }}
-        uses: actions/upload-artifact@589182c5a4cec8920b8c1bce3e2fab1c97a02296
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: binary-sboms
           path: dist/*.sbom
