@@ -61,7 +61,7 @@ jobs:
 
       - name: Generate artifact attestation
         if: ${{ !inputs.dry-run }}
-        uses: actions/attest-build-provenance@c5efebd311e9a809e832398ca2b73bb429ff3508
+        uses: actions/attest-build-provenance@10334b5f1e684784025c3fc0a277c88c19089275
         with:
           subject-checksums: ./dist/checksums.txt
 
