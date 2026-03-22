@@ -11,6 +11,9 @@ on:
       - main.go
       - main_test.go
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     uses: ./.github/workflows/lint-go.yaml
