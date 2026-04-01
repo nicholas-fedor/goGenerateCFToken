@@ -55,7 +55,7 @@ var generateCmd = &cobra.Command{
 		if token == "" {
 			return cloudflare.ErrMissingCredentials
 		}
-		
+
 		if zoneName == "" {
 			return ErrMissingConfigZone
 		}
