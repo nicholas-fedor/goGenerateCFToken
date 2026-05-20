@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -26,8 +25,6 @@ import (
 
 	"github.com/nicholas-fedor/gogeneratecftoken/pkg/config"
 )
-
-var osExit = os.Exit
 
 func TestRootCmd(t *testing.T) {
 	if rootCmd.Use != "goGenerateCFToken" {
@@ -45,24 +42,12 @@ func TestRootCmd(t *testing.T) {
 		t.Errorf("rootCmd Short or Long description is empty")
 	}
 
-	var exitCode int
-
-	osExit = func(code int) {
-		exitCode = code
-	}
-
-	defer func() { osExit = os.Exit }()
-
 	oldConfigFile := config.ConfigFile
 	config.ConfigFile = "dummy.yaml"
 
 	defer func() { config.ConfigFile = oldConfigFile }()
 
 	Execute()
-
-	if exitCode != 0 {
-		t.Errorf("Execute() exited with code %d, want 0", exitCode)
-	}
 
 	configFileFlag := rootCmd.PersistentFlags().Lookup("config")
 	if configFileFlag == nil {
