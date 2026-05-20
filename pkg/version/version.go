@@ -18,7 +18,7 @@ var (
 	Version = devVersion
 	// Commit is the Git commit SHA (e.g., "abc123").
 	Commit = unknownValue
-	// Date is the build or commit timestamp in RFC3339 format (e.g., "2025-05-07T00:00:00Z").
+	// Date is the build or commit timestamp in RFC3339 format (e.g., "2026-05-07T00:00:00Z").
 	Date = unknownValue
 )
 
@@ -51,7 +51,8 @@ func GetVersionInfo() Info {
 				case "vcs.revision":
 					commit = setting.Value
 				case "vcs.time":
-					if t, err := time.Parse(time.RFC3339, setting.Value); err == nil {
+					t, err := time.Parse(time.RFC3339, setting.Value)
+					if err == nil {
 						date = t.Format(time.RFC3339)
 					}
 				case "vcs.modified":

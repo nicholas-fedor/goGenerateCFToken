@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -22,9 +22,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cloudflare/cloudflare-go/v6"
-	"github.com/cloudflare/cloudflare-go/v6/shared"
-	"github.com/cloudflare/cloudflare-go/v6/user"
+	"github.com/cloudflare/cloudflare-go/v7"
+	"github.com/cloudflare/cloudflare-go/v7/shared"
+	"github.com/cloudflare/cloudflare-go/v7/user"
 )
 
 // Constants defining Cloudflare permission IDs for zone read and DNS write.

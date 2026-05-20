@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -44,7 +44,7 @@ var (
 	// InitConfigFunc is the function to initialize configuration, injectable for testing.
 	InitConfigFunc func(Viper)
 
-	// osUserHomeDir retrieves the user’s home directory, defaulting to os.UserHomeDir.
+	// osUserHomeDir retrieves the user's home directory, defaulting to os.UserHomeDir.
 	osUserHomeDir = os.UserHomeDir
 
 	// osExit terminates the program with an exit code, defaulting to os.Exit.
@@ -87,7 +87,7 @@ type Viper interface {
 // InitConfig initializes the configuration using Viper.
 func InitConfig() {
 	// Retrieve the Viper instance.
-	v := viper.GetViper()
+	viperInstance := viper.GetViper()
 
 	// Set default initialization function if none provided.
 	if InitConfigFunc == nil {
@@ -95,35 +95,36 @@ func InitConfig() {
 	}
 
 	// Execute the initialization function.
-	InitConfigFunc(v)
+	InitConfigFunc(viperInstance)
 }
 
 // initConfig configures Viper with file paths, environment variables, and loads the config.
-func initConfig(v Viper) {
+func initConfig(cfg Viper) {
 	// Set up configuration file paths and name.
-	if err := setConfigFile(v); err != nil {
+	err := setConfigFile(cfg)
+	if err != nil {
 		// Report error and exit if file setup fails.
 		fmt.Fprintf(os.Stderr, "Failed to set config file: %v\n", err)
 		osExit(1)
 	}
 
 	// Configure environment variable bindings.
-	setEnv(v)
+	setEnv(cfg)
 
 	// Load the configuration file.
-	loadConfig(v)
+	loadConfig(cfg)
 }
 
 // setConfigFile configures Viper with the configuration file path or default locations.
 // It returns an error if the home directory cannot be determined.
-func setConfigFile(v Viper) error {
+func setConfigFile(cfg Viper) error {
 	switch {
 	case ConfigFile != "":
 		// Use explicit configuration file if specified.
-		v.SetConfigFile(ConfigFile)
+		cfg.SetConfigFile(ConfigFile)
 
 	default:
-		// Determine user’s home directory for default config path.
+		// Determine user's home directory for default config path.
 		homeDir, err := osUserHomeDir()
 		if err != nil {
 			return fmt.Errorf("failed to get user home directory: %w", err)
@@ -133,37 +134,38 @@ func setConfigFile(v Viper) error {
 		configPath := filepath.Join(homeDir, AppDirName)
 
 		// Add config paths: home directory and current directory.
-		v.AddConfigPath(configPath)
-		v.AddConfigPath(".")
+		cfg.AddConfigPath(configPath)
+		cfg.AddConfigPath(".")
 
 		// Set config file name and type.
-		v.SetConfigName(ConfigFilename)
-		v.SetConfigType(ConfigExt)
+		cfg.SetConfigName(ConfigFilename)
+		cfg.SetConfigType(ConfigExt)
 	}
 
 	return nil
 }
 
 // setEnv configures Viper to bind environment variables with defaults.
-func setEnv(v Viper) {
+func setEnv(cfg Viper) {
 	// Set environment variable prefix to "CF".
-	v.SetEnvPrefix("CF")
+	cfg.SetEnvPrefix("CF")
 
 	// Replace dots with underscores in environment variable keys.
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// Enable automatic environment variable binding.
-	v.AutomaticEnv()
+	cfg.AutomaticEnv()
 
 	// Set default values for required configuration keys.
-	v.SetDefault("api_token", "")
-	v.SetDefault("zone", "")
+	cfg.SetDefault("api_token", "")
+	cfg.SetDefault("zone", "")
 }
 
 // loadConfig attempts to load the configuration file and reports its status.
-func loadConfig(v Viper) {
+func loadConfig(cfg Viper) {
 	// Try to read the configuration file.
-	if err := v.ReadInConfig(); err != nil {
+	err := cfg.ReadInConfig()
+	if err != nil {
 		// Handle non-"file not found" errors by reporting to stderr.
 		var configNotFoundErr viper.ConfigFileNotFoundError
 		if !errors.As(err, &configNotFoundErr) {
@@ -171,6 +173,6 @@ func loadConfig(v Viper) {
 		}
 	} else {
 		// Report the loaded configuration file path.
-		fmt.Fprintf(os.Stderr, "Using config file: %s\n", v.ConfigFileUsed())
+		fmt.Fprintf(os.Stderr, "Using config file: %s\n", cfg.ConfigFileUsed())
 	}
 }

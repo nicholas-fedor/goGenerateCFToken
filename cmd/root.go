@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -76,7 +76,8 @@ var rootCmd = &cobra.Command{
 // Execute runs the root command, handling errors by exiting with a non-zero status.
 func Execute() {
 	// Execute the root command and check for errors.
-	if err := rootCmd.Execute(); err != nil {
+	err := rootCmd.Execute()
+	if err != nil {
 		// Exit with status 1 on error.
 		os.Exit(1)
 	}

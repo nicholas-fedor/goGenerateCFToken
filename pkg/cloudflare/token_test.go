@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +22,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cloudflare/cloudflare-go/v6"
-	"github.com/cloudflare/cloudflare-go/v6/packages/pagination"
-	"github.com/cloudflare/cloudflare-go/v6/user"
-	"github.com/cloudflare/cloudflare-go/v6/zones"
+	"github.com/cloudflare/cloudflare-go/v7"
+	"github.com/cloudflare/cloudflare-go/v7/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v7/user"
+	"github.com/cloudflare/cloudflare-go/v7/zones"
 	"github.com/stretchr/testify/mock"
 
 	"github.com/nicholas-fedor/gogeneratecftoken/pkg/cloudflare/mocks"

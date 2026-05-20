@@ -19,12 +19,12 @@ func TestGetVersionInfo(t *testing.T) {
 			setVars: func() {
 				Version = "0.0.1"
 				Commit = "abc123"
-				Date = "2025-05-07T00:00:00Z"
+				Date = "2026-05-07T00:00:00Z"
 			},
 			expect: Info{
 				Version: "v0.0.1",
 				Commit:  "abc123",
-				Date:    "2025-05-07T00:00:00Z",
+				Date:    "2026-05-07T00:00:00Z",
 			},
 		},
 		{
@@ -132,7 +132,8 @@ func TestGetVersionInfo_VCSData(t *testing.T) {
 		}
 
 		if vcsTime != "" {
-			if _, err := time.Parse(time.RFC3339, vcsTime); err == nil {
+			_, err := time.Parse(time.RFC3339, vcsTime)
+			if err == nil {
 				if info.Date == unknownValue {
 					t.Errorf(
 						"Expected valid date, got %q; ensure vcs.time is a valid RFC3339 timestamp",

@@ -5,7 +5,7 @@
 # goGenerateCFToken: https://github.com/nicholas-fedor/goGenerateCFToken/                            #
 # Mockery: https://vektra.github.io/mockery/latest/                                                  #
 # Configuration: https://vektra.github.io/mockery/latest/configuration                               #
-# Mockery Version: 3.5.2                                                                              #
+# Mockery Major Version: 3.x.x                                                                       #
 #                                                                                                    #
 ######################################################################################################
 
@@ -13,7 +13,7 @@
 # Mockery Usage                                                                                      #
 #                                                                                                    #
 # Install Mockery:                                                                                   #
-# go install github.com/vektra/mockery/v3@v3.5.2                                                    #
+# go install github.com/vektra/mockery/v3@latest                                                     #
 #                                                                                                    #
 # Run CLI command from root:                                                                         #
 # mockery                                                                                            #
@@ -65,7 +65,7 @@
 # Disable all warnings for deprecated behavior.
 # When true, suppresses deprecation messages (e.g., for quiet, with-expecter in v3).
 # Default: false
-disable-deprecation-warnings: true
+# disable-deprecation-warnings: true
 
 # Selectively disable specific deprecation warnings by name.
 # Use names from deprecation-name in log messages (e.g., "quiet", "with-expecter").
@@ -80,7 +80,7 @@ disable-deprecation-warnings: true
 # Default: null
 packages:
   # Top-level pkg directory, recursively includes all subpackages (e.g., pkg/types, pkg/container)
-  github.com/nicholas-fedor/goGenerateCFToken/pkg: {}
+  github.com/nicholas-fedor/gogeneratecftoken/pkg: {}
 
 # Generate mocks for all exported interfaces within specified packages or directories.
 # When true with packages section, processes all interfaces in listed packages.
@@ -139,7 +139,7 @@ recursive: true
 # Generate testify expecter methods (e.g., EXPECT()) for mocks when true.
 # Enhances compatibility with github.com/stretchr/testify; v3 deprecation: permanently enabled.
 # Default: false
-with-expecter: true
+# with-expecter: true
 
 # Specify build tags for the generated mock files.
 # Matches Go’s build constraint syntax (e.g., "// +build tag1,tag2").
@@ -154,7 +154,7 @@ with-expecter: true
 
 # Package name for generated mock files.
 # Default: "{{.PackageName}}"
-outpkg: mocks
+pkgname: "mocks"
 
 # Treat variadic parameters as a single slice when false, rather than unrolling them.
 # Affects how variadic methods are mocked (e.g., func(...int) vs. func([]int)).
