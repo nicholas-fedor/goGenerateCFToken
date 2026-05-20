@@ -14,9 +14,9 @@ vars:
   # GOFLAGS: -trimpath
   LDFLAGS: >-
     -s -w
-    -X '{{.PKG}}/pkg/version.Version={{.Version}}'
-    -X '{{.PKG}}/pkg/version.Commit={{.Commit}}'
-    -X '{{.PKG}}/pkg/version.Date={{.Date}}'
+    -X '{{.PKG}}/pkg/version.Version={{.VERSION}}'
+    -X '{{.PKG}}/pkg/version.Commit={{.COMMIT}}'
+    -X '{{.PKG}}/pkg/version.Date={{.BUILD_TIME}}'
 
 tasks:
   build:
