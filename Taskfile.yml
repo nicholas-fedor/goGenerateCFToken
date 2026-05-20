@@ -1,0 +1,143 @@
+version: "3"
+
+vars:
+  BINARY_NAME: gogeneratecftoken
+  BINARY_DIR: bin
+  PKG: github.com/nicholas-fedor/gogeneratecftoken
+  VERSION:
+    sh: "git describe --tags --always --dirty"
+  COMMIT:
+    sh: "git rev-parse --short HEAD"
+  BUILD_TIME:
+    sh: "date -u +%Y-%m-%dT%H:%M:%SZ"
+  # trimpath strips ldflags until https://github.com/golang/go/pull/68544 merged
+  # GOFLAGS: -trimpath
+  LDFLAGS: >-
+    -s -w
+    -X '{{.PKG}}/pkg/version.Version={{.VERSION}}'
+    -X '{{.PKG}}/pkg/version.Commit={{.COMMIT}}'
+    -X '{{.PKG}}/pkg/version.Date={{.BUILD_TIME}}'
+
+tasks:
+  build:
+    desc: Build Go binary
+    cmds:
+      - go build {{.GOFLAGS}} -ldflags="{{.LDFLAGS}}" -o {{.BINARY_DIR}}/{{.BINARY_NAME}} .
+
+  run:
+    desc: Run Go application
+    cmds:
+      - go run .
+
+  # Code generation
+
+  mock:
+    desc: Generate test mocks using mockery
+    cmds:
+      - mockery --config=build/mockery/mockery.yaml
+    preconditions:
+      - sh: "command -v mockery"
+        msg: "mockery must be installed (run: task mockery-install)"
+
+  test:
+    desc: Run Go tests
+    cmds:
+      - go test -test.fullpath=true -timeout 30s -covermode atomic -v ./...
+
+  test-coverage:
+    desc: Run Go tests with coverage
+    cmds:
+      - go test  -test.fullpath=true -timeout 30s -covermode=atomic -v  -coverprofile=coverage.out ./...
+
+  bench:
+    desc: Run benchmarks
+    cmds:
+      - go test -bench=. -benchmem ./...
+
+  lint:
+    desc: Run linter
+    cmds:
+      - golangci-lint run --fix --config build/golangci-lint/golangci.yaml ./...
+
+  fmt:
+    desc: Run fmt
+    cmds:
+      - golangci-lint fmt --config build/golangci-lint/golangci.yaml ./...
+
+  vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  tidy:
+    desc: Tidy Go modules
+    cmds:
+      - go mod tidy
+      - go mod verify
+
+  install:
+    desc: "Install the application (full pipeline: tools, generate, install)"
+    cmds:
+      - task install-tools
+      - go install ./...
+
+  # Utility Tasks
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf bin/
+      - rm -f coverage.out
+
+  install-tools:
+    desc: Install required Go-based development tools
+    cmds:
+      - go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+      - go install github.com/goreleaser/goreleaser/v2@latest
+      - go install github.com/vektra/mockery/v3@latest
+    preconditions:
+      - sh: "command -v go"
+        msg: "Go must be installed"
+
+  golangci-lint-install:
+    desc: Install Golangci-lint for linting the project
+    cmds:
+      - go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+    preconditions:
+      - sh: "command -v go"
+        msg: "Go must be installed"
+
+  goreleaser-install:
+    desc: Install GoReleaser for building the project
+    cmds:
+      - go install github.com/goreleaser/goreleaser/v2@latest
+    preconditions:
+      - sh: "command -v go"
+        msg: "Go must be installed"
+
+  mockery-install:
+    desc: Install mockery for generating test mocks
+    cmds:
+      - go install github.com/vektra/mockery/v3@latest
+    preconditions:
+      - sh: "command -v go"
+        msg: "Go must be installed"
+
+  check-tools:
+    desc: Check which development tools are installed
+    cmds:
+      - |
+        echo "Checking required tools:"
+        echo ""
+        echo "  task: $(command -v task >/dev/null 2>&1 && echo '✓ installed' || echo '✗ NOT FOUND — run: go install github.com/go-task/task/v3/cmd/task@latest')"
+        echo "  golangci-lint: $(command -v golangci-lint >/dev/null 2>&1 && echo '✓ installed' || echo '✗ NOT FOUND — run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest')"
+        echo "  goreleaser: $(command -v goreleaser >/dev/null 2>&1 && echo '✓ installed' || echo '✗ NOT FOUND — run: go install github.com/goreleaser/goreleaser/v2@latest')"
+        echo "  mockery: $(command -v mockery >/dev/null 2>&1 && echo '✓ installed' || echo '✗ NOT FOUND — run: go install github.com/vektra/mockery/v3@latest')"
+        echo ""
+
+  setup:
+    desc: Initial project setup (install dependencies and tools)
+    cmds:
+      - go mod download
+      - task install-tools
+      - echo "Setup complete"

@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -20,9 +20,9 @@ package cloudflare
 import (
 	"context"
 
-	"github.com/cloudflare/cloudflare-go/v6/packages/pagination"
-	"github.com/cloudflare/cloudflare-go/v6/user"
-	"github.com/cloudflare/cloudflare-go/v6/zones"
+	"github.com/cloudflare/cloudflare-go/v7/packages/pagination"
+	"github.com/cloudflare/cloudflare-go/v7/user"
+	"github.com/cloudflare/cloudflare-go/v7/zones"
 )
 
 // APIInterface defines methods for interacting with the Cloudflare API.

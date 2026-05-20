@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -42,7 +42,7 @@ func TestGenerateCmd(t *testing.T) {
 		apiToken   string
 		zone       string
 		clientFunc func(apiToken string) (*cloudflare.Client, error)
-		genFunc    func(ctx context.Context, serviceName string, zone string, client *cloudflare.Client, api cloudflare.APIInterface) (string, error)
+		genFunc    func(ctx context.Context, serviceName, zone string, client *cloudflare.Client, api cloudflare.APIInterface) (string, error)
 		configFile string
 		configErr  bool
 		wantErr    bool
@@ -57,7 +57,7 @@ func TestGenerateCmd(t *testing.T) {
 			clientFunc: func(_ string) (*cloudflare.Client, error) {
 				return &cloudflare.Client{}, nil
 			},
-			genFunc: func(_ context.Context, _ string, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
+			genFunc: func(_ context.Context, _, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
 				return newToken, nil
 			},
 			wantOutput: "new-token\n",
@@ -101,7 +101,7 @@ func TestGenerateCmd(t *testing.T) {
 			clientFunc: func(_ string) (*cloudflare.Client, error) {
 				return &cloudflare.Client{}, nil
 			},
-			genFunc: func(_ context.Context, _ string, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
+			genFunc: func(_ context.Context, _, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
 				return "", errors.New("generate error")
 			},
 			wantErr:    true,
@@ -123,7 +123,7 @@ func TestGenerateCmd(t *testing.T) {
 			clientFunc: func(_ string) (*cloudflare.Client, error) {
 				return &cloudflare.Client{}, nil
 			},
-			genFunc: func(_ context.Context, serviceName string, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
+			genFunc: func(_ context.Context, serviceName, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
 				if strings.ContainsAny(serviceName, "@#") {
 					return "", errors.New("invalid service name")
 				}
@@ -145,7 +145,7 @@ func TestGenerateCmd(t *testing.T) {
 
 				return &cloudflare.Client{}, nil
 			},
-			genFunc: func(_ context.Context, _ string, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
+			genFunc: func(_ context.Context, _, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
 				return newToken, nil
 			},
 			wantOutput: "new-token\n",
@@ -208,7 +208,7 @@ func TestGenerateCmd(t *testing.T) {
 			if tt.genFunc != nil {
 				GenerateTokenFunc = tt.genFunc
 			} else {
-				GenerateTokenFunc = func(_ context.Context, _ string, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
+				GenerateTokenFunc = func(_ context.Context, _, _ string, _ *cloudflare.Client, _ cloudflare.APIInterface) (string, error) {
 					return newToken, nil
 				}
 			}
@@ -219,11 +219,13 @@ func TestGenerateCmd(t *testing.T) {
 			generateCmd.Flags().StringP("token", "t", "", "Cloudflare API token")
 			generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
 
-			if err := BindPFlagFunc("api_token", generateCmd.Flags().Lookup("token")); err != nil {
+			err := BindPFlagFunc("api_token", generateCmd.Flags().Lookup("token"))
+			if err != nil {
 				t.Fatalf("Failed to bind api_token: %v", err)
 			}
 
-			if err := BindPFlagFunc("zone", generateCmd.Flags().Lookup("zone")); err != nil {
+			err = BindPFlagFunc("zone", generateCmd.Flags().Lookup("zone"))
+			if err != nil {
 				t.Fatalf("Failed to bind zone: %v", err)
 			}
 
@@ -236,7 +238,7 @@ func TestGenerateCmd(t *testing.T) {
 			defer func() { os.Stdout = oldStdout }()
 
 			rootCmd.SetArgs(tt.args)
-			err := rootCmd.Execute()
+			err = rootCmd.Execute()
 
 			w.Close()
 
@@ -321,14 +323,16 @@ func TestGenerateCmd_BindErrors(t *testing.T) {
 				}
 			}()
 
-			if err := viper.BindPFlag(
+			err := viper.BindPFlag(
 				"api_token",
 				generateCmd.Flags().Lookup("token"),
-			); err != nil {
+			)
+			if err != nil {
 				panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
 			}
 
-			if err := viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone")); err != nil {
+			err = viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone"))
+			if err != nil {
 				panic(fmt.Errorf("%w: %w", ErrBindZoneFlag, err))
 			}
 		})

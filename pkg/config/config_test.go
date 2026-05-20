@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -26,61 +26,26 @@ import (
 	"testing"
 
 	"github.com/spf13/viper"
+
+	mock "github.com/stretchr/testify/mock"
+
+	"github.com/nicholas-fedor/gogeneratecftoken/pkg/config/mocks"
 )
 
-type mockViper struct {
-	configFile      string
-	configName      string
-	configType      string
-	configPaths     []string
-	envPrefix       string
-	keyReplacer     *strings.Replacer
-	defaults        map[string]any
-	readConfigError error
-	configFileUsed  string
-}
+// mockViper is a simple manual mock used where the testify mock adds no value
+// (e.g. error-path tests that only verify os-exit / stderr behaviour).
+type mockViper struct{}
 
-func (m *mockViper) SetConfigFile(file string) {
-	m.configFile = file
-}
-
-func (m *mockViper) AddConfigPath(path string) {
-	m.configPaths = append(m.configPaths, path)
-}
-
-func (m *mockViper) SetConfigName(name string) {
-	m.configName = name
-}
-
-func (m *mockViper) SetConfigType(typ string) {
-	m.configType = typ
-}
-
-func (m *mockViper) SetEnvPrefix(prefix string) {
-	m.envPrefix = prefix
-}
-
-func (m *mockViper) SetEnvKeyReplacer(r *strings.Replacer) {
-	m.keyReplacer = r
-}
-
-func (m *mockViper) AutomaticEnv() {}
-
-func (m *mockViper) SetDefault(key string, value any) {
-	if m.defaults == nil {
-		m.defaults = make(map[string]any)
-	}
-
-	m.defaults[key] = value
-}
-
-func (m *mockViper) ReadInConfig() error {
-	return m.readConfigError
-}
-
-func (m *mockViper) ConfigFileUsed() string {
-	return m.configFileUsed
-}
+func (*mockViper) SetConfigFile(_ string)                {}
+func (*mockViper) AddConfigPath(_ string)                {}
+func (*mockViper) SetConfigName(_ string)                {}
+func (*mockViper) SetConfigType(_ string)                {}
+func (*mockViper) SetEnvPrefix(_ string)                 {}
+func (*mockViper) SetEnvKeyReplacer(_ *strings.Replacer) {}
+func (*mockViper) AutomaticEnv()                         {}
+func (*mockViper) SetDefault(_ string, _ any)            {}
+func (*mockViper) ReadInConfig() error                   { return nil }
+func (*mockViper) ConfigFileUsed() string                { return "" }
 
 func TestInitConfig(t *testing.T) {
 	originalInitConfigFunc := InitConfigFunc
@@ -126,7 +91,7 @@ func TestInitConfig_NilFunc(t *testing.T) {
 
 	InitConfig()
 
-	w.Close()
+	_ = w.Close()
 
 	_, err = io.Copy(&buf, r)
 	if err != nil {
@@ -150,9 +115,23 @@ func TestInitConfig_NilFunc(t *testing.T) {
 }
 
 func Test_initConfig(t *testing.T) {
-	mock := &mockViper{
-		readConfigError: viper.ConfigFileNotFoundError{},
-	}
+	m := mocks.NewMockViper(t)
+
+	cfgFileUsed := "/test/config.yaml"
+
+	m.EXPECT().ConfigFileUsed().Return(cfgFileUsed)
+	m.EXPECT().ReadInConfig().Return(nil)
+
+	m.EXPECT().AddConfigPath("/home/test/.goGenerateCFToken")
+	m.EXPECT().AddConfigPath(".")
+	m.EXPECT().SetConfigName("config")
+	m.EXPECT().SetConfigType("yaml")
+	m.EXPECT().SetEnvPrefix("CF")
+	m.EXPECT().SetEnvKeyReplacer(mock.AnythingOfType("*strings.Replacer"))
+	m.EXPECT().AutomaticEnv()
+	m.EXPECT().SetDefault("api_token", "")
+	m.EXPECT().SetDefault("zone", "")
+
 	originalUserHomeDir := osUserHomeDir
 
 	defer func() { osUserHomeDir = originalUserHomeDir }()
@@ -172,9 +151,9 @@ func Test_initConfig(t *testing.T) {
 
 	defer func() { os.Stderr = originalStderr }()
 
-	initConfig(mock)
+	initConfig(m)
 
-	w.Close()
+	_ = w.Close()
 
 	_, err = io.Copy(&buf, r)
 	if err != nil {
@@ -183,44 +162,12 @@ func Test_initConfig(t *testing.T) {
 
 	output := buf.String()
 
-	if mock.configName != "config" {
-		t.Errorf("Expected config name 'config', got '%s'", mock.configName)
-	}
-
-	if mock.configType != "yaml" {
-		t.Errorf("Expected config type 'yaml', got '%s'", mock.configType)
-	}
-
-	if len(mock.configPaths) != 2 {
-		t.Errorf("Expected 2 config paths, got %d", len(mock.configPaths))
-	}
-
-	expectedPath0 := "/home/test/.goGenerateCFToken"
-	actualPath0 := strings.ReplaceAll(mock.configPaths[0], string(os.PathSeparator), "/")
-
-	if actualPath0 != expectedPath0 {
-		t.Errorf("Expected first path '%s', got '%s'", expectedPath0, actualPath0)
-	}
-
-	if mock.configPaths[1] != "." {
-		t.Errorf("Expected second path '.', got '%s'", mock.configPaths[1])
-	}
-
-	if mock.envPrefix != "CF" {
-		t.Errorf("Expected env prefix 'CF', got '%s'", mock.envPrefix)
-	}
-
-	if mock.defaults["api_token"] != "" || mock.defaults["zone"] != "" {
-		t.Errorf("Unexpected defaults: %v", mock.defaults)
-	}
-
-	if output != "" {
-		t.Errorf("Expected no stderr output, got '%q'", output)
+	if output != "Using config file: /test/config.yaml\n" {
+		t.Errorf("Expected output 'Using config file: /test/config.yaml\\n', got '%q'", output)
 	}
 }
 
 func Test_initConfig_Error(t *testing.T) {
-	mock := &mockViper{}
 	originalUserHomeDir := osUserHomeDir
 	originalExit := osExit
 
@@ -248,9 +195,9 @@ func Test_initConfig_Error(t *testing.T) {
 
 	defer func() { os.Stderr = originalStderr }()
 
-	initConfig(mock)
+	initConfig(&mockViper{})
 
-	w.Close()
+	_ = w.Close()
 
 	_, err = io.Copy(&buf, r)
 	if err != nil {
@@ -305,7 +252,7 @@ func Test_setConfigFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := &mockViper{}
+			m := mocks.NewMockViper(t)
 			originalUserHomeDir := osUserHomeDir
 
 			defer func() { osUserHomeDir = originalUserHomeDir }()
@@ -316,50 +263,35 @@ func Test_setConfigFile(t *testing.T) {
 
 			defer func() { ConfigFile = "" }()
 
-			err := setConfigFile(mock)
-
 			if tt.expectErr {
+				err := setConfigFile(m)
 				if err == nil {
 					t.Error("Expected error, got none")
 				} else if !strings.Contains(err.Error(), "no home dir") {
 					t.Errorf("Expected error containing 'no home dir', got '%v'", err)
 				}
 			} else {
-				if err != nil {
-					t.Errorf("Unexpected error: %v", err)
+				if tt.expectFile != "" {
+					m.EXPECT().SetConfigFile(tt.expectFile)
 				}
 
-				if tt.expectFile != "" && mock.configFile != tt.expectFile {
-					t.Errorf("Expected config file '%s', got '%s'", tt.expectFile, mock.configFile)
-				}
-
-				if len(tt.expectPaths) > 0 && len(mock.configPaths) != len(tt.expectPaths) {
-					t.Errorf(
-						"Expected %d paths, got %d",
-						len(tt.expectPaths),
-						len(mock.configPaths),
-					)
-				}
-
-				for i, path := range tt.expectPaths {
-					if i < len(mock.configPaths) {
-						actualPath := strings.ReplaceAll(
-							mock.configPaths[i],
-							string(os.PathSeparator),
-							"/",
-						)
-						if actualPath != path {
-							t.Errorf("Expected path %d to be '%s', got '%s'", i, path, actualPath)
-						}
+				if len(tt.expectPaths) > 0 {
+					for _, p := range tt.expectPaths {
+						m.EXPECT().AddConfigPath(p)
 					}
 				}
 
-				if tt.expectName != "" && mock.configName != tt.expectName {
-					t.Errorf("Expected config name '%s', got '%s'", tt.expectName, mock.configName)
+				if tt.expectName != "" {
+					m.EXPECT().SetConfigName(tt.expectName)
 				}
 
-				if tt.expectType != "" && mock.configType != tt.expectType {
-					t.Errorf("Expected config type '%s', got '%s'", tt.expectType, mock.configType)
+				if tt.expectType != "" {
+					m.EXPECT().SetConfigType(tt.expectType)
+				}
+
+				err := setConfigFile(m)
+				if err != nil {
+					t.Errorf("Unexpected error: %v", err)
 				}
 			}
 		})
@@ -367,20 +299,15 @@ func Test_setConfigFile(t *testing.T) {
 }
 
 func Test_setEnv(t *testing.T) {
-	mock := &mockViper{}
-	setEnv(mock)
+	m := mocks.NewMockViper(t)
 
-	if mock.envPrefix != "CF" {
-		t.Errorf("Expected env prefix 'CF', got '%s'", mock.envPrefix)
-	}
+	m.EXPECT().SetEnvPrefix("CF")
+	m.EXPECT().SetEnvKeyReplacer(mock.AnythingOfType("*strings.Replacer"))
+	m.EXPECT().AutomaticEnv()
+	m.EXPECT().SetDefault("api_token", "")
+	m.EXPECT().SetDefault("zone", "")
 
-	if mock.keyReplacer == nil || mock.keyReplacer.Replace("a.b") != "a_b" {
-		t.Errorf("Expected key replacer to replace '.' with '_', got %v", mock.keyReplacer)
-	}
-
-	if mock.defaults["api_token"] != "" || mock.defaults["zone"] != "" {
-		t.Errorf("Unexpected defaults: %v", mock.defaults)
-	}
+	setEnv(m)
 }
 
 func Test_loadConfig(t *testing.T) {
@@ -409,9 +336,12 @@ func Test_loadConfig(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mock := &mockViper{
-				readConfigError: tt.readConfigError,
-				configFileUsed:  tt.configFileUsed,
+			m := mocks.NewMockViper(t)
+
+			m.EXPECT().ReadInConfig().Return(tt.readConfigError).Once()
+
+			if tt.readConfigError == nil {
+				m.EXPECT().ConfigFileUsed().Return(tt.configFileUsed).Once()
 			}
 
 			var buf bytes.Buffer
@@ -427,9 +357,9 @@ func Test_loadConfig(t *testing.T) {
 
 			defer func() { os.Stderr = originalStderr }()
 
-			loadConfig(mock)
+			loadConfig(m)
 
-			w.Close()
+			_ = w.Close()
 
 			_, err = io.Copy(&buf, r)
 			if err != nil {

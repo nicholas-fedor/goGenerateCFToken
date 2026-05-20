@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 Nicholas Fedor <nick@nickfedor.com>
+Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -92,13 +92,15 @@ func init() {
 	generateCmd.Flags().StringP("zone", "z", "", "Cloudflare zone name")
 
 	// Bind the token flag to the api_token configuration key.
-	if err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token")); err != nil {
+	err := viper.BindPFlag("api_token", generateCmd.Flags().Lookup("token"))
+	if err != nil {
 		// Panic on binding failure, as it indicates a critical setup error.
 		panic(fmt.Errorf("%w: %w", ErrBindAPITokenFlag, err))
 	}
 
 	// Bind the zone flag to the zone configuration key.
-	if err := viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone")); err != nil {
+	err = viper.BindPFlag("zone", generateCmd.Flags().Lookup("zone"))
+	if err != nil {
 		// Panic on binding failure, as it indicates a critical setup error.
 		panic(fmt.Errorf("%w: %w", ErrBindZoneFlag, err))
 	}
