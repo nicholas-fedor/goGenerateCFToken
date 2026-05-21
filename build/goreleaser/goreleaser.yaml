@@ -96,7 +96,7 @@ archives:
       - goos: windows
         formats: ["zip"]
     files:
-      - LICENSE.md
+      - LICENSE
     builds_info:
       mtime: "{{ .CommitTimestamp }}"
 
