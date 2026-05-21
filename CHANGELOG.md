@@ -8,13 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Tests
+### Changed
 
-- Use filepath.Join for cross-platform path assertions in config tests by @nicholas-fedor in [#525](https://github.com/nicholas-fedor/goGenerateCFToken/pull/525)
-
-### New Contributors
-
-- @github-actions[bot] made their first contribution in [#524](https://github.com/nicholas-fedor/goGenerateCFToken/pull/524)
+- Correct license file reference by @nicholas-fedor in [#527](https://github.com/nicholas-fedor/goGenerateCFToken/pull/527)
 
 ## [1.2.0] - 2026-05-21
 
@@ -62,6 +58,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Update Cloudflare SDK from v6 to v7 and modernize project tooling by @nicholas-fedor in [#522](https://github.com/nicholas-fedor/goGenerateCFToken/pull/522)
+
+### Tests
+
+- Use filepath.Join for cross-platform path assertions in config tests by @nicholas-fedor in [#525](https://github.com/nicholas-fedor/goGenerateCFToken/pull/525)
+
+### New Contributors
+
+- @github-actions[bot] made their first contribution in [#524](https://github.com/nicholas-fedor/goGenerateCFToken/pull/524)
 
 ## [1.1.14] - 2026-04-01
 
