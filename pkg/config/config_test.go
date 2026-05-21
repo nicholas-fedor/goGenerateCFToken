@@ -22,6 +22,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -117,12 +118,15 @@ func TestInitConfig_NilFunc(t *testing.T) {
 func Test_initConfig(t *testing.T) {
 	m := mocks.NewMockViper(t)
 
-	cfgFileUsed := "/test/config.yaml"
+	cfgFileUsed := filepath.Join("test", "config.yaml")
 
 	m.EXPECT().ConfigFileUsed().Return(cfgFileUsed)
 	m.EXPECT().ReadInConfig().Return(nil)
 
-	m.EXPECT().AddConfigPath("/home/test/.goGenerateCFToken")
+	homeDir := filepath.Join("home", "test")
+	expectedConfigPath := filepath.Join(homeDir, AppDirName)
+
+	m.EXPECT().AddConfigPath(expectedConfigPath)
 	m.EXPECT().AddConfigPath(".")
 	m.EXPECT().SetConfigName("config")
 	m.EXPECT().SetConfigType("yaml")
@@ -136,7 +140,7 @@ func Test_initConfig(t *testing.T) {
 
 	defer func() { osUserHomeDir = originalUserHomeDir }()
 
-	osUserHomeDir = func() (string, error) { return "/home/test", nil }
+	osUserHomeDir = func() (string, error) { return homeDir, nil }
 
 	var buf bytes.Buffer
 
@@ -162,8 +166,8 @@ func Test_initConfig(t *testing.T) {
 
 	output := buf.String()
 
-	if output != "Using config file: /test/config.yaml\n" {
-		t.Errorf("Expected output 'Using config file: /test/config.yaml\\n', got '%q'", output)
+	if output != "Using config file: "+cfgFileUsed+"\n" {
+		t.Errorf("Expected output 'Using config file: %s\\n', got '%q'", cfgFileUsed, output)
 	}
 }
 
@@ -233,13 +237,13 @@ func Test_setConfigFile(t *testing.T) {
 	}{
 		{
 			name:       "CustomConfigFile",
-			configFile: "/custom/config.yaml",
-			expectFile: "/custom/config.yaml",
+			configFile: filepath.Join("custom", "config.yaml"),
+			expectFile: filepath.Join("custom", "config.yaml"),
 		},
 		{
 			name:        "DefaultConfig",
-			homeDir:     "/home/test",
-			expectPaths: []string{"/home/test/.goGenerateCFToken", "."},
+			homeDir:     filepath.Join("home", "test"),
+			expectPaths: []string{filepath.Join(filepath.Join("home", "test"), AppDirName), "."},
 			expectName:  "config",
 			expectType:  "yaml",
 		},
@@ -319,8 +323,8 @@ func Test_loadConfig(t *testing.T) {
 	}{
 		{
 			name:           "ConfigFound",
-			configFileUsed: "/test/config.yaml",
-			expectOutput:   "Using config file: /test/config.yaml\n",
+			configFileUsed: filepath.Join("test", "config.yaml"),
+			expectOutput:   "Using config file: " + filepath.Join("test", "config.yaml") + "\n",
 		},
 		{
 			name:            "ConfigNotFound",
