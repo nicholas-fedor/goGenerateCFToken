@@ -10,6 +10,7 @@
 [![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/nicholas-fedor/go-remove)
 [![latest version](https://img.shields.io/github/tag/nicholas-fedor/goGenerateCFToken.svg)](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
+[![Pulls from DockerHub](https://img.shields.io/docker/pulls/nickfedor/gogeneratecftoken.svg)](https://hub.docker.com/r/nickfedor/gogeneratecftoken)
 [![AGPLv3 License](https://img.shields.io/github/license/nicholas-fedor/goGenerateCFToken.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 ----------
