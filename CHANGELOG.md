@@ -8,14 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- Correct license file reference by @nicholas-fedor in [#527](https://github.com/nicholas-fedor/goGenerateCFToken/pull/527)
+- Add docker badge by @nicholas-fedor in [#529](https://github.com/nicholas-fedor/goGenerateCFToken/pull/529)
 
 ## [1.2.0] - 2026-05-21
 
 ### Changed
 
+- Correct license file reference by @nicholas-fedor in [#527](https://github.com/nicholas-fedor/goGenerateCFToken/pull/527)
 - Modernize CI/CD with Docker support, security scanning, and release automation by @nicholas-fedor in [#523](https://github.com/nicholas-fedor/goGenerateCFToken/pull/523)
 - Simplify lint workflow with actionlint-action by @nicholas-fedor in [#516](https://github.com/nicholas-fedor/goGenerateCFToken/pull/516)
 
@@ -65,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New Contributors
 
-- @github-actions[bot] made their first contribution in [#524](https://github.com/nicholas-fedor/goGenerateCFToken/pull/524)
+- @github-actions[bot] made their first contribution in [#528](https://github.com/nicholas-fedor/goGenerateCFToken/pull/528)
 
 ## [1.1.14] - 2026-04-01
 
