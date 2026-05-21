@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add docker badge by @nicholas-fedor in [#529](https://github.com/nicholas-fedor/goGenerateCFToken/pull/529)
 
+### Chores
+
+- Update cimg/go:1.26.3 docker digest to 9a5aff9 by @renovate[bot] in [#533](https://github.com/nicholas-fedor/goGenerateCFToken/pull/533)
+- Update step-security/harden-runner action to v2.19.4 by @renovate[bot] in [#534](https://github.com/nicholas-fedor/goGenerateCFToken/pull/534)
+
 ### Removed
 
 - Remove healthcheck by @nicholas-fedor in [#531](https://github.com/nicholas-fedor/goGenerateCFToken/pull/531)
