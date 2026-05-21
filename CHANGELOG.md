@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add docker badge by @nicholas-fedor in [#529](https://github.com/nicholas-fedor/goGenerateCFToken/pull/529)
 
+### Removed
+
+- Remove healthcheck by @nicholas-fedor in [#531](https://github.com/nicholas-fedor/goGenerateCFToken/pull/531)
+
 ## [1.2.0] - 2026-05-21
 
 ### Changed
