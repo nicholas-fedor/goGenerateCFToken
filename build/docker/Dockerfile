@@ -18,6 +18,4 @@ COPY --chmod=0755 ${TARGETPLATFORM}/gogeneratecftoken /gogeneratecftoken
 
 USER 65532:65532
 
-HEALTHCHECK CMD ["/gogeneratecftoken", "--health-check"]
-
 ENTRYPOINT ["/gogeneratecftoken"]
