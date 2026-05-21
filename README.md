@@ -24,6 +24,7 @@ A simple CLI tool for generating Cloudflare API tokens for use by tools, such as
 - [Quick Start](#quick-start)
 - [Installation](#installation)
   - [Release Binaries](#release-binaries)
+  - [Docker](#docker)
   - [Source](#source)
 - [Usage](#usage)
   - [Overview](#overview)
@@ -119,6 +120,42 @@ The following are CLI scripts for installing to the user's `go/bin` directory:
     ```bash
     mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | grep -o 'https://[^"]*darwin_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin goGenerateCFToken
     ```
+
+### Docker
+
+Run goGenerateCFToken using Docker without installing it locally:
+
+```bash
+docker run --rm ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
+```
+
+> [!Warning]
+> The Docker image runs as the `nobody` user (UID 65532). When mounting a configuration file, ensure proper file permissions:
+>
+> - The config file must be readable by UID 65532
+> - Consider using `chmod 644` on the config file or mounting with appropriate user mapping
+> - Environment variable credentials (`-e`) bypass file permission issues
+
+To use a configuration file, mount it as a volume:
+
+```bash
+docker run --rm -v $HOME/.goGenerateCFToken/config.yaml:/config.yaml \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test --config /config.yaml
+```
+
+Alternatively, you can run as the current user to avoid permission issues:
+
+```bash
+docker run --rm -u $(id -u):$(id -g) -v $HOME/.goGenerateCFToken/config.yaml:/config.yaml \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test --config /config.yaml
+```
+
+Or pass credentials via environment variables:
+
+```bash
+docker run --rm -e CF_API_TOKEN="your-master-api-token" -e CF_ZONE="example.com" \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
+```
 
 ### Source
 

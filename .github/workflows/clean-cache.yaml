@@ -1,4 +1,5 @@
-name: Cache cleanup
+---
+name: Cleanup GH Actions Cache
 on:
   workflow_dispatch: {}
   pull_request:
@@ -6,31 +7,30 @@ on:
       - closed
 
 permissions:
-  actions: write
-  contents: read
+  contents: read # Set default read-only permissions
 
 jobs:
   cleanup:
+    name: Cleanup Cache
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      - name: Harden the Runner (Step Security)
         uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
         with:
           egress-policy: audit
 
-      - name: Cleanup
-        run: |
-          echo "Fetching list of cache key"
-          cacheKeysForPR=$(gh cache list --ref "$BRANCH" --limit 100 --json id --jq '.[].id')
-          ## Setting this to not fail the workflow while deleting cache keys.
-          set +e
-          echo "Deleting caches..."
-          for cacheKey in $cacheKeysForPR
-          do
-              gh cache delete "$cacheKey"
-          done
-          echo "Done"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
+      - name: Checkout Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Clean Cache
+        uses: ./.github/actions/clean-cache
+        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          gh-repo: ${{ github.repository }}
+          branch: refs/pull/${{ github.event.pull_request.number }}/merge
