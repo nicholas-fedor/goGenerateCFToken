@@ -38,4 +38,6 @@ COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 
 COPY --chmod=0755 --from=builder /gogeneratecftoken/bin/gogeneratecftoken /gogeneratecftoken
 
+USER 65532:65532
+
 ENTRYPOINT ["/gogeneratecftoken"]

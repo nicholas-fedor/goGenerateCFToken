@@ -34,12 +34,14 @@ LABEL \
     "org.opencontainers.image.documentation"="https://github.com/nicholas-fedor/gogeneratecftoken" \
     "org.opencontainers.image.source"="https://github.com/nicholas-fedor/gogeneratecftoken" \
     "org.opencontainers.image.licenses"="AGPLv3" \
-    "org.opencontainers.image.title"="goGenerateCFToken" \
+    "org.opencontainers.image.title"="gogeneratecftoken" \
     "org.opencontainers.image.description"="A simple CLI tool for generating Cloudflare API tokens."
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 
 COPY --chmod=0755 --from=builder /gogeneratecftoken/bin/gogeneratecftoken /gogeneratecftoken
+
+USER 65532:65532
 
 ENTRYPOINT ["/gogeneratecftoken"]

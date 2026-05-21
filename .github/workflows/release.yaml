@@ -20,9 +20,9 @@ jobs:
   test:
     name: Run Tests
     uses: ./.github/workflows/test.yaml
+    secrets: inherit
     permissions:
       contents: read # For code checkout
-
   build:
     name: Run Build
     needs: [test]

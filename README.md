@@ -129,11 +129,25 @@ Run goGenerateCFToken using Docker without installing it locally:
 docker run --rm ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
 ```
 
+> [!Warning]
+> The Docker image runs as the `nobody` user (UID 65532). When mounting a configuration file, ensure proper file permissions:
+>
+> - The config file must be readable by UID 65532
+> - Consider using `chmod 644` on the config file or mounting with appropriate user mapping
+> - Environment variable credentials (`-e`) bypass file permission issues
+
 To use a configuration file, mount it as a volume:
 
 ```bash
-docker run --rm -v $HOME/.goGenerateCFToken/config.yaml:/root/.goGenerateCFToken/config.yaml \
-  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
+docker run --rm -v $HOME/.goGenerateCFToken/config.yaml:/config.yaml \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test --config /config.yaml
+```
+
+Alternatively, you can run as the current user to avoid permission issues:
+
+```bash
+docker run --rm -u $(id -u):$(id -g) -v $HOME/.goGenerateCFToken/config.yaml:/config.yaml \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test --config /config.yaml
 ```
 
 Or pass credentials via environment variables:

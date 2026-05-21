@@ -14,6 +14,7 @@ jobs:
     name: Cleanup Cache
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       actions: write
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged
     steps:

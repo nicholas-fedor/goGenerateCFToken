@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.default_branch == github.ref_name
     permissions:
+      contents: read # For code checkout
       security-events: write # For upload results to code-scanning dashboard
       id-token: write # For publishing results and getting a badge
 
