@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Tests
+
+- Use filepath.Join for cross-platform path assertions in config tests by @nicholas-fedor in [#525](https://github.com/nicholas-fedor/goGenerateCFToken/pull/525)
+
+### New Contributors
+
+- @github-actions[bot] made their first contribution in [#524](https://github.com/nicholas-fedor/goGenerateCFToken/pull/524)
+
 ## [1.2.0] - 2026-05-21
 
 ### Changed
@@ -697,6 +707,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
+- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.2.0...HEAD)
 - [1.2.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.14...v1.2.0)
 - [1.1.14](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.13...v1.1.14)
 - [1.1.13](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.12...v1.1.13)
