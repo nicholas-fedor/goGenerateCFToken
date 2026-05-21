@@ -1,66 +1,76 @@
 ---
 name: Run Security Checks
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
     paths:
       - cmd/**
       - pkg/**
+      - main.go
       - go.mod
       - go.sum
-      - main.go
-  push:
-    branches: [main]
-
-permissions:
-  contents: read
-  actions: read
-  pull-requests: read
-  security-events: write
+  schedule:
+    - cron: "0 0 * * *"
 
 env:
   OUTPUT_FILE: results.sarif
 
+permissions:
+  contents: read # Set default read-only permissions
+
 jobs:
   gosec:
-    name: Golang Security Checker
+    name: Run gosec Scanner
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      - name: Harden the Runner (Step Security)
         uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
         with:
           egress-policy: audit
 
-      - name: Checkout Source
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Checkout Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
       - name: Run Gosec Security Scanner
         uses: securego/gosec@4a3bd8af174872c778439083ded7adbf3747e770 # v2.26.1
         with:
-          args: "-no-fail -fmt sarif -out results.sarif -tests ./..."
+          args: "-exclude-generated -no-fail -fmt sarif -out ${{ env.OUTPUT_FILE }} ./..."
+
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
         with:
-          # Path to SARIF file relative to the root of the repository
-          sarif_file: results.sarif
+          sarif_file: ${{ env.OUTPUT_FILE }}
+          category: gosec-sarif
 
   govulncheck:
-    name: govulncheck
+    name: Run govulncheck Scanner
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      - name: Harden the Runner (Step Security)
         uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
         with:
           egress-policy: audit
 
-      - id: govulncheck
-        uses: nicholas-fedor/govulncheck-action@b438bbbcb5a07abf8d322c367da4a3d45f99e183
+      - name: Run govulncheck
+        id: govulncheck
+        uses: nicholas-fedor/govulncheck-action@ec1863b9cabfebf9821a767490e935e70dd18af8 # v1.0.4
         with:
           output-format: sarif
           output-file: ${{ env.OUTPUT_FILE }}
-          go-version-file: go.mod
-          go-version-input: ""
+          go-version-file: "go.mod"
 
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba # v4.35.5
         with:
           sarif_file: ${{ env.OUTPUT_FILE }}
+          category: govulncheck-sarif

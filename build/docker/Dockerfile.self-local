@@ -1,0 +1,45 @@
+ARG BASE_IMAGE=golang:alpine@sha256:91eda9776261207ea25fd06b5b7fed8d397dd2c0a283e77f2ab6e91bfa71079d
+
+# Builder Stage
+FROM ${BASE_IMAGE} AS builder
+
+RUN apk add --no-cache ca-certificates tzdata git alpine-sdk
+
+WORKDIR /gogeneratecftoken
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
+COPY . /gogeneratecftoken
+
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -trimpath \
+    -a \
+    -ldflags "\
+    -s -w \
+    -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Version=$(git describe --tags --always) \
+    -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Commit=$(git rev-parse --short HEAD)$(if [ -n "$(git status --porcelain)" ]; then echo "-dirty"; fi) \
+    -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Date=$(date -u +%Y-%m-%d_%H:%M:%S) \
+    " \
+    -o ./bin/gogeneratecftoken \
+    .
+
+
+# Final Build
+FROM scratch
+
+LABEL \
+    "org.opencontainers.image.documentation"="https://github.com/nicholas-fedor/gogeneratecftoken" \
+    "org.opencontainers.image.source"="https://github.com/nicholas-fedor/gogeneratecftoken" \
+    "org.opencontainers.image.licenses"="AGPLv3" \
+    "org.opencontainers.image.title"="goGenerateCFToken" \
+    "org.opencontainers.image.description"="A simple CLI tool for generating Cloudflare API tokens."
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+
+COPY --chmod=0755 --from=builder /gogeneratecftoken/bin/gogeneratecftoken /gogeneratecftoken
+
+ENTRYPOINT ["/gogeneratecftoken"]

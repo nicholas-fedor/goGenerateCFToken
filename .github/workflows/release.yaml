@@ -1,43 +1,48 @@
-name: Release Binaries
+---
+name: Release Production
 
 on:
+  workflow_dispatch:
+    inputs:
+      DRY_RUN:
+        description: "Run in test mode without publishing artifacts"
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
-  workflow_dispatch: {}
+      - "v[0-9]*.[0-9]*.[0-9]*"
 
 permissions:
-  contents: write
-  packages: write
-  attestations: write
-  id-token: write
+  contents: read # Set default read-only permissions
 
 jobs:
-  lint:
-    uses: ./.github/workflows/lint-go.yaml
-
   test:
+    name: Run Tests
     uses: ./.github/workflows/test.yaml
+    permissions:
+      contents: read # For code checkout
 
   build:
+    name: Run Build
+    needs: [test]
     uses: ./.github/workflows/build.yaml
-    secrets: inherit
-    needs:
-      - test
-      - lint
+    permissions:
+      contents: write # For code checkout and publishing releases
+      packages: write # For pushing images to registries
+      attestations: write # For generating provenance and SBOMs
+      id-token: write # For OIDC auth to Docker Hub and GHCR
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    with:
+      ENVIRONMENT: CI-Release
+      DRY_RUN: ${{ inputs.DRY_RUN || false }}
 
-  renew-docs:
-    name: Refresh pkg.go.dev
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
-        with:
-          egress-policy: audit
-
-      - name: Pull new module version
-        uses: nicholas-fedor/go-proxy-pull-action@6568a554a1ba0271d4b6641a767e7c9aa6011b6a
-        with:
-          goproxy: https://proxy.golang.org
-          import_path: github.com/nicholas-fedor/gogeneratecftoken
+  update-go-docs:
+    name: Run Go Pkg Update
+    needs: [build]
+    if: ${{ !inputs.DRY_RUN }}
+    permissions:
+      contents: read
+    uses: ./.github/workflows/update-go-docs.yaml
