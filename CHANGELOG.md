@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update github/codeql-action action to v4.36.0 by @renovate[bot] in [#541](https://github.com/nicholas-fedor/goGenerateCFToken/pull/541)
+- Update docker/login-action action to v4.2.0 by @renovate[bot] in [#540](https://github.com/nicholas-fedor/goGenerateCFToken/pull/540)
 - Update golangci/golangci-lint-action action to v9.2.1 by @renovate[bot] in [#538](https://github.com/nicholas-fedor/goGenerateCFToken/pull/538)
 - Update module golang.org/x/sys to v0.45.0 by @renovate[bot] in [#536](https://github.com/nicholas-fedor/goGenerateCFToken/pull/536)
 - Update cimg/go:1.26.3 docker digest to 9a5aff9 by @renovate[bot] in [#533](https://github.com/nicholas-fedor/goGenerateCFToken/pull/533)
