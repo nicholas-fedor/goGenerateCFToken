@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/rogpeppe/go-internal to v1.15.0 by @renovate[bot] in [#547](https://github.com/nicholas-fedor/goGenerateCFToken/pull/547)
 - Update docker/setup-qemu-action action to v4.1.0 by @renovate[bot] in [#545](https://github.com/nicholas-fedor/goGenerateCFToken/pull/545)
 - Update docker/setup-buildx-action action to v4.1.0 by @renovate[bot] in [#543](https://github.com/nicholas-fedor/goGenerateCFToken/pull/543)
 - Update github/codeql-action action to v4.36.0 by @renovate[bot] in [#541](https://github.com/nicholas-fedor/goGenerateCFToken/pull/541)
