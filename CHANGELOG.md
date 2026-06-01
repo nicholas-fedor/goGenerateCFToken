@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update securego/gosec action to v2.27.1 by @renovate[bot] in [#551](https://github.com/nicholas-fedor/goGenerateCFToken/pull/551)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.4.0 by @renovate[bot] in [#549](https://github.com/nicholas-fedor/goGenerateCFToken/pull/549)
 - Update module github.com/rogpeppe/go-internal to v1.15.0 by @renovate[bot] in [#547](https://github.com/nicholas-fedor/goGenerateCFToken/pull/547)
 - Update docker/setup-qemu-action action to v4.1.0 by @renovate[bot] in [#545](https://github.com/nicholas-fedor/goGenerateCFToken/pull/545)
