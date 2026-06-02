@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update actions/checkout action to v6.0.3 by @renovate[bot] in [#555](https://github.com/nicholas-fedor/goGenerateCFToken/pull/555)
 - Update github/codeql-action action to v4.36.1 by @renovate[bot] in [#553](https://github.com/nicholas-fedor/goGenerateCFToken/pull/553)
 - Update securego/gosec action to v2.27.1 by @renovate[bot] in [#551](https://github.com/nicholas-fedor/goGenerateCFToken/pull/551)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.4.0 by @renovate[bot] in [#549](https://github.com/nicholas-fedor/goGenerateCFToken/pull/549)
