@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/actionlint-action action to v1.0.4 by @renovate[bot] in [#568](https://github.com/nicholas-fedor/goGenerateCFToken/pull/568)
+- Update codecov/codecov-action action to v6.0.2 by @renovate[bot] in [#567](https://github.com/nicholas-fedor/goGenerateCFToken/pull/567)
 - Update github/codeql-action action to v4.36.2 by @renovate[bot] in [#565](https://github.com/nicholas-fedor/goGenerateCFToken/pull/565)
 - Update cimg/go docker tag to v1.26.4 by @renovate[bot] in [#563](https://github.com/nicholas-fedor/goGenerateCFToken/pull/563)
 - Update golang:alpine docker digest to f23e8b2 by @renovate[bot] in [#561](https://github.com/nicholas-fedor/goGenerateCFToken/pull/561)
