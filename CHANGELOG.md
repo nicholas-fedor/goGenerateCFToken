@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module golang.org/x/sys to v0.46.0 by @renovate[bot] in [#574](https://github.com/nicholas-fedor/goGenerateCFToken/pull/574)
+- Update nicholas-fedor/govulncheck-action action to v1.0.5 by @renovate[bot] in [#573](https://github.com/nicholas-fedor/goGenerateCFToken/pull/573)
+- Update nicholas-fedor/actionlint-action action to v1.0.5 by @renovate[bot] in [#572](https://github.com/nicholas-fedor/goGenerateCFToken/pull/572)
 - Update codecov/codecov-action action to v7 by @renovate[bot] in [#570](https://github.com/nicholas-fedor/goGenerateCFToken/pull/570)
 - Update nicholas-fedor/actionlint-action action to v1.0.4 by @renovate[bot] in [#568](https://github.com/nicholas-fedor/goGenerateCFToken/pull/568)
 - Update codecov/codecov-action action to v6.0.2 by @renovate[bot] in [#567](https://github.com/nicholas-fedor/goGenerateCFToken/pull/567)
