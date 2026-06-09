@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update alpine docker tag to v3.24.0 by @renovate[bot] in [#582](https://github.com/nicholas-fedor/goGenerateCFToken/pull/582)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.1 by @renovate[bot] in [#580](https://github.com/nicholas-fedor/goGenerateCFToken/pull/580)
 - Update nicholas-fedor/actionlint-action action to v1.0.6 by @renovate[bot] in [#578](https://github.com/nicholas-fedor/goGenerateCFToken/pull/578)
 - Update module golang.org/x/text to v0.38.0 by @renovate[bot] in [#575](https://github.com/nicholas-fedor/goGenerateCFToken/pull/575)
