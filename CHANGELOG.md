@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.5.0 by @renovate[bot] in [#589](https://github.com/nicholas-fedor/goGenerateCFToken/pull/589)
+- Update golang:alpine docker digest to bd14630 by @renovate[bot] in [#588](https://github.com/nicholas-fedor/goGenerateCFToken/pull/588)
 - Update alpine:3.24.0 docker digest to a2d49ea by @renovate[bot] in [#586](https://github.com/nicholas-fedor/goGenerateCFToken/pull/586)
 - Update alpine:3.24.0 docker digest to 8ddefa9 by @renovate[bot] in [#584](https://github.com/nicholas-fedor/goGenerateCFToken/pull/584)
 - Update alpine docker tag to v3.24.0 by @renovate[bot] in [#582](https://github.com/nicholas-fedor/goGenerateCFToken/pull/582)
