@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.5 by @renovate[bot] in [#620](https://github.com/nicholas-fedor/goGenerateCFToken/pull/620)
+- Update nicholas-fedor/actionlint-action action to v1.0.10 by @renovate[bot] in [#619](https://github.com/nicholas-fedor/goGenerateCFToken/pull/619)
 - Update actions/checkout action to v7 by @renovate[bot] in [#616](https://github.com/nicholas-fedor/goGenerateCFToken/pull/616)
 - Update golang:alpine docker digest to 3ad5730 by @renovate[bot] in [#615](https://github.com/nicholas-fedor/goGenerateCFToken/pull/615)
 - Update module github.com/pelletier/go-toml/v2 to v2.4.0 by @renovate[bot] in [#613](https://github.com/nicholas-fedor/goGenerateCFToken/pull/613)
