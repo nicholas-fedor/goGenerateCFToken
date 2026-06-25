@@ -20,7 +20,7 @@ mkdocs.yml
 examples/
 
 # Ignore test directories and data
-pkg/*/mocks/
+internal/*/mocks/
 
 # Ignore scripts and tools
 scripts/

@@ -1,0 +1,16 @@
+---
+title: {{ .Title }}
+type: docs
+---
+
+{{ .Description }}
+{{ range .Sections }}
+## {{ .Title }}
+
+{{ .Description }}
+
+| Command | Description |
+|---------|-------------|
+{{ range .SubCommands }}| [{{ .Name }}]({{ .URL }}) | {{ .Description }} |
+{{ end }}
+{{ end }}

@@ -1,0 +1,49 @@
+# Hugo default output directory
+/public
+
+# Generated files by hugo
+/hugo_stats.json
+
+# Directory for storing Hugo resources
+/resources/_gen
+
+# Temporary lock file while building
+/.hugo_build.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Obsidian files
+.obsidian/
+.trash/
