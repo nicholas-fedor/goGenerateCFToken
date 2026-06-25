@@ -55,7 +55,7 @@ func Test_cobraExtractor_Extract(t *testing.T) {
 				Use:   "test",
 				Short: "Test command",
 				Long:  "A test command",
-				Run: func(cmd *cobra.Command, args []string) {},
+				Run:   func(cmd *cobra.Command, args []string) {},
 			}
 
 			got := e.Extract(cmd, tt.parentPath)
@@ -175,10 +175,10 @@ func Test_cobraExtractor_buildDescription(t *testing.T) {
 
 func Test_cobraExtractor_buildUseLine(t *testing.T) {
 	tests := []struct {
-		name       string
-		use        string
-		fullPath   string
-		want       string
+		name     string
+		use      string
+		fullPath string
+		want     string
 	}{
 		{
 			name:     "empty use",
@@ -226,6 +226,7 @@ func Test_cobraExtractor_buildFlags(t *testing.T) {
 			flags: func() *pflag.FlagSet {
 				fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
 				fs.String("name", "", "A name flag")
+
 				return fs
 			}(),
 			want: 1,
