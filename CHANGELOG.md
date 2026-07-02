@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/actionlint-action action to v1.0.16 by @renovate[bot] in [#649](https://github.com/nicholas-fedor/goGenerateCFToken/pull/649)
+- Update github/codeql-action action to v4.36.3 by @renovate[bot] in [#648](https://github.com/nicholas-fedor/goGenerateCFToken/pull/648)
 - Update docker/setup-qemu-action action to v4.2.0 by @renovate[bot] in [#646](https://github.com/nicholas-fedor/goGenerateCFToken/pull/646)
 - Update golangci/golangci-lint-action action to v9.3.0 by @renovate[bot] in [#644](https://github.com/nicholas-fedor/goGenerateCFToken/pull/644)
 - Update goreleaser/goreleaser-action action to v7.2.3 by @renovate[bot] in [#642](https://github.com/nicholas-fedor/goGenerateCFToken/pull/642)
