@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.13 by @renovate[bot] in [#660](https://github.com/nicholas-fedor/goGenerateCFToken/pull/660)
+- Update nicholas-fedor/actionlint-action action to v1.0.17 by @renovate[bot] in [#659](https://github.com/nicholas-fedor/goGenerateCFToken/pull/659)
 - Update docker/login-action action to v4.4.0 by @renovate[bot] in [#657](https://github.com/nicholas-fedor/goGenerateCFToken/pull/657)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.12 by @renovate[bot] in [#656](https://github.com/nicholas-fedor/goGenerateCFToken/pull/656)
 - Update docker/setup-buildx-action action to v4.2.0 by @renovate[bot] in [#654](https://github.com/nicholas-fedor/goGenerateCFToken/pull/654)
