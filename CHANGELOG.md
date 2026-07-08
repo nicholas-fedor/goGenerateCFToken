@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.17 by @renovate[bot] in [#683](https://github.com/nicholas-fedor/goGenerateCFToken/pull/683)
+- Update cimg/go docker tag to v1.26.5 by @renovate[bot] in [#682](https://github.com/nicholas-fedor/goGenerateCFToken/pull/682)
 - Update github/codeql-action action to v4.37.0 by @renovate[bot] in [#679](https://github.com/nicholas-fedor/goGenerateCFToken/pull/679)
 - Update module golang.org/x/sys to v0.47.0 by @renovate[bot] in [#680](https://github.com/nicholas-fedor/goGenerateCFToken/pull/680)
 - Update golang:alpine docker digest to 9097beb by @renovate[bot] in [#677](https://github.com/nicholas-fedor/goGenerateCFToken/pull/677)
