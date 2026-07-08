@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update github/codeql-action action to v4.37.0 by @renovate[bot] in [#679](https://github.com/nicholas-fedor/goGenerateCFToken/pull/679)
+- Update module golang.org/x/sys to v0.47.0 by @renovate[bot] in [#680](https://github.com/nicholas-fedor/goGenerateCFToken/pull/680)
 - Update golang:alpine docker digest to 9097beb by @renovate[bot] in [#677](https://github.com/nicholas-fedor/goGenerateCFToken/pull/677)
 - Update go module directive to v1.26.5 by @renovate[bot] in [#675](https://github.com/nicholas-fedor/goGenerateCFToken/pull/675)
 - Update step-security/harden-runner action to v2.20.0 by @renovate[bot] in [#673](https://github.com/nicholas-fedor/goGenerateCFToken/pull/673)
