@@ -6,7 +6,6 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/goGenerateCFToken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/goGenerateCFToken/tree/main)
 [![codecov](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/goGenerateCFToken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/goGenerateCFToken&amp;utm_campaign=Badge_Grade)
-[![Go Report Card](https://goreportcard.com/badge/github.com/nicholas-fedor/goGenerateCFToken)](https://goreportcard.com/report/github.com/nicholas-fedor/goGenerateCFToken)
 [![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/nicholas-fedor/go-remove)
 [![latest version](https://img.shields.io/github/tag/nicholas-fedor/goGenerateCFToken.svg)](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
