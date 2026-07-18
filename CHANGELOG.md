@@ -115,6 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove go report card badge by @nicholas-fedor in [#708](https://github.com/nicholas-fedor/goGenerateCFToken/pull/708)
 - Remove healthcheck by @nicholas-fedor in [#531](https://github.com/nicholas-fedor/goGenerateCFToken/pull/531)
 
 ## [1.2.0] - 2026-05-21
