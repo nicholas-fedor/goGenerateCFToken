@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.30 by @renovate[bot] in [#721](https://github.com/nicholas-fedor/goGenerateCFToken/pull/721)
 - Update github/codeql-action action to v4.37.3 by @renovate[bot] in [#719](https://github.com/nicholas-fedor/goGenerateCFToken/pull/719)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.29 by @renovate[bot] in [#717](https://github.com/nicholas-fedor/goGenerateCFToken/pull/717)
 - Update github/codeql-action action to v4.37.2 by @renovate[bot] in [#716](https://github.com/nicholas-fedor/goGenerateCFToken/pull/716)
