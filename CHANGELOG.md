@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.31 by @renovate[bot] in [#725](https://github.com/nicholas-fedor/goGenerateCFToken/pull/725)
+- Update ossf/scorecard-action action to v2.4.4 by @renovate[bot] in [#726](https://github.com/nicholas-fedor/goGenerateCFToken/pull/726)
 - Update docker/login-action action to v4.5.0 by @renovate[bot] in [#723](https://github.com/nicholas-fedor/goGenerateCFToken/pull/723)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.30 by @renovate[bot] in [#721](https://github.com/nicholas-fedor/goGenerateCFToken/pull/721)
 - Update github/codeql-action action to v4.37.3 by @renovate[bot] in [#719](https://github.com/nicholas-fedor/goGenerateCFToken/pull/719)
