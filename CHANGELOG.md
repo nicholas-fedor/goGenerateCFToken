@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update step-security/harden-runner action to v2.20.1 by @renovate[bot] in [#756](https://github.com/nicholas-fedor/goGenerateCFToken/pull/756)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.38 by @renovate[bot] in [#754](https://github.com/nicholas-fedor/goGenerateCFToken/pull/754)
 - Update github/codeql-action action to v4.37.6 by @renovate[bot] in [#752](https://github.com/nicholas-fedor/goGenerateCFToken/pull/752)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.37 by @renovate[bot] in [#750](https://github.com/nicholas-fedor/goGenerateCFToken/pull/750)
