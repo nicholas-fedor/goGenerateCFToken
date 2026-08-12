@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module golang.org/x/text to v0.41.0 by @renovate[bot] in [#769](https://github.com/nicholas-fedor/goGenerateCFToken/pull/769)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.42 by @renovate[bot] in [#767](https://github.com/nicholas-fedor/goGenerateCFToken/pull/767)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.41 by @renovate[bot] in [#765](https://github.com/nicholas-fedor/goGenerateCFToken/pull/765)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.40 by @renovate[bot] in [#763](https://github.com/nicholas-fedor/goGenerateCFToken/pull/763)
