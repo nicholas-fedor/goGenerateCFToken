@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update golang:alpine docker digest to 3889b42 by @renovate[bot] in [#785](https://github.com/nicholas-fedor/goGenerateCFToken/pull/785)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.45 by @renovate[bot] in [#783](https://github.com/nicholas-fedor/goGenerateCFToken/pull/783)
 - Update step-security/harden-runner action to v2.21.0 by @renovate[bot] in [#781](https://github.com/nicholas-fedor/goGenerateCFToken/pull/781)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.44 by @renovate[bot] in [#780](https://github.com/nicholas-fedor/goGenerateCFToken/pull/780)
