@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/stretchr/testify to v1.12.0 by @renovate[bot] in [#789](https://github.com/nicholas-fedor/goGenerateCFToken/pull/789)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.46 by @renovate[bot] in [#787](https://github.com/nicholas-fedor/goGenerateCFToken/pull/787)
 - Update golang:alpine docker digest to 3889b42 by @renovate[bot] in [#785](https://github.com/nicholas-fedor/goGenerateCFToken/pull/785)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.45 by @renovate[bot] in [#783](https://github.com/nicholas-fedor/goGenerateCFToken/pull/783)
