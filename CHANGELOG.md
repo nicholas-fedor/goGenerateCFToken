@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update github/codeql-action action to v4.37.8 by @renovate[bot] in [#807](https://github.com/nicholas-fedor/goGenerateCFToken/pull/807)
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.9.0 by @renovate[bot] in [#805](https://github.com/nicholas-fedor/goGenerateCFToken/pull/805)
 - Update cimg/go:1.27.0 docker digest to 91e576b by @renovate[bot] in [#803](https://github.com/nicholas-fedor/goGenerateCFToken/pull/803)
 - Update go module directive to v1.27.0 by @renovate[bot] in [#798](https://github.com/nicholas-fedor/goGenerateCFToken/pull/798)
 - Update cimg/go docker tag to v1.27.0 by @renovate[bot] in [#800](https://github.com/nicholas-fedor/goGenerateCFToken/pull/800)
