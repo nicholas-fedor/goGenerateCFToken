@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update anchore/sbom-action action to v0.24.1 by @renovate[bot] in [#817](https://github.com/nicholas-fedor/goGenerateCFToken/pull/817)
 - Update securego/gosec action to v2.29.0 by @renovate[bot] in [#815](https://github.com/nicholas-fedor/goGenerateCFToken/pull/815)
 - Update github/codeql-action action to v4.37.9 by @renovate[bot] in [#813](https://github.com/nicholas-fedor/goGenerateCFToken/pull/813)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.49 by @renovate[bot] in [#814](https://github.com/nicholas-fedor/goGenerateCFToken/pull/814)
