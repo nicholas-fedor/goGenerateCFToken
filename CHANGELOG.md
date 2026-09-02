@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update cimg/go docker tag to v1.27.1 by @renovate[bot] in [#825](https://github.com/nicholas-fedor/goGenerateCFToken/pull/825)
 - Update orhun/git-cliff-action action to v4.9.0 by @renovate[bot] in [#824](https://github.com/nicholas-fedor/goGenerateCFToken/pull/824)
 - Update docker/setup-qemu-action action to v4.3.0 by @renovate[bot] in [#823](https://github.com/nicholas-fedor/goGenerateCFToken/pull/823)
 - Update step-security/harden-runner action to v2.21.1 by @renovate[bot] in [#821](https://github.com/nicholas-fedor/goGenerateCFToken/pull/821)
