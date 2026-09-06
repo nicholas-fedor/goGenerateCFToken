@@ -14,6 +14,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.10.0 by @renovate[bot] in [#832](https://github.com/nicholas-fedor/goGenerateCFToken/pull/832)
+- Update golang:alpine docker digest to cf6fca6 by @renovate[bot] in [#830](https://github.com/nicholas-fedor/goGenerateCFToken/pull/830)
+- Update golang:alpine docker digest to 26402d8 by @renovate[bot] in [#829](https://github.com/nicholas-fedor/goGenerateCFToken/pull/829)
+- Update go module directive to v1.27.1 by @renovate[bot] in [#826](https://github.com/nicholas-fedor/goGenerateCFToken/pull/826)
+- Update cimg/go docker tag to v1.27.1 by @renovate[bot] in [#825](https://github.com/nicholas-fedor/goGenerateCFToken/pull/825)
+- Update orhun/git-cliff-action action to v4.9.0 by @renovate[bot] in [#824](https://github.com/nicholas-fedor/goGenerateCFToken/pull/824)
+- Update docker/setup-qemu-action action to v4.3.0 by @renovate[bot] in [#823](https://github.com/nicholas-fedor/goGenerateCFToken/pull/823)
+- Update step-security/harden-runner action to v2.21.1 by @renovate[bot] in [#821](https://github.com/nicholas-fedor/goGenerateCFToken/pull/821)
+- Update anchore/sbom-action action to v0.24.2 by @renovate[bot] in [#819](https://github.com/nicholas-fedor/goGenerateCFToken/pull/819)
+- Update anchore/sbom-action action to v0.24.1 by @renovate[bot] in [#817](https://github.com/nicholas-fedor/goGenerateCFToken/pull/817)
+- Update securego/gosec action to v2.29.0 by @renovate[bot] in [#815](https://github.com/nicholas-fedor/goGenerateCFToken/pull/815)
+- Update github/codeql-action action to v4.37.9 by @renovate[bot] in [#813](https://github.com/nicholas-fedor/goGenerateCFToken/pull/813)
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.49 by @renovate[bot] in [#814](https://github.com/nicholas-fedor/goGenerateCFToken/pull/814)
+- Update github/codeql-action action to v4.37.9 by @renovate[bot]
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.48 by @renovate[bot] in [#810](https://github.com/nicholas-fedor/goGenerateCFToken/pull/810)
 - Update cimg/go:1.27.0 docker digest to 4da2d4b by @renovate[bot] in [#809](https://github.com/nicholas-fedor/goGenerateCFToken/pull/809)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.47 by @renovate[bot] in [#808](https://github.com/nicholas-fedor/goGenerateCFToken/pull/808)
 - Update github/codeql-action action to v4.37.8 by @renovate[bot] in [#807](https://github.com/nicholas-fedor/goGenerateCFToken/pull/807)
