@@ -67,7 +67,7 @@
 # Default: null
 packages:
   # Top-level internal directory, recursively includes all subpackages
-  github.com/nicholas-fedor/gogeneratecftoken/internal: {}
+  github.com/nicholas-fedor/gogeneratecftoken/v2/internal: {}
 
 # Generate mocks for all exported interfaces within specified packages or directories.
 # When true with packages section, processes all interfaces in listed packages.

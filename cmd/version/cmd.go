@@ -10,8 +10,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/metadata"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata"
 )
 
 // NewCommand creates the version command.

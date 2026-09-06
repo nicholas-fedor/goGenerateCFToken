@@ -1,4 +1,4 @@
-module github.com/nicholas-fedor/gogeneratecftoken
+module github.com/nicholas-fedor/gogeneratecftoken/v2
 
 go 1.27.1
 

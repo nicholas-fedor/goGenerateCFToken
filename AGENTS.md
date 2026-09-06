@@ -3,7 +3,7 @@
 ## Project Overview
 
 `goGenerateCFToken` is a Cobra-based Go CLI for generating Cloudflare API tokens.
-Module: `github.com/nicholas-fedor/gogeneratecftoken`, Go 1.27.1.
+Module: `github.com/nicholas-fedor/gogeneratecftoken/v2`, Go 1.27.1.
 
 - Entrypoint: `main.go` → `cmd.Execute()` → `cmd/root.go`
 - Commands: `cmd/token/`, `cmd/config/`, `cmd/credentials/`

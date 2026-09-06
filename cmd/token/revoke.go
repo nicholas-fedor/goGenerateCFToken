@@ -11,11 +11,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/cloudflare"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/prompt"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/cloudflare"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/prompt"
 )
 
 var errRevokeCancelled = errors.New("revocation cancelled")

@@ -1,7 +1,7 @@
 // Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/tools/docgen -out ../../www/content/cli-reference
+//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/v2/tools/docgen -out ../../www/content/cli-reference
 
 // Command docgen generates Hugo-compatible Markdown documentation for the CLI command tree.
 //
@@ -14,7 +14,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/cmd"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/cmd"
 )
 
 func main() {

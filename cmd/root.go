@@ -13,12 +13,12 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/cmd/config"
-	"github.com/nicholas-fedor/gogeneratecftoken/cmd/credentials"
-	"github.com/nicholas-fedor/gogeneratecftoken/cmd/token"
-	"github.com/nicholas-fedor/gogeneratecftoken/cmd/version"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/cmd/config"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/cmd/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/cmd/token"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/cmd/version"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/logging"
 )
 
 var rootCmd = &cobra.Command{

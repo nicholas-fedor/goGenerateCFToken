@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/credentials"
 )
 
 func Test_newSetCommand(t *testing.T) {

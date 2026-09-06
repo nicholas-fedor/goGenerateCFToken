@@ -3,7 +3,7 @@ version: "3"
 vars:
   BINARY_NAME: gogeneratecftoken
   BINARY_DIR: bin
-  PKG: github.com/nicholas-fedor/gogeneratecftoken
+  PKG: github.com/nicholas-fedor/gogeneratecftoken/v2
   VERSION:
     sh: "git describe --tags --always --dirty"
   COMMIT:

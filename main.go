@@ -8,7 +8,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/cmd"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/cmd"
 )
 
 func main() {

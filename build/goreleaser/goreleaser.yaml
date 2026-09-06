@@ -44,9 +44,9 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.Version={{.Version}}
-      - -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.CommitSHA={{.Commit}}
-      - -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.BuildTime={{.Date}}
+      - -X github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata.Version={{.Version}}
+      - -X github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata.CommitSHA={{.Commit}}
+      - -X github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata.BuildTime={{.Date}}
     env:
       - CGO_ENABLED=0
     goos:
