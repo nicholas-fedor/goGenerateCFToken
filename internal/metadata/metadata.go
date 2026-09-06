@@ -83,15 +83,15 @@ func GetGoVersion() string {
 	return "unknown"
 }
 
-// ConvertToLocal converts an RFC3339 UTC timestamp to a local time string.
+// FormatUTC formats an RFC3339 timestamp as a UTC wall-clock string.
 //
 // Parameters:
-//   - utcStr: The UTC timestamp in RFC3339 format.
+//   - utcStr: The timestamp in RFC3339 format.
 //
 // Returns:
-//   - string: The formatted local time string, or empty string if input is empty.
+//   - string: The formatted UTC time string, or empty string if input is empty.
 //     Returns the original string if parsing fails.
-func ConvertToLocal(utcStr string) string {
+func FormatUTC(utcStr string) string {
 	if utcStr == emptyString {
 		return emptyString
 	}
@@ -116,7 +116,7 @@ func GetInfo() VersionInfo {
 
 	buildTime := ""
 	if BuildTime != emptyString {
-		buildTime = ConvertToLocal(BuildTime)
+		buildTime = FormatUTC(BuildTime)
 	}
 
 	info := VersionInfo{

@@ -59,7 +59,7 @@ func TestGetGoVersion(t *testing.T) {
 	}
 }
 
-func TestConvertToLocal(t *testing.T) {
+func TestFormatUTC(t *testing.T) {
 	tests := []struct {
 		name   string
 		utcStr string
@@ -84,7 +84,7 @@ func TestConvertToLocal(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ConvertToLocal(tt.utcStr)
+			got := FormatUTC(tt.utcStr)
 			assert.Equal(t, tt.want, got)
 		})
 	}
