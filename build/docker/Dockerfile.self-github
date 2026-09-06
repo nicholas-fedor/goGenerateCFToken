@@ -16,9 +16,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     -a \
     -ldflags "\
     -s -w \
-    -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Version=$(git describe --tags --always) \
-    -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Commit=$(git rev-parse --short HEAD)$(if [ -n "$(git status --porcelain)" ]; then echo "-dirty"; fi) \
-    -X github.com/nicholas-fedor/gogeneratecftoken/pkg/version.Date=$(date -u +%Y-%m-%d_%H:%M:%S) \
+    -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.Version=$(git describe --tags --always) \
+    -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.CommitSHA=$(git rev-parse --short HEAD)$(if [ -n "$(git status --porcelain)" ]; then echo "-dirty"; fi) \
+    -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.BuildTime=$(date -u +%Y-%m-%d_%H:%M:%S) \
     " \
     -o ./bin/gogeneratecftoken \
     .

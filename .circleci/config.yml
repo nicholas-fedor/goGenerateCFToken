@@ -18,7 +18,7 @@ workflows:
           name: check-updated-files
           mapping: | # Map file patterns to pipeline parameters (true/false).
             cmd/.* run-tests true
-            pkg/.* run-tests true
+            internal/.* run-tests true
             main.go run-tests true
             go.mod run-tests true
             go.sum run-tests true

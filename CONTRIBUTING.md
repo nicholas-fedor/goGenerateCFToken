@@ -134,7 +134,7 @@ Brief Overview
 
 ### Building Releases
 
-[GoReleaser](https://github.com/goreleaser/goreleaser-action) is used to build the release files, which are uploaded to the associated release as tarball and zip archives.
+[GoReleaser](https://github.com/goreleaser/goreleaser-action) is used to build the release files, which are uploaded to the associated release as tarball and zip archives plus Linux distro packages (`.deb`, `.rpm`, `.apk`, and Arch `.pkg.tar.zst`) via nFPM.
 
 To run a new build, update the tag, as follows:
 

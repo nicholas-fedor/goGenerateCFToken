@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://www.schemastore.org/hugo.json
+
+# gogeneratecftoken.nickfedor.com Hugo Configuration
+
+baseURL: https://gogeneratecftoken.nickfedor.com/
+locale: en-us
+title: goGenerateCFToken
+
+# https://gohugo.io/getting-started/configuration/#ignorelogs
+ignoreLogs: ["warning-goldmark-raw-html"]
+
+# https://gohugo.io/configuration/imaging/
+imaging:
+  anchor: Smart
+  resampleFilter: Lanczos
+  jpeg:
+    quality: 85
+  webp:
+    compression: lossy
+    hint: photo
+    method: 6
+    quality: 88
+    useSharpYuv: false
+  avif:
+    compression: lossy
+    encoderSpeed: 1
+    hint: photo
+    quality: 88
+
+# https://gohugo.io/configuration/menus/
+menus:
+  main:
+    - name: Getting Started
+      pageRef: /getting-started
+      weight: 1
+    - name: CLI Reference
+      pageRef: /cli-reference
+      weight: 2
+    - name: Search
+      weight: 4
+      params:
+        type: search
+    - name: GitHub
+      weight: 5
+      url: "https://github.com/nicholas-fedor/gogeneratecftoken"
+      params:
+        icon: github
+    - name: Theme Toggle
+      weight: 6
+      params:
+        type: theme-toggle
+        label: true
+
+# https://gohugo.io/configuration/module/
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+# https://gohugo.io/configuration/params/
+params:
+  description: "goGenerateCFToken Documentation"
+
+  displayUpdatedDate: true
+  dateFormat: "January 2, 2006"
+
+  # https://imfing.github.io/hextra/docs/guide/configuration/#page-edit-link
+  editURL:
+    enable: true
+    base: "https://github.com/nicholas-fedor/gogeneratecftoken/edit/main/www/content"
+
+  # https://imfing.github.io/hextra/docs/guide/configuration/#external-link-decoration
+  externalLinkDecoration: true
+
+  # https://imfing.github.io/hextra/docs/guide/configuration/#footer
+  footer:
+    displayCopyright: true
+    displayPoweredBy: false
+
+  # https://imfing.github.io/hextra/docs/guide/syntax-highlighting/#copy-button
+  highlight:
+    copy:
+      enable: true
+      display: hover
+
+  # https://imfing.github.io/hextra/docs/guide/configuration/#image-zoom
+  imageZoom:
+    enable: true
+
+  # https://imfing.github.io/hextra/docs/guide/configuration/#logo-and-title
+  navbar:
+    displayTitle: true
+    displayLogo: true
+    logo:
+      path: images/logo.svg
+
+  page:
+    contextMenu:
+      enable: true
+
+  # https://imfing.github.io/hextra/docs/guide/configuration/#theme-configuration
+  theme:
+    default: system
+    displayToggle: false
+
+# https://imfing.github.io/hextra/docs/guide/configuration/#llmstxt-support
+outputs:
+  home:
+    - html
+    - llms
+    - markdown
+  section:
+    - html
+    - markdown
+  page:
+    - html
+    - markdown
+  taxonomy:
+    - html
+  term:
+    - html

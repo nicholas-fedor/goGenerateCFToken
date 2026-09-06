@@ -1,132 +1,123 @@
-/*
-Copyright © 2026 Nicholas Fedor <nick@nickfedor.com>
+// Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
-
+// Package cmd is the root CLI command.
 package cmd
 
 import (
+	"context"
 	"fmt"
-	"os"
-	"path/filepath"
-	"runtime"
+	"os/signal"
+	"syscall"
 
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/pkg/config"
+	"github.com/nicholas-fedor/gogeneratecftoken/cmd/config"
+	"github.com/nicholas-fedor/gogeneratecftoken/cmd/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/cmd/token"
+	"github.com/nicholas-fedor/gogeneratecftoken/cmd/version"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
 )
 
-var (
-	// goos holds the operating system type for determining configuration paths.
-	// It defaults to runtime.GOOS but can be overridden for testing.
-	goos = runtime.GOOS
-	// configFilePath specifies the default configuration file location.
-	configFilePath = configPath()
-	// shortDescription provides a brief summary of the CLI tool.
-	shortDescription = "A CLI generator for Cloudflare API Tokens"
-	// longDescription provides detailed usage information for the CLI tool.
-	longDescription = fmt.Sprintf(
-		`
-			goGenerateCFToken
-
-A CLI tool for creating Cloudflare API tokens with DNS edit permissions.
-
-Configuration Filepath:
-  %s
-
-Example Configuration
-  api_token: your-cloudflare-api-token-here
-  zone: example.com
-
-Instructions:
-1) Create a configuration file.
-2) Run the following command:
-     goGenerateCFToken generate [desired prefix]
-3) The API token will be created and printed to the console
-
-Example:
-  Zone: example.com
-  Command: goGenerateCFToken generate service
-  Output:
-	Token Name: service.example.com
-	Token Value: (random token value)
-
-`, configFilePath)
-)
-
-// rootCmd defines the root command for the CLI tool.
 var rootCmd = &cobra.Command{
 	Use:   "goGenerateCFToken",
-	Short: shortDescription,
-	Long:  longDescription,
+	Short: "A CLI for Cloudflare API token management",
+	Long: `goGenerateCFToken creates and manages Cloudflare API tokens with DNS edit permissions.
+
+The configuration is loaded from an XDG-compliant config file
+($XDG_CONFIG_HOME/gogeneratecftoken/config.yaml) or flags.
+
+The Cloudflare API token is resolved from CF_API_TOKEN, CF_API_TOKEN_FILE, the OS
+keyring, or the default credential file.`,
 }
 
-// Execute runs the root command, handling errors by exiting with a non-zero status.
-func Execute() {
-	// Execute the root command and check for errors.
-	err := rootCmd.Execute()
-	if err != nil {
-		// Exit with status 1 on error.
-		os.Exit(1)
-	}
-}
-
-// SetVersionInfo sets the version information for the root command.
-func SetVersionInfo(version, commit, date string) {
-	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
-}
-
-// init configures the root command before execution.
 func init() {
-	// Initialize configuration loading on command start.
-	cobra.OnInitialize(config.InitConfig)
-
-	// Define the persistent --config flag for specifying the configuration file.
-	rootCmd.PersistentFlags().StringVar(
-		&config.ConfigFile,
-		config.ConfigFilename,
-		"",
-		configFilePath,
-	)
-}
-
-// userHomeDir returns the user’s home directory based on the operating system.
-// It returns an empty string for unsupported operating systems.
-func userHomeDir() string {
-	switch goos {
-	case "windows":
-		return "%userprofile%"
-	case "linux":
-		return "$HOME"
-	case "ios":
-		return "/"
-	case "plan9":
-		return "$home"
-	case "android":
-		return "/sdcard"
+	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, _ []string) error {
+		return setupLogging(cmd)
 	}
-	// Return empty string for unknown OS.
-	return ""
+	rootCmd.SilenceUsage = true
+	rootCmd.SilenceErrors = true
+
+	cflags := &flags.CommonFlags{}
+	cflags.Bind(rootCmd.PersistentFlags())
+
+	rootCmd.AddCommand(config.NewCommand())
+	rootCmd.AddCommand(credentials.NewCommand())
+	rootCmd.AddCommand(token.NewCommand())
+	rootCmd.AddCommand(token.NewDeprecatedGenerateCommand())
+	rootCmd.AddCommand(version.NewCommand())
 }
 
-// configPath returns the default configuration file path for the CLI tool.
-func configPath() string {
-	// Construct the path using the home directory, app directory, and config file name.
-	return fmt.Sprintf(
-		"%s.%s",
-		filepath.Join(userHomeDir(), config.AppDirName, config.ConfigFilename),
-		config.ConfigExt,
+// Execute initializes and runs the root CLI command.
+//
+// Returns:
+//   - error: Non-nil if command execution fails.
+func Execute() error {
+	ctx, cancel := signal.NotifyContext(
+		context.Background(),
+		syscall.SIGINT, syscall.SIGTERM,
 	)
+	defer cancel()
+
+	rootCmd.SetContext(ctx)
+
+	err := rootCmd.ExecuteContext(ctx)
+	if err != nil {
+		return fmt.Errorf("execute: %w", err)
+	}
+
+	return nil
+}
+
+// Root exposes the root command for external tools like doc generators.
+//
+// Returns:
+//   - *cobra.Command: The root command instance.
+func Root() *cobra.Command {
+	return rootCmd
+}
+
+// setupLogging configures zerolog based on command flags.
+//
+// Parameters:
+//   - cmd: Cobra command providing flag values.
+//
+// Returns:
+//   - error: Non-nil if flag retrieval fails.
+func setupLogging(cmd *cobra.Command) error {
+	quiet, err := cmd.Flags().GetBool("quiet")
+	if err != nil {
+		return fmt.Errorf("get quiet flag: %w", err)
+	}
+
+	verbose, err := cmd.Flags().GetBool("verbose")
+	if err != nil {
+		return fmt.Errorf("get verbose flag: %w", err)
+	}
+
+	logLevel, err := cmd.Flags().GetString("log-level")
+	if err != nil {
+		return fmt.Errorf("get log-level flag: %w", err)
+	}
+
+	switch {
+	case quiet:
+		logging.SetQuiet(true)
+		logging.Setup(zerolog.ErrorLevel)
+	case verbose:
+		logging.SetQuiet(false)
+		logging.Setup(zerolog.DebugLevel)
+	default:
+		level, perr := zerolog.ParseLevel(logLevel)
+		if perr != nil {
+			return fmt.Errorf("parse log level %q: %w", logLevel, perr)
+		}
+
+		logging.SetQuiet(false)
+		logging.Setup(level)
+	}
+
+	return nil
 }

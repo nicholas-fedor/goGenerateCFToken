@@ -14,13 +14,11 @@ build/golangci-lint/*
 
 # Ignore documentation and examples
 *.md
-docs/
-docs-requirements.txt
-mkdocs.yml
+www/
 examples/
 
 # Ignore test directories and data
-pkg/*/mocks/
+internal/*/mocks/
 
 # Ignore scripts and tools
 scripts/

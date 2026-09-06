@@ -3,18 +3,18 @@
 
 # Cloudflare API Token Generator
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/goGenerateCFToken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/goGenerateCFToken/tree/main)
-[![codecov](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/goGenerateCFToken)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/goGenerateCFToken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/goGenerateCFToken&amp;utm_campaign=Badge_Grade)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/gogeneratecftoken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/gogeneratecftoken/tree/main)
+[![codecov](https://codecov.io/gh/nicholas-fedor/gogeneratecftoken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/gogeneratecftoken)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/gogeneratecftoken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/gogeneratecftoken&amp;utm_campaign=Badge_Grade)
 [![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/nicholas-fedor/go-remove)
-[![latest version](https://img.shields.io/github/tag/nicholas-fedor/goGenerateCFToken.svg)](https://github.com/nicholas-fedor/goGenerateCFToken/releases)
+[![Latest Version](https://img.shields.io/github/tag/nicholas-fedor/gogeneratecftoken.svg)](https://github.com/nicholas-fedor/gogeneratecftoken/releases)
 [![Pulls from DockerHub](https://img.shields.io/docker/pulls/nickfedor/gogeneratecftoken.svg)](https://hub.docker.com/r/nickfedor/gogeneratecftoken)
-[![AGPLv3 License](https://img.shields.io/github/license/nicholas-fedor/goGenerateCFToken.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![AGPLv3 License](https://img.shields.io/github/license/nicholas-fedor/gogeneratecftoken.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 ----------
 
-A simple CLI tool for generating Cloudflare API tokens for use by tools, such as [Traefik](https://traefik.io/traefik), [Caddy](https://caddyserver.com/), or [Certbot](https://certbot.eff.org/)
+A simple CLI tool for generating and managing scoped Cloudflare API tokens.
 
 </div>
 <!-- markdownlint-restore -->
@@ -23,7 +23,9 @@ A simple CLI tool for generating Cloudflare API tokens for use by tools, such as
 
 - [Quick Start](#quick-start)
 - [Installation](#installation)
-  - [Release Binaries](#release-binaries)
+  - [Install script](#install-script)
+  - [Updating and uninstalling](#updating-and-uninstalling)
+  - [Linux packages](#linux-packages)
   - [Docker](#docker)
   - [Source](#source)
 - [Usage](#usage)
@@ -36,9 +38,17 @@ A simple CLI tool for generating Cloudflare API tokens for use by tools, such as
 
 ## Quick Start
 
-1. [Install](#installation) goGenerateCFToken
+1. Install gogeneratecftoken:
 
-2. Create a Master API Token
+    ```bash
+    tmp=$(mktemp)
+    curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp" && sh "$tmp"
+    rm -f "$tmp"
+    ```
+
+    See [Installation](#installation) for packages, Docker, and building from source.
+
+2. Create a Master API Key
 
     <!-- markdownlint-disable -->
     <ol type="a">
@@ -53,80 +63,100 @@ A simple CLI tool for generating Cloudflare API tokens for use by tools, such as
     </ol>
     <!-- markdownlint-restore -->
 
-3. Setup the Configuration File
-
-    - Download the configuration file template to `$HOME/.goGenerateCFToken/config.yaml`:
-
-      - Windows
-
-        ```powershell
-        New-Item -ItemType Directory -Path $HOME\.goGenerateCFToken -Force; iwr -Uri https://github.com/nicholas-fedor/   goGenerateCFToken/raw/main/config.yaml.template -OutFile $HOME\.goGenerateCFToken\config.yaml
-        ```
-
-      - Linux
-
-        ```bash
-        mkdir -p $HOME/.goGenerateCFToken && curl -L https://github.com/nicholas-fedor/goGenerateCFToken/raw/main/config.   yaml.template -o $HOME/.goGenerateCFToken/config.yaml
-        ```
-
-      - macOS
-
-        ```bash
-        mkdir -p $HOME/.goGenerateCFToken && curl -L https://github.com/nicholas-fedor/goGenerateCFToken/raw/main/config.   yaml.template -o $HOME/.goGenerateCFToken/config.yaml
-        ```
-
-    - Edit `$HOME/.goGenerateCFToken/config.yaml` to add your master API token and zone:
-
-    ```yaml
-    api_token: "your-master-api-token"
-    zone: "example.com"
-    ```
-
-4. Generate a Test Token
+3. Initialize the configuration:
 
     ```bash
-    goGenerateCFToken generate test
+    gogeneratecftoken config init
+    ```
+
+4. Add your zone when prompted:
+
+    ```bash
+    Enter Cloudflare zone name: <example.com>
+    ```
+
+5. Use `credentials set` to store the API key that you created in Step 1:
+
+    ```bash
+    Enter Cloudflare API key: <your API key>
+    ```
+
+6. Generate a token:
+
+    ```bash
+    gogeneratecftoken token generate test
     ```
 
     **Expected Output:**
 
     ```bash
-    Generating API token: test.example.com
     yoursuperlongandsecretserviceapitoken
     ```
 
 ## Installation
 
-### Release Binaries
+### Install script
 
-Download and install the latest binary for your platform from the [releases page](https://github.com/nicholas-fedor/goGenerateCFToken/releases).
+```bash
+tmp=$(mktemp)
+curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp" && sh "$tmp"
+rm -f "$tmp"
+```
 
-The following are CLI scripts for installing to the user's `go/bin` directory:
+On Linux, the script installs a native package (`.deb`, `.rpm`, `.apk`, or Arch) when a package manager and root/sudo are available. Otherwise it extracts the release archive into `$HOME/go/bin`.
 
-- Windows (amd64):
+| Variable  | Meaning                                                  |
+|-----------|----------------------------------------------------------|
+| `VERSION` | Release tag (`v1.2.0` or `1.2.0`). Default: latest.      |
+| `PREFIX`  | Directory for archive installs. Default: `$HOME/go/bin`. |
+| `METHOD`  | `auto` (default), `package`, or `archive`.               |
 
-    ```powershell
-    New-Item -ItemType Directory -Path $HOME\go\bin -Force | Out-Null; iwr (iwr https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | ConvertFrom-Json).assets.where({$_.name -like "*windows_amd64*.zip"}).browser_download_url -OutFile goGenerateCFToken.zip; Add-Type -AssemblyName System.IO.Compression.FileSystem; ($z=[System.IO.Compression.ZipFile]::OpenRead("$PWD\goGenerateCFToken.zip")).Entries | ? {$_.Name -eq 'goGenerateCFToken.exe'} | % {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$HOME\go\bin\$($_.Name)", $true)}; $z.Dispose(); rm goGenerateCFToken.zip; if (Test-Path "$HOME\go\bin\goGenerateCFToken.exe") { Write-Host "Successfully installed goGenerateCFToken.exe to $HOME\go\bin" } else { Write-Host "Failed to install goGenerateCFToken.exe" }
-    ```
+```bash
+# Pin a version
+VERSION=v1.2.0 sh scripts/install.sh
 
-- Linux (amd64):
+# Always use the tarball into a custom directory
+METHOD=archive PREFIX="$HOME/.local/bin" sh scripts/install.sh
+```
 
-    ```bash
-    mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | grep -o 'https://[^"]*linux_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin goGenerateCFToken
-    ```
+Windows: download the `.zip` from the [releases page](https://github.com/nicholas-fedor/gogeneratecftoken/releases).
 
-- macOS (amd64):
+### Updating and uninstalling
 
-    ```bash
-    mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/goGenerateCFToken/releases/latest | grep -o 'https://[^"]*darwin_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin goGenerateCFToken
-    ```
+Re-run the script to replace the current install with the latest release (or `VERSION=…`). Native packages are upgraded in place (`dpkg`/`rpm`/`apk`/`pacman`); archive installs overwrite `$PREFIX/gogeneratecftoken`.
+
+```bash
+tmp=$(mktemp)
+curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp"
+
+# Update
+sh "$tmp" update
+
+# Uninstall (native package and/or the stored archive prefix)
+sh "$tmp" uninstall
+
+rm -f "$tmp"
+```
+
+### Linux packages
+
+GitHub Releases include distro packages built by GoReleaser (nFPM):
+
+| Format         | Distros                       |
+|----------------|-------------------------------|
+| `.deb`         | Debian, Ubuntu                |
+| `.rpm`         | Fedora, RHEL, Rocky, openSUSE |
+| `.apk`         | Alpine                        |
+| `.pkg.tar.zst` | Arch, Manjaro                 |
+
+Install a downloaded package with `dpkg -i`, `rpm -Uvh`, `apk add --allow-untrusted`, or `pacman -U`. Checksums are in `checksums.txt` on the same release.
 
 ### Docker
 
-Run goGenerateCFToken using Docker without installing it locally:
+Run gogeneratecftoken using Docker without installing it locally:
 
 ```bash
-docker run --rm ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
+docker run --rm ghcr.io/nicholas-fedor/gogeneratecftoken:latest token generate test
 ```
 
 > [!Warning]
@@ -139,22 +169,22 @@ docker run --rm ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
 To use a configuration file, mount it as a volume:
 
 ```bash
-docker run --rm -v $HOME/.goGenerateCFToken/config.yaml:/config.yaml \
-  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test --config /config.yaml
+docker run --rm -v $HOME/.gogeneratecftoken/config.yaml:/config.yaml \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest token generate test --config /config.yaml
 ```
 
 Alternatively, you can run as the current user to avoid permission issues:
 
 ```bash
-docker run --rm -u $(id -u):$(id -g) -v $HOME/.goGenerateCFToken/config.yaml:/config.yaml \
-  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test --config /config.yaml
+docker run --rm -u $(id -u):$(id -g) -v $HOME/.gogeneratecftoken/config.yaml:/config.yaml \
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest token generate test --config /config.yaml
 ```
 
 Or pass credentials via environment variables:
 
 ```bash
 docker run --rm -e CF_API_TOKEN="your-master-api-token" -e CF_ZONE="example.com" \
-  ghcr.io/nicholas-fedor/gogeneratecftoken:latest generate test
+  ghcr.io/nicholas-fedor/gogeneratecftoken:latest token generate test
 ```
 
 ### Source
@@ -167,12 +197,12 @@ go install github.com/nicholas-fedor/gogeneratecftoken@latest
 
 ### Overview
 
-Invoke the program and use the `generate` command with a subdomain as the argument to generate a Cloudflare API token.
+Invoke the program and use the `token generate` command with a subdomain as the argument to generate a Cloudflare API token.
 
 The token will be named using the `subdomain.domain.tld` convention.
 
 ```bash
-goGenerateCFToken generate [SUBDOMAIN] [FLAGS]
+gogeneratecftoken token generate [SUBDOMAIN] [FLAGS]
 ```
 
 | Flags         | Input Type | Description                               |
@@ -193,23 +223,23 @@ In order to generate Cloudflare API tokens, the program requires the following:
 - A zone (i.e. example.com)
 - A sudomain (i.e. "test" from test.example.com)
 
-`goGenerateCFToken` uses [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) to enable configuration functionality.
+`gogeneratecftoken` uses [Cobra](https://github.com/spf13/cobra). Configuration lives in an XDG-compliant YAML file. API keys are stored in the OS keyring (or a 0600 credential file when no keyring is available), not in the YAML.
 
 #### Configuration File
 
-Default Location: `$HOME/.goGenerateCFToken/config.yaml`
+Default location: `$XDG_CONFIG_HOME/gogeneratecftoken/config.yaml` (typically `~/.config/gogeneratecftoken/config.yaml`).
+
+Legacy paths still searched: `~/.gogeneratecftoken/config.yaml` and `~/.goGenerateCFToken/config.yaml`.
 
 Example:
 
 ```yaml
-# goGenerateCFToken Configuration File
-# https://github.com/nicholas-fedor/goGenerateCFToken
+# gogeneratecftoken Configuration File
+# https://github.com/nicholas-fedor/gogeneratecftoken
 
-# https://dash.cloudflare.com/profile/api-tokens
-# Token Name: [Add your token name here for reference]
-# Permissions: Zone: Read & API Tokens: Edit
-api_token: "your-cloudflare-api-token-here"
 zone: "example.com"
+account_id: ""      # optional
+token_name: ""      # optional default token name
 ```
 
 > [!Note]
@@ -217,15 +247,14 @@ zone: "example.com"
 > Example:
 >
 > ```bash
-> goGenerateCFToken [SUBDOMAIN] --config [PATH]
+> gogeneratecftoken token generate [SUBDOMAIN] --config [PATH]
 > ```
 
 #### Environment Variables
 
-If no config file is found or specified, then the program falls back to environment variables.
-
 ```bash
 export CF_API_TOKEN="your-master-api-token"
+export CF_API_TOKEN_FILE="/run/secrets/cf_api_token"
 export CF_ZONE="example.com"
 ```
 

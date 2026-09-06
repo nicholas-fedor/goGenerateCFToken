@@ -1,0 +1,50 @@
+---
+title: {{ .Title }}
+description: {{ .Description }}
+type: docs
+---
+{{- if .Long }}
+
+{{ .Long }}
+{{- end }}
+{{- if .UseLine }}
+
+### Usage
+
+```bash
+{{ .UseLine }}
+```
+{{- end }}
+{{- if .Examples }}
+
+### Examples
+{{ range .Examples }}
+#### {{ .Title }}
+
+```bash
+{{ .Code }}
+```
+{{ end }}
+{{- end }}
+{{- if .Flags }}
+
+### Command Options
+
+| Flag | Short | Default | Type | Description |
+|------|-------|---------|------|-------------|
+{{- range .Flags }}
+| `--{{ .Name }}` | {{ if .Shorthand }}`-{{ .Shorthand }}`{{ end }} | {{ defaultVal . }} | {{ .Type }} | {{ .Usage }} |
+{{- end }}
+
+{{- end }}
+{{- if .Inherited }}
+
+### Global Options
+
+| Flag | Short | Default | Type | Description |
+|------|-------|---------|------|-------------|
+{{- range .Inherited }}
+| `--{{ .Name }}` | {{ if .Shorthand }}`-{{ .Shorthand }}`{{ end }} | {{ defaultVal . }} | {{ .Type }} | {{ .Usage }} |
+{{- end }}
+
+{{- end }}

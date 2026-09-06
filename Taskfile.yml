@@ -14,9 +14,9 @@ vars:
   # GOFLAGS: -trimpath
   LDFLAGS: >-
     -s -w
-    -X '{{.PKG}}/pkg/version.Version={{.VERSION}}'
-    -X '{{.PKG}}/pkg/version.Commit={{.COMMIT}}'
-    -X '{{.PKG}}/pkg/version.Date={{.BUILD_TIME}}'
+    -X '{{.PKG}}/internal/metadata.Version={{.VERSION}}'
+    -X '{{.PKG}}/internal/metadata.CommitSHA={{.COMMIT}}'
+    -X '{{.PKG}}/internal/metadata.BuildTime={{.BUILD_TIME}}'
 
 tasks:
   build:
@@ -42,7 +42,7 @@ tasks:
   test:
     desc: Run Go tests
     cmds:
-      - go test -test.fullpath=true -timeout 30s -covermode atomic -v ./...
+      - go test -race -test.fullpath=true -timeout 30s -covermode atomic -v ./...
 
   test-coverage:
     desc: Run Go tests with coverage
@@ -74,6 +74,16 @@ tasks:
     cmds:
       - go mod tidy
       - go mod verify
+
+  docs:
+    desc: Generate CLI documentation in Markdown format
+    cmds:
+      - go run ./tools/docgen -out ./www/content/cli-reference
+
+  docs-serve:
+    desc: Run a Hugo dev server
+    cmds:
+      - hugo server --buildDrafts --disableFastRender --baseURL http://localhost:1313 --source www
 
   install:
     desc: "Install the application (full pipeline: tools, generate, install)"

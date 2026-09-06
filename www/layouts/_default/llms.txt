@@ -1,0 +1,35 @@
+{{- /*
+  llms.txt template — outputs a structured command reference
+  for LLM consumption with links and descriptions.
+*/ -}}
+# {{ .Site.Title }}
+
+{{- with .Site.Params.description }}
+> {{ . }}
+{{- end }}
+
+{{- range .Site.Sections }}
+{{- if and (ne .Kind "taxonomy") (ne .Kind "term") }}
+## {{ .Title }}
+{{- range .Pages }}
+{{- if eq .Kind "section" }}
+{{- $hasSubPages := false }}
+{{- range .Pages }}{{- if eq .Kind "section" }}{{- $hasSubPages = true }}{{- end }}{{- end }}
+{{- if $hasSubPages }}
+### {{ .Title }}
+{{- range .Pages }}
+{{- if eq .Kind "section" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ .Description }}
+{{- end }}
+{{- end }}
+{{- else }}
+- [{{ .Title }}]({{ .Permalink }}): {{ .Description }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+---
+Generated on {{ now.UTC.Format "2006-01-02 15:04:05 UTC" }}
+Site: {{ .Site.BaseURL }}

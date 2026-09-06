@@ -78,6 +78,6 @@ flags:
   # Core package logic
   pkg:
     paths:
-      - "pkg/*"
+      - "internal/*"
     # Persist coverage across commits
     carryforward: true

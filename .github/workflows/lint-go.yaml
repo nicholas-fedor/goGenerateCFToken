@@ -6,7 +6,8 @@ on:
   pull_request:
     paths:
       - cmd/**
-      - pkg/**
+      - internal/**
+      - tools/**
       - go.mod
       - go.sum
       - main.go
