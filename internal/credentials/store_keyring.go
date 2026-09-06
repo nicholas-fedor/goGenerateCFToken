@@ -14,11 +14,18 @@ import (
 
 // KeyringStore provides low-level OS keyring operations for a service/user pair.
 type KeyringStore struct {
-	service string
-	user    string
+	service   string
+	user      string
+	available bool
 }
 
+// probeUser is a dedicated keyring user used only to detect backend
+// availability. It is never the live credential slot.
+const probeUser = "__gogeneratecftoken_probe__"
+
 // NewKeyringStore creates a KeyringStore for the given service and user.
+// Availability is probed with a non-mutating Get against a dummy user so the
+// live credential is never overwritten or deleted.
 //
 // Parameters:
 //   - service: The keyring service name.
@@ -28,9 +35,23 @@ type KeyringStore struct {
 //   - *KeyringStore: A new keyring store instance.
 func NewKeyringStore(service, user string) *KeyringStore {
 	return &KeyringStore{
-		service: service,
-		user:    user,
+		service:   service,
+		user:      user,
+		available: probeAvailable(service),
 	}
+}
+
+// probeAvailable reports whether a keyring backend can be reached.
+//
+// Parameters:
+//   - service: The keyring service name used for the probe Get.
+//
+// Returns:
+//   - bool: True when the backend responds (including "not found").
+func probeAvailable(service string) bool {
+	_, err := keyring.Get(service, probeUser)
+
+	return err == nil || errors.Is(err, keyring.ErrNotFound)
 }
 
 // Get retrieves the stored key from the OS keyring.
@@ -43,7 +64,7 @@ func (s *KeyringStore) Get() (string, error) {
 	if err != nil {
 		log.Debug().Err(err).Msg("failed to read API key from OS keyring")
 
-		return "", err
+		return "", fmt.Errorf("keyring get failed: %w", err)
 	}
 
 	log.Debug().Msg("resolved API key from OS keyring")
@@ -87,8 +108,13 @@ func (s *KeyringStore) Delete() error {
 	}
 
 	if errors.Is(err, keyring.ErrNotFound) {
-		log.Debug().Msg("API key not found in keyring; nothing to remove")
+		log.Debug().Msg("API key not found in keyring - nothing to remove")
 	}
 
 	return nil
+}
+
+// Available returns true when the keyring backend was reachable at construction time.
+func (s *KeyringStore) Available() bool {
+	return s.available
 }

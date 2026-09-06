@@ -12,6 +12,7 @@ import (
 type CredentialsConfig struct {
 	resolver *Resolver
 	store    *KeyringStore
+	file     *FileStore
 }
 
 const (
@@ -19,25 +20,40 @@ const (
 	KeyringService = "gogeneratecftoken"
 	// KeyringUser is the user name used for OS keyring storage.
 	KeyringUser = "cloudflare"
+	// EnvVarToken is the environment variable for the API token.
+	EnvVarToken = "CF_API_TOKEN" //nolint:gosec // G101: environment variable name, not a credential
+	// EnvVarTokenFile is the environment variable for the file path containing
+	// the API token. This supports Docker Secrets and similar file-based
+	// credential injection.
+	EnvVarTokenFile = "CF_API_TOKEN_FILE" //nolint:gosec // G101: environment variable name, not a credential
 )
 
 // ErrEmptyAPIKey indicates an empty API key was provided.
 var ErrEmptyAPIKey = errors.New("API key cannot be empty")
 
 // NewCredentialsConfig creates a CredentialsConfig with default providers.
+// The resolver chain priority is:
+//  1. CF_API_TOKEN environment variable
+//  2. CF_API_TOKEN_FILE file (Docker Secrets)
+//  3. OS keyring (gracefully skipped when unavailable)
+//  4. Default credential file under the XDG config directory
 //
 // Returns:
-//   - *CredentialsConfig: A new config with env and keyring providers.
+//   - *CredentialsConfig: A new config with env, file, and keyring providers.
 func NewCredentialsConfig() *CredentialsConfig {
 	store := NewKeyringStore(KeyringService, KeyringUser)
+	file := NewFileStore(DefaultTokenFile())
 	resolver := NewResolver(
-		NewEnvProvider("CF_API_TOKEN"),
+		NewEnvProvider(EnvVarToken),
+		NewFileProvider(EnvVarTokenFile),
 		NewKeyringProvider(store),
+		file,
 	)
 
 	return &CredentialsConfig{
 		resolver: resolver,
 		store:    store,
+		file:     file,
 	}
 }
 
@@ -66,10 +82,14 @@ func (c *CredentialsConfig) Set(_ context.Context, key string) error {
 		return ErrEmptyAPIKey
 	}
 
-	return c.store.Set(key)
+	if c.store.Available() {
+		return c.store.Set(key)
+	}
+
+	return c.file.Set(key)
 }
 
-// Delete removes the API key from the OS keyring.
+// Delete removes the API key from the OS keyring and the default credential file.
 //
 // Parameters:
 //   - ctx: Context (unused, present for symmetry).
@@ -77,5 +97,5 @@ func (c *CredentialsConfig) Set(_ context.Context, key string) error {
 // Returns:
 //   - error: Non-nil if deletion fails.
 func (c *CredentialsConfig) Delete(_ context.Context) error {
-	return c.store.Delete()
+	return errors.Join(c.store.Delete(), c.file.Delete())
 }

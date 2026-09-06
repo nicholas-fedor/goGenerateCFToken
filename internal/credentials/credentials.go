@@ -3,38 +3,44 @@
 
 package credentials
 
-import "context"
+import (
+	"context"
+	"sync"
+)
 
-// defaultConfig is the package-level credential configuration.
-var defaultConfig = NewCredentialsConfig()
+// defaultConfig lazily constructs the process-wide credential configuration
+// so importing the package does not probe the OS keyring.
+var defaultConfig = sync.OnceValue(NewCredentialsConfig)
 
 // ResolveAPIKey returns the Cloudflare API key.
 //
-// Priority: CF_API_TOKEN environment variable > OS keyring.
+// Priority: CF_API_TOKEN env var > CF_API_TOKEN_FILE file > OS keyring >
+// default credential file.
 //
 // Returns:
 //   - string: The resolved API key.
 //   - error: Non-nil if no API key is found in any source.
 func ResolveAPIKey() (string, error) {
-	return defaultConfig.Resolve(context.Background())
+	return defaultConfig().Resolve(context.Background())
 }
 
-// SetAPIKey stores the API key in the OS keyring.
+// SetAPIKey stores the API key in the OS keyring, or the default credential
+// file when no keyring backend is available.
 //
 // Parameters:
 //   - key: The Cloudflare API key to store.
 //
 // Returns:
-//   - error: Non-nil if the key is empty or keyring storage fails.
+//   - error: Non-nil if the key is empty or storage fails.
 func SetAPIKey(key string) error {
-	return defaultConfig.Set(context.Background(), key)
+	return defaultConfig().Set(context.Background(), key)
 }
 
-// DeleteAPIKey removes the API key from the OS keyring.
-// It returns nil if the key did not exist (idempotent).
+// DeleteAPIKey removes the API key from the OS keyring and the default
+// credential file. It returns nil if the key did not exist (idempotent).
 //
 // Returns:
-//   - error: Non-nil if keyring deletion fails.
+//   - error: Non-nil if deletion fails.
 func DeleteAPIKey() error {
-	return defaultConfig.Delete(context.Background())
+	return defaultConfig().Delete(context.Background())
 }

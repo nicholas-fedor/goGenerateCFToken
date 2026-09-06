@@ -10,6 +10,8 @@ import (
 	"os"
 
 	"github.com/rs/zerolog/log"
+
+	keyring "github.com/zalando/go-keyring"
 )
 
 // Provider resolves an API key from a specific source.
@@ -55,6 +57,9 @@ func (p *EnvProvider) Resolve(_ context.Context) (string, error) {
 }
 
 // KeyringProvider resolves an API key from the OS keyring.
+// When the keyring is unavailable (no backend at runtime), Resolve returns
+// an empty string with no error so the Resolver chain can continue to the
+// next provider.
 type KeyringProvider struct {
 	store *KeyringStore
 }
@@ -71,17 +76,32 @@ func NewKeyringProvider(store *KeyringStore) *KeyringProvider {
 }
 
 // Resolve retrieves the API key from the OS keyring.
+// When the keyring is unavailable, returns ("", nil) so the resolver
+// chain gracefully falls through to the next provider.
 //
 // Parameters:
 //   - ctx: Context (unused, present for interface conformance).
 //
 // Returns:
-//   - string: Empty if not found.
-//   - error: Non-nil if keyring access fails.
+//   - string: The API key, or empty if unavailable.
+//   - error: Non-nil only for unexpected keyring failures (not "not found"
+//     or "unsupported").
 func (p *KeyringProvider) Resolve(_ context.Context) (string, error) {
+	if !p.store.Available() {
+		log.Debug().Msg("OS keyring unavailable - skipping keyring provider")
+
+		return "", nil
+	}
+
 	key, err := p.store.Get()
 	if err != nil {
-		return "", err
+		if errors.Is(err, keyring.ErrNotFound) {
+			log.Debug().Msg("API key not found in OS keyring")
+
+			return "", nil
+		}
+
+		return "", fmt.Errorf("read OS keyring: %w", err)
 	}
 
 	return key, nil
@@ -115,9 +135,7 @@ func (r *Resolver) Resolve(ctx context.Context) (string, error) {
 	for _, p := range r.providers {
 		key, err := p.Resolve(ctx)
 		if err != nil {
-			log.Debug().Err(err).Msg("provider failed to resolve API key")
-
-			continue
+			return "", fmt.Errorf("resolve API key: %w", err)
 		}
 
 		if key != "" {
@@ -127,5 +145,5 @@ func (r *Resolver) Resolve(ctx context.Context) (string, error) {
 
 	log.Debug().Msg("API key not found in any source")
 
-	return "", fmt.Errorf("%w: set CF_API_TOKEN env var or use 'credentials set'", ErrNoAPIKey)
+	return "", fmt.Errorf("%w: set CF_API_TOKEN or CF_API_TOKEN_FILE env var, or use 'credentials set'", ErrNoAPIKey)
 }
