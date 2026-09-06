@@ -119,7 +119,7 @@ goGenerateCFToken token list
 Revoke a token by its ID:
 
 ```bash
-goGenerateCFToken token revoke abc123 --force
+goGenerateCFToken token revoke abc123 --yes
 ```
 
 ## Managing Credentials

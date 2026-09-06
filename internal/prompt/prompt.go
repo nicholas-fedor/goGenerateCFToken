@@ -82,6 +82,26 @@ func Secret(message string) (string, error) {
 	return result, nil
 }
 
+// Confirm displays a yes/no prompt on stderr and reads a line from stdin.
+// Only "y" and "Y" count as confirmation. Empty input is a decline.
+//
+// Parameters:
+//   - message: The prompt text to display, including the (y/N) hint.
+//
+// Returns:
+//   - bool: True when the user confirmed.
+//   - error: Non-nil if reading from stdin fails.
+func Confirm(message string) (bool, error) {
+	fmt.Fprint(os.Stderr, message)
+
+	result, err := readLine()
+	if err != nil {
+		return false, err
+	}
+
+	return result == "y" || result == "Y", nil
+}
+
 func readLine() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 

@@ -1,12 +1,12 @@
 ---
 title: Reset
-description: Reset the configuration file to default values.  Requires --force to confirm the destructive operation.
+description: Reset the configuration file to default values.  Prompts for confirmation (y/N) unless --yes or -y is provided.
 type: docs
 ---
 
 Reset the configuration file to default values.
 
-Requires --force to confirm the destructive operation.
+Prompts for confirmation (y/N) unless --yes or -y is provided.
 
 ### Usage
 
@@ -16,10 +16,16 @@ goGenerateCFToken config reset
 
 ### Examples
 
-#### Reset config to defaults
+#### Reset config (with confirmation prompt)
 
 ```bash
-goGenerateCFToken config reset --force
+goGenerateCFToken config reset
+```
+
+#### Reset config without confirmation
+
+```bash
+goGenerateCFToken config reset --yes
 ```
 
 
@@ -27,7 +33,7 @@ goGenerateCFToken config reset --force
 
 | Flag | Short | Default | Type | Description |
 |------|-------|---------|------|-------------|
-| `--force` |  | false | bool | Actually perform reset |
+| `--yes` | `-y` | false | bool | Bypass confirmation prompt |
 
 ### Global Options
 

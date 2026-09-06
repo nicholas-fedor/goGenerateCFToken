@@ -1,12 +1,12 @@
 ---
 title: Revoke
-description: Revoke (delete) a Cloudflare API token by its ID.  Requires --force to confirm the destructive operation.
+description: Revoke (delete) a Cloudflare API token by its ID.  Prompts for confirmation (y/N) unless --yes or -y is provided.
 type: docs
 ---
 
 Revoke (delete) a Cloudflare API token by its ID.
 
-Requires --force to confirm the destructive operation.
+Prompts for confirmation (y/N) unless --yes or -y is provided.
 
 ### Usage
 
@@ -16,10 +16,16 @@ goGenerateCFToken token revoke <token-id>
 
 ### Examples
 
-#### Revoke a token
+#### Revoke a token (with confirmation prompt)
 
 ```bash
-goGenerateCFToken token revoke abc123 --force
+goGenerateCFToken token revoke abc123
+```
+
+#### Revoke a token without confirmation
+
+```bash
+goGenerateCFToken token revoke abc123 --yes
 ```
 
 
@@ -27,7 +33,7 @@ goGenerateCFToken token revoke abc123 --force
 
 | Flag | Short | Default | Type | Description |
 |------|-------|---------|------|-------------|
-| `--force` |  | false | bool | Confirm token revocation |
+| `--yes` | `-y` | false | bool | Bypass confirmation prompt |
 
 ### Global Options
 

@@ -15,33 +15,37 @@ import (
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/prompt"
 )
 
-var errForceRequired = errors.New("use --force to revoke token")
+var errRevokeCancelled = errors.New("revocation cancelled")
 
 // newRevokeCommand creates the token revoke subcommand.
 //
 // Returns:
 //   - *cobra.Command: The revoke command that deletes a Cloudflare API token by ID.
 func newRevokeCommand() *cobra.Command {
-	var force bool
+	var yes bool
 
 	cmd := &cobra.Command{
 		Use:   "revoke <token-id>",
 		Short: "Revoke a Cloudflare API token",
 		Long: `Revoke (delete) a Cloudflare API token by its ID.
 
-Requires --force to confirm the destructive operation.`,
-		Example: `  # Revoke a token
-  goGenerateCFToken token revoke abc123 --force`,
+Prompts for confirmation (y/N) unless --yes or -y is provided.`,
+		Example: `  # Revoke a token (with confirmation prompt)
+  goGenerateCFToken token revoke abc123
+
+  # Revoke a token without confirmation
+  goGenerateCFToken token revoke abc123 --yes`,
 		Args:    cobra.ExactArgs(1),
 		GroupID: tokenGroup.ID,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runRevokeCmd(cmd, args, force)
+			return runRevokeCmd(cmd, args, yes)
 		},
 	}
 
-	cmd.Flags().BoolVar(&force, "force", false, "Confirm token revocation")
+	cmd.Flags().BoolVarP(&yes, "yes", "y", false, "Bypass confirmation prompt")
 
 	return cmd
 }
@@ -51,13 +55,16 @@ Requires --force to confirm the destructive operation.`,
 // Parameters:
 //   - cmd: Cobra command providing the context with timeout.
 //   - args: Positional arguments. args[0] is the token ID to revoke.
-//   - force: If false, logs a warning and returns without revoking.
+//   - yes: If true, bypass the confirmation prompt.
 //
 // Returns:
-//   - error: Non-nil if the API key cannot be resolved or revocation fails.
-func runRevokeCmd(cmd *cobra.Command, args []string, force bool) error {
-	if !force {
-		return errForceRequired
+//   - error: Non-nil if the user declines, the API key cannot be resolved, or revocation fails.
+func runRevokeCmd(cmd *cobra.Command, args []string, yes bool) error {
+	if !yes {
+		ok, err := prompt.Confirm("Revoke token " + args[0] + "? (y/N) ")
+		if err != nil || !ok {
+			return errRevokeCancelled
+		}
 	}
 
 	apiKey, err := credentials.ResolveAPIKey()

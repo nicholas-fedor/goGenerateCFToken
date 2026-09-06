@@ -4,17 +4,15 @@
 package config
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
-	"os"
-	"strings"
 
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/config"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/prompt"
 )
 
 var errDeletionCancelled = errors.New("deletion cancelled")
@@ -58,17 +56,8 @@ Prompts for confirmation (y/N) unless --yes or -y is provided.`,
 //   - error: Non-nil if the user declines or the config cannot be deleted.
 func runDeleteCmd(cmd *cobra.Command, yes bool) error {
 	if !yes {
-		logging.Println("Delete config file and directory? (y/N) ")
-
-		reader := bufio.NewReader(os.Stdin)
-
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			return errDeletionCancelled
-		}
-
-		input = strings.TrimSpace(input)
-		if input != "y" && input != "Y" {
+		ok, err := prompt.Confirm("Delete config file and directory? (y/N) ")
+		if err != nil || !ok {
 			return errDeletionCancelled
 		}
 	}

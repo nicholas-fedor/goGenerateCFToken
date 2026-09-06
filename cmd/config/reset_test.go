@@ -4,6 +4,7 @@
 package config
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,11 +15,27 @@ func Test_newResetCommand(t *testing.T) {
 	got := newResetCommand()
 	require.NotNil(t, got)
 	assert.Equal(t, "reset", got.Use)
-	assert.NotNil(t, got.Flags().Lookup("force"))
+	assert.NotNil(t, got.Flags().Lookup("yes"))
+	assert.Nil(t, got.Flags().Lookup("force"))
 }
 
-func Test_runResetCmd_RequiresForce(t *testing.T) {
-	err := runResetCmd(newResetCommand(), false)
+func Test_runResetCmd_DeclineCancels(t *testing.T) {
+	reader, writer, err := os.Pipe()
+	require.NoError(t, err)
+
+	orig := os.Stdin
+	os.Stdin = reader
+
+	t.Cleanup(func() {
+		os.Stdin = orig
+		_ = reader.Close()
+	})
+
+	_, err = writer.WriteString("n\n")
+	require.NoError(t, err)
+	require.NoError(t, writer.Close())
+
+	err = runResetCmd(newResetCommand(), false)
 	require.Error(t, err)
-	assert.ErrorIs(t, err, errResetForceRequired)
+	assert.ErrorIs(t, err, errResetCancelled)
 }

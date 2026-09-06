@@ -23,6 +23,7 @@ func Test_newDeleteCommand(t *testing.T) {
 			got := newDeleteCommand()
 			assert.NotNil(t, got)
 			assert.Equal(t, "delete", got.Use)
+			assert.NotNil(t, got.Flags().Lookup("yes"))
 		})
 	}
 }
