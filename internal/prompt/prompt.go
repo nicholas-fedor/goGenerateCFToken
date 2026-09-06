@@ -17,6 +17,11 @@ import (
 // ErrEmptyInput indicates the user submitted an empty response.
 var ErrEmptyInput = errors.New("input cannot be empty")
 
+var (
+	isTerminal   = term.IsTerminal
+	readPassword = term.ReadPassword
+)
+
 // Prompt displays a message to stderr and reads a line from stdin.
 //
 // Parameters:
@@ -53,8 +58,8 @@ func Secret(message string) (string, error) {
 	fmt.Fprint(os.Stderr, message)
 
 	fd := int(os.Stdin.Fd())
-	if term.IsTerminal(fd) {
-		secret, err := term.ReadPassword(fd)
+	if isTerminal(fd) {
+		secret, err := readPassword(fd)
 
 		fmt.Fprintln(os.Stderr)
 
