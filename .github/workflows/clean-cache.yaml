@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
 
       - name: Clean Cache
-        uses: ./.github/actions/clean-cache
+        uses: $/.github/actions/clean-cache
         with:
           gh-token: ${{ secrets.GITHUB_TOKEN }}
           gh-repo: ${{ github.repository }}
