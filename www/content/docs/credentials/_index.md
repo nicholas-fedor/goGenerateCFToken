@@ -1,10 +1,10 @@
 ---
 title: Credentials
-description: Store, remove, and validate Cloudflare API credentials in the OS keyring.
+description: Store, remove, and validate Cloudflare API credentials.
 type: docs
 ---
 
-Store, remove, and validate Cloudflare API credentials in the OS keyring.
+Store, remove, and validate Cloudflare API credentials.
 
 ### Usage
 

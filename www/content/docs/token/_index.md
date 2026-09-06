@@ -1,10 +1,10 @@
 ---
 title: Tokens
-description: Generate, list, and revoke Cloudflare API tokens.
+description: Generate, list, get, and revoke Cloudflare API tokens.
 type: docs
 ---
 
-Generate, list, and revoke Cloudflare API tokens.
+Generate, list, get, and revoke Cloudflare API tokens.
 
 ### Usage
 

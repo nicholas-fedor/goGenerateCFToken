@@ -7,6 +7,8 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"text/template"
 )
 
@@ -33,6 +35,16 @@ type hugoRenderer struct {
 	indexTmpl *template.Template
 }
 
+// callerFile returns the source file path of the caller using runtime.Caller.
+func callerFile() string {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		return ""
+	}
+
+	return filename
+}
+
 // NewHugoRenderer creates a new hugoRenderer with loaded templates.
 //
 // Returns:
@@ -56,12 +68,14 @@ func NewHugoRenderer() (TemplateRenderer, error) {
 		},
 	}
 
-	commandTmpl, err := template.New("command.tmpl").Funcs(funcMap).ParseFiles("templates/command.tmpl")
+	templateDir := filepath.Join(filepath.Dir(callerFile()), "templates")
+
+	commandTmpl, err := template.New("command.tmpl").Funcs(funcMap).ParseFiles(filepath.Join(templateDir, "command.tmpl"))
 	if err != nil {
 		return nil, fmt.Errorf("parse command template: %w", err)
 	}
 
-	indexTmpl, err := template.New("index.tmpl").Funcs(funcMap).ParseFiles("templates/index.tmpl")
+	indexTmpl, err := template.New("index.tmpl").Funcs(funcMap).ParseFiles(filepath.Join(templateDir, "index.tmpl"))
 	if err != nil {
 		return nil, fmt.Errorf("parse index template: %w", err)
 	}

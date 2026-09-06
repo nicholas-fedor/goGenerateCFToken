@@ -3,7 +3,11 @@ title: goGenerateCFToken
 description: A CLI for Cloudflare API token management
 ---
 
-A CLI for creating and managing Cloudflare API tokens with DNS edit permissions.
+## Introduction
+
+This is a simple CLI tool for generating Cloudflare API tokens for use by tools, such as [Traefik](https://traefik.io/traefik), [Caddy](https://caddyserver.com/), or [Certbot](https://certbot.eff.org/).
+
+It is intentionally limited to only creating tokens with `Zone:Zone:Read` and `Zone:DNS:Edit` permissions while also supporting basic token lifecycle management.
 
 ## Features
 
@@ -14,22 +18,41 @@ A CLI for creating and managing Cloudflare API tokens with DNS edit permissions.
 
 ## Quick Start
 
-```bash
-# Install
-go install github.com/nicholas-fedor/gogeneratecftoken@latest
+1. Install the `gogeneratecftoken` binary:
 
-# Initialize configuration
-goGenerateCFToken config init
+    ```bash
+    go install github.com/nicholas-fedor/gogeneratecftoken@latest
+    ```
 
-# Generate a token
-goGenerateCFToken token generate myservice
+2. Initialize the configuration and follow the prompt:
 
-# List tokens
-goGenerateCFToken token list
+    ```bash
+    gogeneratecftoken config init
+    ```
 
-# Validate credentials
-goGenerateCFToken credentials validate
-```
+3. Add your master API token:
+
+    ```bash
+    gogeneratecftoken credentials set
+    ```
+
+4. Validate your credentials:
+
+    ```bash
+    gogeneratecftoken credentials validate
+    ```
+
+5. Generate a token:
+
+    ```bash
+    gogeneratecftoken token generate myservice
+    ```
+
+6. List your tokens:
+
+    ```bash
+    gogeneratecftoken token list
+    ```
 
 ## Documentation
 

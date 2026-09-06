@@ -36,10 +36,22 @@ goGenerateCFToken token generate myapp --zone example.com
 goGenerateCFToken token generate myapp --name ci-deploy --expires-on 2027-01-01T00:00:00Z
 ```
 
-#### Output as JSON
+#### Generate with a TTL and account ID
+
+```bash
+goGenerateCFToken token generate myapp --ttl 7d --account-id acc123
+```
+
+#### Output as JSON to stdout
 
 ```bash
 goGenerateCFToken token generate myapp --json
+```
+
+#### Write token to file with no stdout
+
+```bash
+goGenerateCFToken token generate myapp --output /tmp/token.txt --format none
 ```
 
 
@@ -47,13 +59,16 @@ goGenerateCFToken token generate myapp --json
 
 | Flag | Short | Default | Type | Description |
 |------|-------|---------|------|-------------|
+| `--account-id` |  | "" | string | Cloudflare account ID for disambiguating zones across accounts |
 | `--dry-run` |  | false | bool | Validate inputs without creating a token |
 | `--expires-on` |  | "" | string | Token expiration date (RFC3339 format, e.g. 2027-01-01T00:00:00Z) |
+| `--format` |  | text | string | Output format (text, json, none) |
 | `--json` |  | false | bool | Output token in JSON format |
 | `--name` |  | "" | string | Custom token name (default: service.zone) |
 | `--output` | `-o` | "" | string | Write token to file instead of stdout |
 | `--timeout` |  | 30 | int | Timeout in seconds for API calls |
 | `--token` | `-t` | "" | string | Cloudflare API token (prefer CF_API_TOKEN env var or keyring) |
+| `--ttl` |  | "" | string | Token lifetime as a human duration (e.g. 24h, 7d) |
 | `--zone` | `-z` | "" | string | Cloudflare zone name |
 
 ### Global Options

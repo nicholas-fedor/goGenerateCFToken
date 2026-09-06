@@ -7,7 +7,7 @@ This guide walks you through installing goGenerateCFToken, configuring your cred
 
 ## Prerequisites
 
-- [Go](https://go.dev/) 1.26+ (for installing from source)
+- [Go](https://go.dev/) 1.27+ (for installing from source)
 - A [Cloudflare](https://www.cloudflare.com/) account with at least one zone
 - A Cloudflare API token with the necessary permissions
 
@@ -27,17 +27,31 @@ Download the latest release from the [GitHub releases page](https://github.com/n
 
 ### 1. Initialize Configuration
 
-Run the interactive wizard to set up your configuration and store your Cloudflare API key:
+Initialize the configuration file with your Cloudflare zone:
 
 ```bash
 goGenerateCFToken config init
 ```
 
-This will prompt you for:
-- **Cloudflare zone name** — e.g., `example.com`
-- **Cloudflare API key** — stored securely in your OS keyring
+This prompts for the **Cloudflare zone name** (e.g., `example.com`) and writes
+`$XDG_CONFIG_HOME/gogeneratecftoken/config.yaml` (typically `~/.config/gogeneratecftoken/config.yaml`).
 
-The configuration file is written to `~/.config/gogeneratecftoken/config.yaml`.
+Then store your Cloudflare API key. Interactive input is not echoed. On systems
+without an OS keyring, the key is stored in a 0600 file next to the config:
+
+```bash
+goGenerateCFToken credentials set
+```
+
+Non-interactive alternatives:
+
+```bash
+export CF_API_TOKEN="your-master-api-token"
+goGenerateCFToken credentials set --from-env
+
+# Docker secrets / file-based credentials
+goGenerateCFToken credentials set --from-file /run/secrets/cf_api_token
+```
 
 ### 2. Verify Credentials
 
@@ -56,6 +70,7 @@ goGenerateCFToken token generate myapp
 ```
 
 This creates a token named `myapp.example.com` with:
+
 - Zone read permissions
 - DNS write permissions
 
@@ -125,7 +140,7 @@ goGenerateCFToken credentials remove
 
 Configuration is loaded from an XDG-compliant path:
 
-```
+```bash
 ~/.config/gogeneratecftoken/config.yaml
 ```
 

@@ -33,7 +33,9 @@ goGenerateCFToken config show --format json
 
 | Flag | Short | Default | Type | Description |
 |------|-------|---------|------|-------------|
+| `--account-id` |  | "" | string | Cloudflare account ID stored as the generate default |
 | `--format` | `-f` | yaml | string | Output format (yaml, json) |
+| `--token-name` |  | "" | string | Default token name stored as the generate default |
 
 ### Global Options
 

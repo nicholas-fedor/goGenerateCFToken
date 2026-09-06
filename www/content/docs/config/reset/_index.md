@@ -27,7 +27,7 @@ goGenerateCFToken config reset --force
 
 | Flag | Short | Default | Type | Description |
 |------|-------|---------|------|-------------|
-| `--force` |  | false | bool | Actually perform reset (without this, shows warning) |
+| `--force` |  | false | bool | Actually perform reset |
 
 ### Global Options
 

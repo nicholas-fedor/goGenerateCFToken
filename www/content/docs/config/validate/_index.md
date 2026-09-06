@@ -29,6 +29,13 @@ goGenerateCFToken config validate --config ./my-config.yaml
 ```
 
 
+### Command Options
+
+| Flag | Short | Default | Type | Description |
+|------|-------|---------|------|-------------|
+| `--account-id` |  | "" | string | Cloudflare account ID stored as the generate default |
+| `--token-name` |  | "" | string | Default token name stored as the generate default |
+
 ### Global Options
 
 | Flag | Short | Default | Type | Description |

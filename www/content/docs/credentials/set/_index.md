@@ -1,18 +1,48 @@
 ---
 title: Set
-description: Prompt for a Cloudflare API key and store it securely in the OS keyring.  The key is used by other commands to authenticate with the Cloudflare API.
+description: Store a Cloudflare API key for later commands.  The key is read interactively without echo, from --from-env (CF_API_TOKEN), or from --from-file. It is writte...
 type: docs
 ---
 
-Prompt for a Cloudflare API key and store it securely in the OS keyring.
+Store a Cloudflare API key for later commands.
 
-The key is used by other commands to authenticate with the Cloudflare API.
+The key is read interactively without echo, from --from-env (CF_API_TOKEN),
+or from --from-file. It is written to the OS keyring when available, otherwise
+to the default credential file under the XDG config directory.
 
 ### Usage
 
 ```bash
 goGenerateCFToken credentials set
 ```
+
+### Examples
+
+#### Store a new API key (interactive)
+
+```bash
+goGenerateCFToken credentials set
+```
+
+#### Store from the CF_API_TOKEN environment variable
+
+```bash
+goGenerateCFToken credentials set --from-env
+```
+
+#### Store from a file (Docker secrets)
+
+```bash
+goGenerateCFToken credentials set --from-file /run/secrets/cf_api_token
+```
+
+
+### Command Options
+
+| Flag | Short | Default | Type | Description |
+|------|-------|---------|------|-------------|
+| `--from-env` |  | false | bool | Read API key from CF_API_TOKEN |
+| `--from-file` |  | "" | string | Read API key from the given file |
 
 ### Global Options
 

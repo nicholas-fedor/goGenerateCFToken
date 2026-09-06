@@ -1,10 +1,10 @@
 ---
 title: Configuration
-description: View, set, delete, and validate the configuration file.
+description: View, set, reset, delete, and validate the configuration file.
 type: docs
 ---
 
-View, set, delete, and validate the configuration file.
+View, set, reset, delete, and validate the configuration file.
 
 ### Usage
 

@@ -1,12 +1,13 @@
 ---
 title: Set
-description: Set a configuration value.  If zone is not provided, prompts for it. Currently only the zone field is supported.
+description: Set configuration values.  Zone may be given as an argument or entered interactively. Use --account-id and --token-name to store generate defaults.
 type: docs
 ---
 
-Set a configuration value.
+Set configuration values.
 
-If zone is not provided, prompts for it. Currently only the zone field is supported.
+Zone may be given as an argument or entered interactively.
+Use --account-id and --token-name to store generate defaults.
 
 ### Usage
 
@@ -22,12 +23,25 @@ goGenerateCFToken config set [zone]
 goGenerateCFToken config set example.com
 ```
 
+#### Set account ID without changing zone
+
+```bash
+goGenerateCFToken config set --account-id acc123
+```
+
 #### Interactive prompt
 
 ```bash
 goGenerateCFToken config set
 ```
 
+
+### Command Options
+
+| Flag | Short | Default | Type | Description |
+|------|-------|---------|------|-------------|
+| `--account-id` |  | "" | string | Cloudflare account ID stored as the generate default |
+| `--token-name` |  | "" | string | Default token name stored as the generate default |
 
 ### Global Options
 
