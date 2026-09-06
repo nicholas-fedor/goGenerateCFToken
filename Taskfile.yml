@@ -78,7 +78,7 @@ tasks:
   docs:
     desc: Generate CLI documentation in Markdown format
     cmds:
-      - go run ./tools/docgen -out ./www/content/docs
+      - go run ./tools/docgen -out ./www/content/cli-reference
 
   docs-serve:
     desc: Run a Hugo dev server

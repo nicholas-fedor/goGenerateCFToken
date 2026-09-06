@@ -4,7 +4,7 @@ CLI documentation generator for goGenerateCFToken.
 
 ## Overview
 
-docgen introspects the Cobra command tree at runtime and emits Hugo-compatible Markdown files with frontmatter. It is the single source of truth for the site's CLI reference at `www/content/docs/`.
+docgen introspects the Cobra command tree at runtime and emits Hugo-compatible Markdown files with frontmatter. It is the single source of truth for the site's CLI reference at `www/content/cli-reference/`.
 
 ## Directory Structure
 
@@ -33,7 +33,7 @@ Generated files include Hugo frontmatter (`title`, `description`, `type: docs`) 
 ## Usage
 
 ```bash
-go run ./tools/docgen -out ./www/content/docs
+go run ./tools/docgen -out ./www/content/cli-reference
 ```
 
 or via Taskfile:
@@ -46,14 +46,14 @@ task docs
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `-out` | `./www/content/docs` | Output directory for generated Markdown |
+| `-out` | `./www/content/cli-reference` | Output directory for generated Markdown |
 
 ## Output
 
 Running docgen produces a directory tree of `_index.md` files:
 
 ```text
-www/content/docs/
+www/content/cli-reference/
     _index.md                  Root index (CLI Reference)
     config/
         _index.md
@@ -82,7 +82,7 @@ www/content/docs/
 docgen can also be triggered via `go:generate`:
 
 ```go
-//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/tools/docgen -out ../../www/content/docs
+//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/tools/docgen -out ../../www/content/cli-reference
 ```
 
 ## Dependencies

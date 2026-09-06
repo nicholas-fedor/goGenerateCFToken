@@ -1,13 +1,13 @@
 // Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/tools/docgen -out ../../www/content/docs
+//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/tools/docgen -out ../../www/content/cli-reference
 
 // Command docgen generates Hugo-compatible Markdown documentation for the CLI command tree.
 //
 // Usage:
 //
-//	go run ./tools/docgen -out ../../www/content/docs
+//	go run ./tools/docgen -out ../../www/content/cli-reference
 package main
 
 import (
@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	out := flag.String("out", "./www/content/docs", "Output directory")
+	out := flag.String("out", "./www/content/cli-reference", "Output directory")
 
 	flag.Parse()
 

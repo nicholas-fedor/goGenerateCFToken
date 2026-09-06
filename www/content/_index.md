@@ -5,9 +5,7 @@ description: A CLI for Cloudflare API token management
 
 ## Introduction
 
-This is a simple CLI tool for generating Cloudflare API tokens for use by tools, such as [Traefik](https://traefik.io/traefik), [Caddy](https://caddyserver.com/), or [Certbot](https://certbot.eff.org/).
-
-It is intentionally limited to only creating tokens with `Zone:Zone:Read` and `Zone:DNS:Edit` permissions while also supporting basic token lifecycle management.
+**goGenerateCFToken** is a simple CLI tool for generating Cloudflare API tokens with `Zone:Zone:Read` and `Zone:DNS:Edit` permissions. It also provides some limited token lifecycle management support, such as listing and deleting tokens.
 
 ## Features
 
@@ -17,6 +15,8 @@ It is intentionally limited to only creating tokens with `Zone:Zone:Read` and `Z
 - **Configuration** — XDG-compliant config file support
 
 ## Quick Start
+
+While a Docker image is available for use, **goGenerateCFToken** is primarily intended for installation and use via bare-metal.
 
 1. Install the `gogeneratecftoken` binary:
 
@@ -54,6 +54,6 @@ It is intentionally limited to only creating tokens with `Zone:Zone:Read` and `Z
     gogeneratecftoken token list
     ```
 
-## Documentation
+## CLI Reference
 
-See the [Documentation](/docs/) section for the full CLI reference.
+See the [CLI Reference](/cli-reference/) section for the full CLI reference.

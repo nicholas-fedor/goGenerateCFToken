@@ -21,7 +21,7 @@ Use `task` (Taskfile.yml), not `make`. There is no Makefile.
 - `task lint` — `golangci-lint run --fix --config build/golangci-lint/golangci-lint.yaml ./...`
 - `task vet` — `go vet ./...`
 - `task mock` — regenerates mocks via Mockery v3 (`build/mockery/mockery.yaml`)
-- `task docs` — generates CLI docs to `www/content/docs`
+- `task docs` — generates CLI docs to `www/content/cli-reference`
 - `task docs-serve` — Hugo dev server on `www/`
 
 ## Validation Order
@@ -44,12 +44,13 @@ Always run `task lint` then `task vet` before tests. Do not use `go build` for v
 ## CI
 
 Both GitHub Actions and CircleCI are used:
+
 - GitHub Actions (`.github/workflows/`): tests, lint-go, lint-gh, security, scorecard, release, build, docs, changelog updates. Path-filtered on `cmd/**`, `internal/**`, `tools/**`, `go.mod`, `go.sum`, `main.go`.
 - CircleCI (`.circleci/config.yml` → `.circleci/continue-config.yml`): dynamic path-filtered job that continues to run tests when `cmd/`, `internal/`, `main.go`, `go.mod`, or `go.sum` change.
 
 ## Docs
 
-CLI documentation is generated (`tools/docgen`) into `www/content/docs/` for a Hugo-based site. Run `task docs` after CLI changes.
+CLI documentation is generated (`tools/docgen`) into `www/content/cli-reference/` for a Hugo-based site. Run `task docs` after CLI changes.
 
 ## Conventions
 

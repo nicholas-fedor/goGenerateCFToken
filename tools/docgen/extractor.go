@@ -197,9 +197,9 @@ func (e *cobraExtractor) buildIndex(cmd *cobra.Command) *IndexDoc {
 				continue
 			}
 
-			url := fmt.Sprintf("/docs/%s/%s/", child.Name(), sub.Name())
+			url := fmt.Sprintf("/cli-reference/%s/%s/", child.Name(), sub.Name())
 			if !section.HasSubs {
-				url = fmt.Sprintf("/docs/%s/", child.Name())
+				url = fmt.Sprintf("/cli-reference/%s/", child.Name())
 			}
 
 			section.SubCommands = append(section.SubCommands, SubCommandEntry{
@@ -214,7 +214,7 @@ func (e *cobraExtractor) buildIndex(cmd *cobra.Command) *IndexDoc {
 				{
 					Name:        child.Name(),
 					Description: child.Short,
-					URL:         fmt.Sprintf("/docs/%s/", child.Name()),
+					URL:         fmt.Sprintf("/cli-reference/%s/", child.Name()),
 				},
 			}
 		}
