@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 
@@ -16,6 +17,8 @@ import (
 const (
 	// defaultFileMode is the secure file permission mode for config files (owner read/write only).
 	defaultFileMode = 0o600
+	// defaultDirMode is the permission mode for newly created config directories.
+	defaultDirMode = 0o700
 )
 
 // EnsureFile creates the config file at path if it does not exist.
@@ -28,7 +31,7 @@ const (
 func EnsureFile(path string) error {
 	dir := filepath.Dir(path)
 	if dir != "." {
-		err := os.MkdirAll(dir, 0o700)
+		err := os.MkdirAll(dir, defaultDirMode)
 		if err != nil {
 			return fmt.Errorf("create config directory: %w", err)
 		}
@@ -94,14 +97,22 @@ func Delete(path string) error {
 		return fmt.Errorf("delete config file: %w", err)
 	}
 
+	if filepath.Clean(dir) != filepath.Clean(DefaultDir()) {
+		return nil
+	}
+
 	log.Debug().Str("dir", dir).Msg("deleting config directory")
 
 	err = os.Remove(dir)
-	if err != nil && !os.IsNotExist(err) {
+	if err != nil && !os.IsNotExist(err) && !isDirNotEmpty(err) {
 		return fmt.Errorf("delete config directory: %w", err)
 	}
 
 	return nil
+}
+
+func isDirNotEmpty(err error) bool {
+	return strings.Contains(strings.ToLower(err.Error()), "not empty")
 }
 
 // WriteDefaults writes the default configuration to the given path.

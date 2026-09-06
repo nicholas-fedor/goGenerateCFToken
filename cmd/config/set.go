@@ -4,11 +4,8 @@
 package config
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
-	"os"
-	"strings"
 
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -16,6 +13,7 @@ import (
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/config"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/prompt"
 )
 
 // newSetCommand creates the config set subcommand.
@@ -28,11 +26,15 @@ func newSetCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set [zone]",
 		Short: "Set configuration value",
-		Long: `Set a configuration value.
+		Long: `Set configuration values.
 
-If zone is not provided, prompts for it. Currently only the zone field is supported.`,
+Zone may be given as an argument or entered interactively.
+Use --account-id and --token-name to store generate defaults.`,
 		Example: `  # Set zone with argument
   goGenerateCFToken config set example.com
+
+  # Set account ID without changing zone
+  goGenerateCFToken config set --account-id acc123
 
   # Interactive prompt
   goGenerateCFToken config set`,
@@ -53,80 +55,100 @@ If zone is not provided, prompts for it. Currently only the zone field is suppor
 // Parameters:
 //   - cmd: Cobra command used for flag access.
 //   - args: Command arguments, optionally containing the zone name.
-//   - _ cflags: Config flags (unused, present for consistency).
+//   - cflags: Config flags providing optional account ID and token name.
 //
 // Returns:
 //   - error: Non-nil if zone cannot be read, is invalid, or config cannot be written.
-func runSetCmd(cmd *cobra.Command, args []string, _ *flags.ConfigFlags) error {
-	var zone string
-	if len(args) > 0 {
-		zone = args[0]
-	} else {
-		z, err := promptZone("Enter Cloudflare zone name: ")
-		if err != nil {
-			return fmt.Errorf("read zone: %w", err)
-		}
-
-		zone = z
-	}
-
-	if !config.ZonePattern.MatchString(zone) {
-		return fmt.Errorf("invalid zone name: %s", zone)
-	}
-
-	cfgPath, err := cmd.Flags().GetString("config")
+func runSetCmd(cmd *cobra.Command, args []string, cflags *flags.ConfigFlags) error {
+	cfgPath, err := resolveConfigPath(cmd)
 	if err != nil {
-		return fmt.Errorf("get config flag: %w", err)
+		return err
 	}
-
-	if cfgPath == "" {
-		cfgPath, err = config.Locate()
-		if err != nil {
-			return fmt.Errorf("locate config: %w", err)
-		}
-	}
-
-	log.Debug().Str("path", cfgPath).Str("zone", zone).Msg("updating config zone")
-
-	cfg := config.Config{Zone: zone}
 
 	err = config.EnsureFile(cfgPath)
 	if err != nil {
 		return fmt.Errorf("ensure config file: %w", err)
 	}
 
-	err = config.Write(cfgPath, cfg)
+	cfg, err := loadOrDefault(cfgPath)
+	if err != nil {
+		return err
+	}
+
+	if len(args) > 0 {
+		cfg.Zone = args[0]
+	} else if cflags.AccountID == "" && cflags.TokenName == "" {
+		zone, perr := prompt.Prompt("Enter Cloudflare zone name: ")
+		if perr != nil {
+			return fmt.Errorf("read zone: %w", perr)
+		}
+
+		cfg.Zone = zone
+	}
+
+	if cflags.AccountID != "" {
+		cfg.AccountID = cflags.AccountID
+	}
+
+	if cflags.TokenName != "" {
+		cfg.TokenName = cflags.TokenName
+	}
+
+	if cfg.Zone != "" && !config.ZonePattern.MatchString(cfg.Zone) {
+		return fmt.Errorf("%w: %s", config.ErrInvalidZone, cfg.Zone)
+	}
+
+	log.Debug().Str("path", cfgPath).Str("zone", cfg.Zone).Msg("updating config")
+
+	err = config.Write(cfgPath, *cfg)
 	if err != nil {
 		return fmt.Errorf("write config: %w", err)
 	}
 
-	logging.Printf("Zone set: %s", zone)
+	if cfg.Zone != "" {
+		logging.Printf("Zone set: %s", cfg.Zone)
+	}
+
+	if cfg.AccountID != "" {
+		logging.Printf("Account ID set: %s", cfg.AccountID)
+	}
+
+	if cfg.TokenName != "" {
+		logging.Printf("Token name set: %s", cfg.TokenName)
+	}
 
 	return nil
 }
 
-// promptZone displays a message to stderr and reads a zone name from stdin.
-//
-// Parameters:
-//   - message: The prompt text to display.
-//
-// Returns:
-//   - string: The zone name input (trimmed of trailing newline).
-//   - error: Non-nil if reading from stdin fails or input is empty.
-func promptZone(message string) (string, error) {
-	fmt.Fprint(os.Stderr, message)
-
-	reader := bufio.NewReader(os.Stdin)
-
-	input, err := reader.ReadString('\n')
+func resolveConfigPath(cmd *cobra.Command) (string, error) {
+	cfgPath, err := cmd.Flags().GetString("config")
 	if err != nil {
-		return "", fmt.Errorf("read input: %w", err)
+		return "", fmt.Errorf("get config flag: %w", err)
 	}
 
-	result := strings.TrimSpace(input)
-	if result == "" {
-		return "", errors.New("zone cannot be empty")
+	if cfgPath != "" {
+		return cfgPath, nil
 	}
 
-	return result, nil
+	cfgPath, err = config.Locate()
+	if err != nil {
+		return "", fmt.Errorf("locate config: %w", err)
+	}
+
+	return cfgPath, nil
+}
+
+func loadOrDefault(path string) (*config.Config, error) {
+	cfg, err := config.Load(path)
+	if err == nil {
+		return cfg, nil
+	}
+
+	if errors.Is(err, config.ErrZoneRequired) {
+		d := config.Default()
+
+		return &d, nil
+	}
+
+	return nil, fmt.Errorf("load existing config: %w", err)
 }

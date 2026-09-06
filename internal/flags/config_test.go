@@ -26,7 +26,8 @@ func TestConfigFlags_Bind(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
 			tt.cf.Bind(fs)
-			assert.NotNil(t, fs)
+			assert.NotNil(t, fs.Lookup("account-id"))
+			assert.NotNil(t, fs.Lookup("token-name"))
 		})
 	}
 }
@@ -43,8 +44,8 @@ func TestConfigFlags_BindShow(t *testing.T) {
 		{
 			name: "binds with pre-existing format",
 			cf: &ConfigFlags{
-				CommonFlags: CommonFlags{LogLevel: "debug"},
-				Format:      "json",
+				LogLevel: "debug",
+				Format:   "json",
 			},
 		},
 	}

@@ -16,7 +16,16 @@ import (
 type Config struct {
 	// Zone is the Cloudflare DNS zone name for token generation.
 	Zone string `json:"zone" yaml:"zone"`
+	// AccountID is the optional Cloudflare account ID for multi-account setups.
+	AccountID string `json:"account_id,omitempty" yaml:"account_id,omitempty"`
+	// TokenName is the optional default prefix for generated token names.
+	TokenName string `json:"token_name,omitempty" yaml:"token_name,omitempty"`
 }
+
+const (
+	// EnvVarZone is the environment variable used as a zone fallback.
+	EnvVarZone = "CF_ZONE"
+)
 
 var (
 	// ErrZoneRequired indicates the zone field is empty.
@@ -28,7 +37,7 @@ var (
 )
 
 // ZonePattern is the regex for validating DNS zone names.
-var ZonePattern = regexp.MustCompile(`^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$`)
+var ZonePattern = regexp.MustCompile(`^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$`)
 
 // Default returns a Config with sensible defaults.
 //

@@ -13,13 +13,29 @@ type ConfigFlags struct {
 
 	// Format specifies the output format for config show (yaml, json).
 	Format string
+	// AccountID is the optional Cloudflare account ID written by config set.
+	AccountID string
+	// TokenName is the optional default token name written by config set.
+	TokenName string
 }
 
-// Bind attaches config-specific flags to the provided flag set.
+// Bind attaches config set flags to the provided flag set.
 //
 // Parameters:
 //   - flags: The flag set to attach config flags to.
 func (cf *ConfigFlags) Bind(flags *pflag.FlagSet) {
+	flags.StringVar(
+		&cf.AccountID,
+		"account-id",
+		"",
+		"Cloudflare account ID stored as the generate default",
+	)
+	flags.StringVar(
+		&cf.TokenName,
+		"token-name",
+		"",
+		"Default token name stored as the generate default",
+	)
 }
 
 // BindShow attaches flags for the config show subcommand.
@@ -27,7 +43,6 @@ func (cf *ConfigFlags) Bind(flags *pflag.FlagSet) {
 // Parameters:
 //   - flags: The flag set to attach the format flag to.
 func (cf *ConfigFlags) BindShow(flags *pflag.FlagSet) {
-	// --format, -f: Output format (yaml, json)
 	flags.StringVarP(
 		&cf.Format,
 		"format",

@@ -51,7 +51,7 @@ Verifies the file exists, is valid YAML, and contains a valid zone name.`,
 //
 // Returns:
 //   - error: Non-nil if the config file cannot be loaded or is invalid.
-func runConfigValidateCmd(cmd *cobra.Command, cflags *flags.ConfigFlags) error {
+func runConfigValidateCmd(cmd *cobra.Command, _ *flags.ConfigFlags) error {
 	configPath, err := cmd.Flags().GetString("config")
 	if err != nil {
 		return fmt.Errorf("get config flag: %w", err)

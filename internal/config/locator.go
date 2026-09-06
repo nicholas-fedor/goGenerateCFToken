@@ -15,9 +15,19 @@ import (
 const (
 	// configFileName is the default configuration file name.
 	configFileName = "config.yaml"
+	// appName is the XDG application directory name.
+	appName = "gogeneratecftoken"
 	// currentDir is the relative path for the current directory.
 	currentDir = "."
 )
+
+// DefaultDir returns the XDG config directory for this application.
+//
+// Returns:
+//   - string: $XDG_CONFIG_HOME/gogeneratecftoken
+func DefaultDir() string {
+	return filepath.Join(xdg.ConfigHome, appName)
+}
 
 // checkFilePermissions logs a warning if the config file is accessible by group or others.
 //
@@ -34,7 +44,7 @@ func checkFilePermissions(path string) {
 		log.Warn().
 			Str("path", path).
 			Str("permissions", fmt.Sprintf("%04o", mode)).
-			Msg("config file is accessible by group or others; consider chmod 600")
+			Msg("config file is accessible by group or others - consider chmod 600")
 	}
 }
 
@@ -42,14 +52,23 @@ func checkFilePermissions(path string) {
 //
 // Returns:
 //   - string: The path to the first found config file, or the default XDG location.
-//   - error: Always nil; returns the default path if no config file is found.
+//   - error: Always nil. Returns the default path if no config file is found.
 func Locate() (string, error) {
-	configDir := filepath.Join(xdg.ConfigHome, "gogeneratecftoken")
+	configDir := DefaultDir()
 
 	candidates := []string{
 		filepath.Join(configDir, configFileName),
-		filepath.Join(currentDir, configFileName),
 	}
+
+	home, err := os.UserHomeDir()
+	if err == nil {
+		candidates = append(candidates,
+			filepath.Join(home, ".gogeneratecftoken", configFileName),
+			filepath.Join(home, ".goGenerateCFToken", configFileName),
+		)
+	}
+
+	candidates = append(candidates, filepath.Join(currentDir, configFileName))
 
 	log.Debug().Str("config_dir", configDir).Msg("searching for config file")
 
@@ -65,7 +84,7 @@ func Locate() (string, error) {
 	}
 
 	fallback := filepath.Join(configDir, configFileName)
-	log.Debug().Str("path", fallback).Msg("no config file found; using default location")
+	log.Debug().Str("path", fallback).Msg("no config file found, using default location")
 
 	return fallback, nil
 }

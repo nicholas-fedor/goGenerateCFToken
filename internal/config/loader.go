@@ -13,6 +13,8 @@ import (
 	yaml "go.yaml.in/yaml/v4"
 )
 
+var errConfigNotFound = errors.New("config file not found")
+
 // Load reads configuration from file and returns a Config.
 //
 // Parameters:
@@ -52,11 +54,11 @@ func resolvePath(configPath string) (string, error) {
 
 		info, err := os.Stat(configPath)
 		if err != nil {
-			return "", fmt.Errorf("config file not found: %s: %w", configPath, err)
+			return "", fmt.Errorf("%w: %s: %w", errConfigNotFound, configPath, err)
 		}
 
 		if info == nil {
-			return "", fmt.Errorf("config file not found: %s", configPath)
+			return "", fmt.Errorf("%w: %s", errConfigNotFound, configPath)
 		}
 
 		return configPath, nil
@@ -82,7 +84,7 @@ func readAndParse(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			log.Debug().Str("path", path).Msg("config file does not exist; using defaults")
+			log.Debug().Str("path", path).Msg("config file does not exist - using defaults")
 
 			cfg := Default()
 
@@ -93,6 +95,14 @@ func readAndParse(path string) (*Config, error) {
 	}
 
 	log.Debug().Str("path", path).Int("size", len(data)).Msg("config file read")
+
+	if len(data) == 0 {
+		log.Debug().Str("path", path).Msg("config file is empty - using defaults")
+
+		cfg := Default()
+
+		return &cfg, nil
+	}
 
 	checkFilePermissions(path)
 

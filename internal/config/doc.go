@@ -3,10 +3,8 @@
 
 // Package config manages configuration for the goGenerateCFToken CLI tool.
 //
-// Configuration is loaded from an XDG-compliant config file
+// The configuration is loaded from an XDG-compliant config file
 // ($XDG_CONFIG_HOME/gogeneratecftoken/config.yaml) or the current directory.
-// The zero value for Config is not useful; use Default() for a safe starting point.
-//
-// Configuration file permissions are checked on load; a warning is logged if
+// Configuration file permissions are checked on load and a warning is logged if
 // the file is accessible by group or others (permissions > 0600).
 package config

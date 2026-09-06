@@ -21,7 +21,7 @@ func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config",
 		Short: "Configuration",
-		Long:  "View, set, delete, and validate the configuration file.",
+		Long:  "View, set, reset, delete, and validate the configuration file.",
 	}
 
 	cmd.AddGroup(configGroup)
@@ -29,6 +29,7 @@ func NewCommand() *cobra.Command {
 	cmd.AddCommand(newSetCommand())
 	cmd.AddCommand(newShowCommand())
 	cmd.AddCommand(newDeleteCommand())
+	cmd.AddCommand(newResetCommand())
 	cmd.AddCommand(newValidateCommand())
 	cmd.AddCommand(newInitCommand())
 

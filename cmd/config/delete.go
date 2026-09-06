@@ -5,6 +5,7 @@ package config
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -15,6 +16,8 @@ import (
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/config"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
 )
+
+var errDeletionCancelled = errors.New("deletion cancelled")
 
 // newDeleteCommand creates the config delete subcommand.
 //
@@ -61,29 +64,18 @@ func runDeleteCmd(cmd *cobra.Command, yes bool) error {
 
 		input, err := reader.ReadString('\n')
 		if err != nil {
-			logging.Println("Deletion cancelled")
-
-			return nil
+			return errDeletionCancelled
 		}
 
 		input = strings.TrimSpace(input)
 		if input != "y" && input != "Y" {
-			logging.Println("Deletion cancelled")
-
-			return nil
+			return errDeletionCancelled
 		}
 	}
 
-	cfgPath, err := cmd.Flags().GetString("config")
+	cfgPath, err := resolveConfigPath(cmd)
 	if err != nil {
-		return fmt.Errorf("get config flag: %w", err)
-	}
-
-	if cfgPath == "" {
-		cfgPath, err = config.Locate()
-		if err != nil {
-			return fmt.Errorf("locate config: %w", err)
-		}
+		return err
 	}
 
 	log.Debug().Str("path", cfgPath).Msg("deleting config file")
