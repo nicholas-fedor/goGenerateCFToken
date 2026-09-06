@@ -165,8 +165,8 @@ func (_c *MockAPI_GetToken_Call) Run(run func(ctx context.Context, tokenID strin
 	return _c
 }
 
-func (_c *MockAPI_GetToken_Call) Return(v *user.Token, err error) *MockAPI_GetToken_Call {
-	_c.Call.Return(v, err)
+func (_c *MockAPI_GetToken_Call) Return(token *user.Token, err error) *MockAPI_GetToken_Call {
+	_c.Call.Return(token, err)
 	return _c
 }
 
@@ -227,8 +227,8 @@ func (_c *MockAPI_ListTokens_Call) Run(run func(ctx context.Context)) *MockAPI_L
 	return _c
 }
 
-func (_c *MockAPI_ListTokens_Call) Return(vs []user.Token, err error) *MockAPI_ListTokens_Call {
-	_c.Call.Return(vs, err)
+func (_c *MockAPI_ListTokens_Call) Return(tokens []user.Token, err error) *MockAPI_ListTokens_Call {
+	_c.Call.Return(tokens, err)
 	return _c
 }
 
