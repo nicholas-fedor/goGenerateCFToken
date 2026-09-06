@@ -107,6 +107,74 @@ func (_c *MockAPI_CreateAPIToken_Call) RunAndReturn(run func(ctx context.Context
 	return _c
 }
 
+// GetToken provides a mock function for the type MockAPI
+func (_mock *MockAPI) GetToken(ctx context.Context, tokenID string) (*user.Token, error) {
+	ret := _mock.Called(ctx, tokenID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetToken")
+	}
+
+	var r0 *user.Token
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) (*user.Token, error)); ok {
+		return returnFunc(ctx, tokenID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) *user.Token); ok {
+		r0 = returnFunc(ctx, tokenID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*user.Token)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = returnFunc(ctx, tokenID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAPI_GetToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetToken'
+type MockAPI_GetToken_Call struct {
+	*mock.Call
+}
+
+// GetToken is a helper method to define mock.On call
+//   - ctx context.Context
+//   - tokenID string
+func (_e *MockAPI_Expecter) GetToken(ctx any, tokenID any) *MockAPI_GetToken_Call {
+	return &MockAPI_GetToken_Call{Call: _e.mock.On("GetToken", ctx, tokenID)}
+}
+
+func (_c *MockAPI_GetToken_Call) Run(run func(ctx context.Context, tokenID string)) *MockAPI_GetToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAPI_GetToken_Call) Return(v *user.Token, err error) *MockAPI_GetToken_Call {
+	_c.Call.Return(v, err)
+	return _c
+}
+
+func (_c *MockAPI_GetToken_Call) RunAndReturn(run func(ctx context.Context, tokenID string) (*user.Token, error)) *MockAPI_GetToken_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListTokens provides a mock function for the type MockAPI
 func (_mock *MockAPI) ListTokens(ctx context.Context) ([]user.Token, error) {
 	ret := _mock.Called(ctx)

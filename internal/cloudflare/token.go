@@ -29,11 +29,11 @@ var ServiceNamePattern = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
 // TokenInfo holds display information for an API token.
 type TokenInfo struct {
 	// ID is the unique token identifier.
-	ID string
+	ID string `json:"id"`
 	// Name is the human-readable token name.
-	Name string
+	Name string `json:"name"`
 	// Status indicates the current token status (e.g., active, disabled).
-	Status string
+	Status string `json:"status"`
 }
 
 // TokenGenerationRequest holds parameters for generating a token.
@@ -42,6 +42,8 @@ type TokenGenerationRequest struct {
 	ServiceName string
 	// ZoneName is the DNS zone for which the token is granted permissions.
 	ZoneName string
+	// AccountID is the optional Cloudflare account ID for zone disambiguation.
+	AccountID string
 	// ExpiresOn is the optional expiration time in RFC3339 format.
 	ExpiresOn string
 	// Name overrides the default token name (service.zone).
@@ -66,12 +68,19 @@ type TokenGenerationResult struct {
 //   - ctx: Context for cancellation and timeouts.
 //   - api: The API implementation to use for zone lookup.
 //   - zoneName: The DNS zone name to resolve.
+//   - accountID: Optional account ID to disambiguate zones across accounts.
 //
 // Returns:
 //   - string: The resolved zone ID.
 //   - error: Non-nil if the zone is not found, multiple zones match, or the API call fails.
-func resolveZoneID(ctx context.Context, api API, zoneName string) (string, error) {
-	zones, err := api.ListZones(ctx, zones.ZoneListParams{Name: cloudflare.F(zoneName)})
+func resolveZoneID(ctx context.Context, api API, zoneName, accountID string) (string, error) {
+	params := zones.ZoneListParams{Name: cloudflare.F(zoneName)}
+
+	if accountID != "" {
+		params.Account = cloudflare.F(zones.ZoneListParamsAccount{ID: cloudflare.F(accountID)})
+	}
+
+	zones, err := api.ListZones(ctx, params)
 	if err != nil {
 		return "", err
 	}
@@ -125,7 +134,7 @@ func GenerateToken(ctx context.Context, api API, req TokenGenerationRequest) (*T
 		return nil, fmt.Errorf("%w: %s", ErrInvalidServiceName, req.ServiceName)
 	}
 
-	zID, err := resolveZoneID(ctx, api, req.ZoneName)
+	zID, err := resolveZoneID(ctx, api, req.ZoneName, req.AccountID)
 	if err != nil {
 		return nil, err
 	}

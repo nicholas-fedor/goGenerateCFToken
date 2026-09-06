@@ -39,6 +39,7 @@ type API interface {
 	ListZones(ctx context.Context, params zones.ZoneListParams) ([]zones.Zone, error)
 	CreateAPIToken(ctx context.Context, params user.TokenNewParams) (*user.TokenNewResponse, error)
 	ListTokens(ctx context.Context) ([]user.Token, error)
+	GetToken(ctx context.Context, tokenID string) (*user.Token, error)
 	RevokeToken(ctx context.Context, tokenID string) error
 	ValidateCredentials(ctx context.Context) error
 }
@@ -103,12 +104,41 @@ func (c *Client) ListTokens(ctx context.Context) ([]user.Token, error) {
 		return nil, ErrClientNotInitialized
 	}
 
-	page, err := c.User.Tokens.List(ctx, user.TokenListParams{})
+	pager := c.User.Tokens.ListAutoPaging(ctx, user.TokenListParams{})
+	tokens := make([]user.Token, 0)
+
+	for pager.Next() {
+		tokens = append(tokens, pager.Current())
+	}
+
+	err := pager.Err()
 	if err != nil {
 		return nil, fmt.Errorf("%w: %w", ErrListTokensFailed, err)
 	}
 
-	return page.Result, nil
+	return tokens, nil
+}
+
+// GetToken retrieves a single API token by ID.
+//
+// Parameters:
+//   - ctx: Context for cancellation and timeouts.
+//   - tokenID: The ID of the token to retrieve.
+//
+// Returns:
+//   - *user.Token: The requested token.
+//   - error: Non-nil if the client is not initialized or the API call fails.
+func (c *Client) GetToken(ctx context.Context, tokenID string) (*user.Token, error) {
+	if c.Client == nil {
+		return nil, ErrClientNotInitialized
+	}
+
+	token, err := c.User.Tokens.Get(ctx, tokenID)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", ErrGetTokenFailed, err)
+	}
+
+	return token, nil
 }
 
 // RevokeToken revokes an API token by ID.

@@ -26,6 +26,9 @@ var ErrCreateTokenFailed = errors.New("failed to create API token")
 // ErrListTokensFailed indicates a failure listing API tokens.
 var ErrListTokensFailed = errors.New("failed to list tokens")
 
+// ErrGetTokenFailed indicates a failure retrieving an API token.
+var ErrGetTokenFailed = errors.New("failed to get token")
+
 // ErrRevokeTokenFailed indicates a failure revoking an API token.
 var ErrRevokeTokenFailed = errors.New("failed to revoke token")
 

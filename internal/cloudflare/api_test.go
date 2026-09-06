@@ -39,7 +39,7 @@ func TestNewClient(t *testing.T) {
 
 			if tt.wantErr {
 				require.Error(t, err)
-				assert.ErrorIs(t, err, tt.errType)
+				require.ErrorIs(t, err, tt.errType)
 				assert.Nil(t, got)
 
 				return
@@ -69,6 +69,13 @@ func TestClient_CreateAPIToken_NilClient(t *testing.T) {
 func TestClient_ListTokens_NilClient(t *testing.T) {
 	client := &Client{}
 	_, err := client.ListTokens(context.Background())
+	require.Error(t, err)
+	assert.ErrorIs(t, err, ErrClientNotInitialized)
+}
+
+func TestClient_GetToken_NilClient(t *testing.T) {
+	client := &Client{}
+	_, err := client.GetToken(context.Background(), "token-id")
 	require.Error(t, err)
 	assert.ErrorIs(t, err, ErrClientNotInitialized)
 }

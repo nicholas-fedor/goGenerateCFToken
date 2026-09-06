@@ -4,7 +4,11 @@
 //nolint:wrapcheck
 package cloudflare
 
-import "context"
+import (
+	"context"
+
+	"github.com/cloudflare/cloudflare-go/v7/user"
+)
 
 // ListTokens retrieves all API tokens as displayable info.
 //
@@ -56,4 +60,18 @@ func RevokeToken(ctx context.Context, api API, tokenID string) error {
 //   - error: Non-nil if the underlying API call fails or credentials are invalid.
 func ValidateCredentials(ctx context.Context, api API) error {
 	return api.ValidateCredentials(ctx)
+}
+
+// GetToken retrieves a single API token by ID.
+//
+// Parameters:
+//   - ctx: Context for cancellation and timeouts.
+//   - api: The API implementation to use for retrieving the token.
+//   - tokenID: The ID of the token to retrieve.
+//
+// Returns:
+//   - *user.Token: The requested token with full metadata.
+//   - error: Non-nil if the underlying API call fails.
+func GetToken(ctx context.Context, api API, tokenID string) (*user.Token, error) {
+	return api.GetToken(ctx, tokenID)
 }

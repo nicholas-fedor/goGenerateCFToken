@@ -84,14 +84,14 @@ func Test_resolveZoneID(t *testing.T) {
 			mockAPI := mocks.NewMockAPI(t)
 			tt.mockFn(mockAPI)
 
-			got, err := resolveZoneID(ctx, mockAPI, tt.zoneName)
+			got, err := resolveZoneID(ctx, mockAPI, tt.zoneName, "")
 
 			if tt.wantErr {
 				require.Error(t, err)
 				assert.Empty(t, got)
 
 				if tt.errType != nil {
-					assert.ErrorIs(t, err, tt.errType)
+					require.ErrorIs(t, err, tt.errType)
 				}
 
 				return
@@ -280,7 +280,7 @@ func TestGenerateToken(t *testing.T) {
 				require.Error(t, err)
 
 				if tt.errType != nil {
-					assert.ErrorIs(t, err, tt.errType)
+					require.ErrorIs(t, err, tt.errType)
 				}
 
 				assert.Nil(t, got)
