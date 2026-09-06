@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Update go module path to v2 by @nicholas-fedor in [#835](https://github.com/nicholas-fedor/goGenerateCFToken/pull/835)
+
+## [2.0.0] - 2026-09-06
+
 ### Added
 
 - Add docker badge by @nicholas-fedor in [#529](https://github.com/nicholas-fedor/goGenerateCFToken/pull/529)
@@ -893,7 +899,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.2.0...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.0...HEAD)
+- [2.0.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.2.0...v2.0.0)
 - [1.2.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.14...v1.2.0)
 - [1.1.14](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.13...v1.1.14)
 - [1.1.13](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.12...v1.1.13)
