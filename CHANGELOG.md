@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add docker badge by @nicholas-fedor in [#529](https://github.com/nicholas-fedor/goGenerateCFToken/pull/529)
 
+### Changed
+
+- Restructure commands and add Hugo documentation by @nicholas-fedor in [#833](https://github.com/nicholas-fedor/goGenerateCFToken/pull/833)
+
 ### Chores
 
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.10.0 by @renovate[bot] in [#832](https://github.com/nicholas-fedor/goGenerateCFToken/pull/832)
