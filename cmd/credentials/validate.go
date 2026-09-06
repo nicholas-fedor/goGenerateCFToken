@@ -13,11 +13,9 @@ import (
 
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/cloudflare"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
 )
-
-// defaultTimeout is the default API call timeout in seconds for credential validation.
-const defaultTimeout = 30
 
 // newValidateCommand creates the credentials validate subcommand.
 //
@@ -60,7 +58,7 @@ func runValidateCmd(cmd *cobra.Command) error {
 		return fmt.Errorf("initialize Cloudflare client: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(cmd.Context(), defaultTimeout*time.Second)
+	ctx, cancel := context.WithTimeout(cmd.Context(), flags.DefaultTimeout*time.Second)
 	defer cancel()
 
 	err = cloudflare.ValidateCredentials(ctx, client)

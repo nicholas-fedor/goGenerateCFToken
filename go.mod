@@ -1,6 +1,6 @@
 module github.com/nicholas-fedor/gogeneratecftoken
 
-go 1.27.0
+go 1.27.1
 
 require (
 	github.com/adrg/xdg v0.5.3
@@ -11,6 +11,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/zalando/go-keyring v0.2.8
 	go.yaml.in/yaml/v4 v4.0.0-rc.6
+	golang.org/x/term v0.45.0
 	golang.org/x/text v0.41.0
 )
 

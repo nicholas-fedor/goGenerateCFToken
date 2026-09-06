@@ -4,7 +4,6 @@
 package credentials
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -15,6 +14,13 @@ import (
 
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/prompt"
+)
+
+var (
+	errFromEnvAndFile = errors.New("--from-env and --from-file are mutually exclusive")
+	errEmptyKeyFile   = errors.New("API key file is empty")
+	errEnvTokenUnset  = errors.New("CF_API_TOKEN is not set")
 )
 
 // newSetCommand creates the credentials set subcommand.
@@ -22,48 +28,96 @@ import (
 // Returns:
 //   - *cobra.Command: The set command that stores an API key in the OS keyring.
 func newSetCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:   "set",
-		Short: "Store API key in OS keyring",
-		Long: `Prompt for a Cloudflare API key and store it securely in the OS keyring.
+	var (
+		fromEnv  bool
+		fromFile string
+	)
 
-The key is used by other commands to authenticate with the Cloudflare API.`,
-		Example: `  # Store a new API key
-  goGenerateCFToken credentials set`,
+	cmd := &cobra.Command{
+		Use:   "set",
+		Short: "Store API key in the OS keyring or a local credential file",
+		Long: `Store a Cloudflare API key for later commands.
+
+The key is read interactively without echo, from --from-env (CF_API_TOKEN),
+or from --from-file. It is written to the OS keyring when available, otherwise
+to the default credential file under the XDG config directory.`,
+		Example: `  # Store a new API key (interactive)
+  goGenerateCFToken credentials set
+
+  # Store from the CF_API_TOKEN environment variable
+  goGenerateCFToken credentials set --from-env
+
+  # Store from a file (Docker secrets)
+  goGenerateCFToken credentials set --from-file /run/secrets/cf_api_token`,
 		GroupID: credentialsGroup.ID,
 		RunE: func(_ *cobra.Command, _ []string) error {
-			return runSetCmd()
+			return runSetCmd(fromEnv, fromFile)
 		},
 	}
+
+	cmd.Flags().BoolVar(&fromEnv, "from-env", false, "Read API key from CF_API_TOKEN")
+	cmd.Flags().StringVar(&fromFile, "from-file", "", "Read API key from the given file")
+
+	return cmd
 }
 
-// runSetCmd executes the credentials set command, prompting for an API key.
+// runSetCmd executes the credentials set command.
+//
+// Parameters:
+//   - fromEnv: If true, read CF_API_TOKEN instead of prompting.
+//   - fromFile: If set, read the API key from this path instead of prompting.
 //
 // Returns:
-//   - error: Non-nil if reading from stdin fails, key is empty, or the API key cannot be stored.
-func runSetCmd() error {
-	fmt.Fprint(os.Stderr, "Enter Cloudflare API key: ")
+//   - error: Non-nil if reading fails, the key is empty, or storage fails.
+func runSetCmd(fromEnv bool, fromFile string) error {
+	if fromEnv && fromFile != "" {
+		return errFromEnvAndFile
+	}
 
-	reader := bufio.NewReader(os.Stdin)
-
-	input, err := reader.ReadString('\n')
+	key, err := readAPIKey(fromEnv, fromFile)
 	if err != nil {
-		return fmt.Errorf("read API key: %w", err)
+		return err
 	}
 
-	key := strings.TrimSpace(input)
-	if key == "" {
-		return errors.New("API key cannot be empty")
-	}
-
-	log.Debug().Msg("storing API key in keyring")
+	log.Debug().Msg("storing API key")
 
 	err = credentials.SetAPIKey(key)
 	if err != nil {
 		return fmt.Errorf("store API key: %w", err)
 	}
 
-	logging.Println("API key stored in OS keyring")
+	logging.Println("API key stored")
 
 	return nil
+}
+
+func readAPIKey(fromEnv bool, fromFile string) (string, error) {
+	switch {
+	case fromEnv:
+		key := strings.TrimSpace(os.Getenv(credentials.EnvVarToken))
+		if key == "" {
+			return "", errEnvTokenUnset
+		}
+
+		return key, nil
+	case fromFile != "":
+		data, err := os.ReadFile(fromFile)
+		if err != nil {
+			return "", fmt.Errorf("read API key file: %w", err)
+		}
+
+		key := strings.TrimSpace(string(data))
+		if key == "" {
+			return "", errEmptyKeyFile
+		}
+
+		return key, nil
+	default:
+		key, err := prompt.Secret("Enter Cloudflare API key: ")
+		if err != nil {
+			return "", fmt.Errorf("read API key: %w", err)
+		}
+
+		return key, nil
+	}
 }

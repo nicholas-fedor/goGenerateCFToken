@@ -21,7 +21,7 @@ func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "credentials",
 		Short: "Credentials",
-		Long:  "Store, remove, and validate Cloudflare API credentials in the OS keyring.",
+		Long:  "Store, remove, and validate Cloudflare API credentials.",
 	}
 
 	cmd.AddGroup(credentialsGroup)
