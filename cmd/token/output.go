@@ -28,11 +28,19 @@ const outputFilePerms = 0o600
 // Returns:
 //   - error: Non-nil if writing to stdout or the output file fails.
 func outputToken(cmd *cobra.Command, gflags *flags.GenerateFlags, result *cloudflare.TokenGenerationResult) error {
-	if gflags.JSON {
-		return outputTokenJSON(cmd, result)
+	asJSON := gflags.JSON || gflags.Format == "json"
+	writeFile := gflags.Output != ""
+	writeStdout := gflags.Format != "none" && !writeFile
+
+	if !writeFile && !writeStdout {
+		return nil
 	}
 
-	return outputTokenPlain(cmd, gflags, result)
+	if asJSON {
+		return writeTokenJSON(cmd, gflags, result, writeFile, writeStdout)
+	}
+
+	return writeTokenPlain(cmd, gflags, result, writeFile, writeStdout)
 }
 
 // outputTokenJSON writes the token result as indented JSON to stdout.
@@ -44,6 +52,10 @@ func outputToken(cmd *cobra.Command, gflags *flags.GenerateFlags, result *cloudf
 // Returns:
 //   - error: Non-nil if JSON marshaling or stdout write fails.
 func outputTokenJSON(cmd *cobra.Command, result *cloudflare.TokenGenerationResult) error {
+	return writeTokenJSON(cmd, &flags.GenerateFlags{}, result, false, true)
+}
+
+func marshalTokenJSON(result *cloudflare.TokenGenerationResult) ([]byte, error) {
 	data := map[string]string{
 		"token": result.Token,
 		"name":  result.Name,
@@ -56,38 +68,64 @@ func outputTokenJSON(cmd *cobra.Command, result *cloudflare.TokenGenerationResul
 
 	jsonData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		return fmt.Errorf("marshal JSON: %w", err)
+		return nil, fmt.Errorf("marshal JSON: %w", err)
 	}
 
-	_, werr := cmd.OutOrStdout().Write(jsonData)
-	if werr != nil {
-		return fmt.Errorf("write output: %w", werr)
+	return append(jsonData, '\n'), nil
+}
+
+func writeTokenJSON(
+	cmd *cobra.Command,
+	gflags *flags.GenerateFlags,
+	result *cloudflare.TokenGenerationResult,
+	writeFile, writeStdout bool,
+) error {
+	jsonData, err := marshalTokenJSON(result)
+	if err != nil {
+		return err
 	}
 
-	_, _ = fmt.Fprintln(cmd.OutOrStdout())
+	if writeFile {
+		log.Debug().Str("path", gflags.Output).Msg("writing token JSON to file")
+
+		werr := os.WriteFile(gflags.Output, jsonData, outputFilePerms)
+		if werr != nil {
+			return fmt.Errorf("write output file: %w", werr)
+		}
+	}
+
+	if writeStdout {
+		_, werr := cmd.OutOrStdout().Write(jsonData)
+		if werr != nil {
+			return fmt.Errorf("write output: %w", werr)
+		}
+	}
 
 	return nil
 }
 
-// outputTokenPlain writes the token as plain text to stdout or a file.
-//
-// Parameters:
-//   - cmd: Cobra command used for stdout output.
-//   - gflags: Generate flags providing the optional output file path.
-//   - result: The token generation result containing the token value.
-//
-// Returns:
-//   - error: Non-nil if writing to stdout or the output file fails.
-func outputTokenPlain(cmd *cobra.Command, gflags *flags.GenerateFlags, result *cloudflare.TokenGenerationResult) error {
-	if gflags.Output != "" {
+func writeTokenPlain(
+	cmd *cobra.Command,
+	gflags *flags.GenerateFlags,
+	result *cloudflare.TokenGenerationResult,
+	writeFile, writeStdout bool,
+) error {
+	body := []byte(result.Token + "\n")
+
+	if writeFile {
 		log.Debug().Str("path", gflags.Output).Msg("writing token to file")
 
-		werr := os.WriteFile(gflags.Output, []byte(result.Token+"\n"), outputFilePerms)
+		werr := os.WriteFile(gflags.Output, body, outputFilePerms)
 		if werr != nil {
 			return fmt.Errorf("write output file: %w", werr)
 		}
-	} else {
-		_, _ = fmt.Fprintln(cmd.OutOrStdout(), result.Token)
+	}
+
+	if writeStdout {
+		_, werr := cmd.OutOrStdout().Write(body)
+		if werr != nil {
+			return fmt.Errorf("write output: %w", werr)
+		}
 	}
 
 	return nil

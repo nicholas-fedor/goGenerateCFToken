@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_newRevokeCommand(t *testing.T) {
@@ -25,4 +26,10 @@ func Test_newRevokeCommand(t *testing.T) {
 			assert.Equal(t, "revoke <token-id>", got.Use)
 		})
 	}
+}
+
+func Test_runRevokeCmd_RequiresForce(t *testing.T) {
+	err := runRevokeCmd(newRevokeCommand(), []string{"abc123"}, false)
+	require.Error(t, err)
+	assert.ErrorIs(t, err, errForceRequired)
 }

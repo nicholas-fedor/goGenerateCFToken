@@ -5,16 +5,19 @@ package token
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/cloudflare"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
 	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
 )
+
+var errForceRequired = errors.New("use --force to revoke token")
 
 // newRevokeCommand creates the token revoke subcommand.
 //
@@ -47,16 +50,14 @@ Requires --force to confirm the destructive operation.`,
 //
 // Parameters:
 //   - cmd: Cobra command providing the context with timeout.
-//   - args: Positional arguments; args[0] is the token ID to revoke.
+//   - args: Positional arguments. args[0] is the token ID to revoke.
 //   - force: If false, logs a warning and returns without revoking.
 //
 // Returns:
 //   - error: Non-nil if the API key cannot be resolved or revocation fails.
 func runRevokeCmd(cmd *cobra.Command, args []string, force bool) error {
 	if !force {
-		log.Warn().Msg("use --force to revoke token")
-
-		return nil
+		return errForceRequired
 	}
 
 	apiKey, err := credentials.ResolveAPIKey()
@@ -69,7 +70,7 @@ func runRevokeCmd(cmd *cobra.Command, args []string, force bool) error {
 		return fmt.Errorf("initialize Cloudflare client: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(cmd.Context(), defaultTimeout*time.Second)
+	ctx, cancel := context.WithTimeout(cmd.Context(), flags.DefaultTimeout*time.Second)
 	defer cancel()
 
 	err = cloudflare.RevokeToken(ctx, client, args[0])

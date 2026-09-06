@@ -30,7 +30,6 @@ type CommonFlags struct {
 // Parameters:
 //   - flags: The flag set to attach common flags to.
 func (cf *CommonFlags) Bind(flags *pflag.FlagSet) {
-	// --log-level, -l: Set the logging verbosity level
 	flags.StringVarP(
 		&cf.LogLevel,
 		"log-level",
@@ -38,7 +37,6 @@ func (cf *CommonFlags) Bind(flags *pflag.FlagSet) {
 		"info",
 		"Set logging level (debug, info, warn, error)",
 	)
-	// --config, -c: Path to the configuration file
 	flags.StringVarP(
 		&cf.Config,
 		"config",
@@ -46,7 +44,6 @@ func (cf *CommonFlags) Bind(flags *pflag.FlagSet) {
 		"",
 		"Path to config file",
 	)
-	// --quiet, -q: Suppress non-error output
 	flags.BoolVarP(
 		&cf.Quiet,
 		"quiet",
@@ -54,7 +51,6 @@ func (cf *CommonFlags) Bind(flags *pflag.FlagSet) {
 		false,
 		"Suppress all output except errors",
 	)
-	// --verbose, -v: Enable detailed output
 	flags.BoolVarP(
 		&cf.Verbose,
 		"verbose",

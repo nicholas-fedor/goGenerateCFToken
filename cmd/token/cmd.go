@@ -7,9 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// defaultTimeout is the default API call timeout in seconds for token operations.
-const defaultTimeout = 30
-
 // Token management commands.
 var tokenGroup = &cobra.Group{
 	ID:    "token",
@@ -24,13 +21,14 @@ func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "token",
 		Short: "Tokens",
-		Long:  "Generate, list, and revoke Cloudflare API tokens.",
+		Long:  "Generate, list, get, and revoke Cloudflare API tokens.",
 	}
 
 	cmd.AddGroup(tokenGroup)
 
 	cmd.AddCommand(newGenerateCommand())
 	cmd.AddCommand(newListCommand())
+	cmd.AddCommand(newGetCommand())
 	cmd.AddCommand(newRevokeCommand())
 
 	return cmd

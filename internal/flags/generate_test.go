@@ -23,15 +23,15 @@ func TestGenerateFlags_Bind(t *testing.T) {
 		{
 			name: "binds with pre-existing values",
 			gf: &GenerateFlags{
-				CommonFlags: CommonFlags{LogLevel: "debug"},
-				Token:       "test-token",
-				Zone:        "example.com",
-				Output:      "/tmp/output",
-				JSON:        true,
-				Name:        "my-token",
-				DryRun:      true,
-				Timeout:     60,
-				ExpiresOn:   "2027-01-01T00:00:00Z",
+				LogLevel:  "debug",
+				Token:     "test-token",
+				Zone:      "example.com",
+				Output:    "/tmp/output",
+				JSON:      true,
+				Name:      "my-token",
+				DryRun:    true,
+				Timeout:   60,
+				ExpiresOn: "2027-01-01T00:00:00Z",
 			},
 		},
 	}
@@ -101,4 +101,16 @@ func TestGenerateFlags_BindValues(t *testing.T) {
 	assert.True(t, gf.DryRun)
 	assert.Equal(t, 45, gf.Timeout)
 	assert.Equal(t, "2027-06-01T00:00:00Z", gf.ExpiresOn)
+}
+
+func TestGenerateFlags_BindGet(t *testing.T) {
+	gf := &GenerateFlags{}
+	fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
+	gf.BindGet(fs)
+
+	assert.NotNil(t, fs.Lookup("json"))
+	assert.NotNil(t, fs.Lookup("token"))
+	assert.NotNil(t, fs.Lookup("timeout"))
+	assert.Nil(t, fs.Lookup("zone"))
+	assert.Nil(t, fs.Lookup("dry-run"))
 }

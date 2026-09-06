@@ -15,8 +15,12 @@ type GenerateFlags struct {
 	Token string
 	// Zone is the Cloudflare zone name (overrides config file).
 	Zone string
+	// AccountID is the optional Cloudflare account ID for zone disambiguation.
+	AccountID string
 	// Output is the file path to write the token to instead of stdout.
 	Output string
+	// Format controls stdout output: text, json, or none.
+	Format string
 	// JSON enables JSON output format.
 	JSON bool
 	// Name overrides the default token name (service.zone).
@@ -27,6 +31,8 @@ type GenerateFlags struct {
 	Timeout int
 	// ExpiresOn is the token expiration date in RFC3339 format.
 	ExpiresOn string
+	// TTL is a human-friendly token lifetime (e.g. 24h, 7d). Converted to ExpiresOn.
+	TTL string
 }
 
 // Bind attaches generate-specific flags to the provided flag set.
@@ -34,15 +40,7 @@ type GenerateFlags struct {
 // Parameters:
 //   - flags: The flag set to attach generate flags to.
 func (gf *GenerateFlags) Bind(flags *pflag.FlagSet) {
-	// --token, -t: Cloudflare API token (prefer CF_API_TOKEN env var or keyring)
-	flags.StringVarP(
-		&gf.Token,
-		"token",
-		"t",
-		"",
-		"Cloudflare API token (prefer CF_API_TOKEN env var or keyring)",
-	)
-	// --zone, -z: Cloudflare zone name
+	gf.bindAuth(flags)
 	flags.StringVarP(
 		&gf.Zone,
 		"zone",
@@ -50,7 +48,6 @@ func (gf *GenerateFlags) Bind(flags *pflag.FlagSet) {
 		"",
 		"Cloudflare zone name",
 	)
-	// --output, -o: Write token to file instead of stdout
 	flags.StringVarP(
 		&gf.Output,
 		"output",
@@ -58,39 +55,80 @@ func (gf *GenerateFlags) Bind(flags *pflag.FlagSet) {
 		"",
 		"Write token to file instead of stdout",
 	)
-	// --json: Output token in JSON format
-	flags.BoolVar(
-		&gf.JSON,
-		"json",
-		false,
-		"Output token in JSON format",
-	)
-	// --name: Custom token name (default: service.zone)
+	gf.bindJSON(flags)
 	flags.StringVar(
 		&gf.Name,
 		"name",
 		"",
 		"Custom token name (default: service.zone)",
 	)
-	// --dry-run: Validate inputs without creating a token
 	flags.BoolVar(
 		&gf.DryRun,
 		"dry-run",
 		false,
 		"Validate inputs without creating a token",
 	)
-	// --timeout: Timeout in seconds for API calls
-	flags.IntVar(
-		&gf.Timeout,
-		"timeout",
-		DefaultTimeout,
-		"Timeout in seconds for API calls",
-	)
-	// --expires-on: Token expiration date (RFC3339 format, e.g. 2027-01-01T00:00:00Z)
+	gf.bindTimeout(flags)
 	flags.StringVar(
 		&gf.ExpiresOn,
 		"expires-on",
 		"",
 		"Token expiration date (RFC3339 format, e.g. 2027-01-01T00:00:00Z)",
+	)
+	flags.StringVar(
+		&gf.TTL,
+		"ttl",
+		"",
+		"Token lifetime as a human duration (e.g. 24h, 7d)",
+	)
+	flags.StringVar(
+		&gf.AccountID,
+		"account-id",
+		"",
+		"Cloudflare account ID for disambiguating zones across accounts",
+	)
+	flags.StringVar(
+		&gf.Format,
+		"format",
+		"text",
+		"Output format (text, json, none)",
+	)
+}
+
+// BindGet attaches the subset of generate flags used by token get.
+//
+// Parameters:
+//   - flags: The flag set to attach get flags to.
+func (gf *GenerateFlags) BindGet(flags *pflag.FlagSet) {
+	gf.bindAuth(flags)
+	gf.bindJSON(flags)
+	gf.bindTimeout(flags)
+}
+
+func (gf *GenerateFlags) bindAuth(flags *pflag.FlagSet) {
+	flags.StringVarP(
+		&gf.Token,
+		"token",
+		"t",
+		"",
+		"Cloudflare API token (prefer CF_API_TOKEN env var or keyring)",
+	)
+}
+
+func (gf *GenerateFlags) bindJSON(flags *pflag.FlagSet) {
+	flags.BoolVar(
+		&gf.JSON,
+		"json",
+		false,
+		"Output token in JSON format",
+	)
+}
+
+func (gf *GenerateFlags) bindTimeout(flags *pflag.FlagSet) {
+	flags.IntVar(
+		&gf.Timeout,
+		"timeout",
+		DefaultTimeout,
+		"Timeout in seconds for API calls",
 	)
 }
