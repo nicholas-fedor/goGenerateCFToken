@@ -30,7 +30,7 @@ formatters:
       sections:
         - standard # Standard section: captures all standard packages.
         - default # Default section: contains all imports that could not be matched to another section type.
-        - prefix(github.com/nicholas-fedor/gogeneratecftoken) # Custom section: groups all imports with the specified Prefix.
+        - prefix(github.com/nicholas-fedor/gogeneratecftoken/v2) # Custom section: groups all imports with the specified Prefix.
         - blank # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
         - dot # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
         - alias # Alias section: contains all alias imports. This section is not present unless explicitly enabled.
@@ -66,7 +66,7 @@ formatters:
           replacement: "append(make([]T, 0), x)"
           # or better: just "[]T{x}" if building a new slice
     gofumpt:
-      module-path: "github.com/nicholas-fedor/gogeneratecftoken"
+      module-path: "github.com/nicholas-fedor/gogeneratecftoken/v2"
       extra:
         # Groups function parameters with repeated types.
         # Default: false

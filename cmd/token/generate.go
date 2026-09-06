@@ -17,11 +17,11 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/cloudflare"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/config"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/credentials"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/cloudflare"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/config"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/credentials"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/logging"
 )
 
 const (

@@ -22,4 +22,4 @@ jobs:
         uses: nicholas-fedor/go-proxy-pull-action@c50853a69d82ff90712b966c39bb4819147db773 # v1.1.49
         with:
           goproxy: https://proxy.golang.org
-          import_path: github.com/nicholas-fedor/gogeneratecftoken
+          import_path: github.com/nicholas-fedor/gogeneratecftoken/v2

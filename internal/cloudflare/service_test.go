@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/cloudflare/mocks"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/cloudflare/mocks"
 )
 
 func TestListTokens(t *testing.T) {

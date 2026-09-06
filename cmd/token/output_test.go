@@ -14,8 +14,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/cloudflare"
-	"github.com/nicholas-fedor/gogeneratecftoken/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/cloudflare"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
 )
 
 func Test_outputToken(t *testing.T) {

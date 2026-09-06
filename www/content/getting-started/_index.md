@@ -26,7 +26,7 @@ On Linux this prefers a native `.deb` / `.rpm` / `.apk` / Arch package when sudo
 ### From Source
 
 ```bash
-go install github.com/nicholas-fedor/gogeneratecftoken@latest
+go install github.com/nicholas-fedor/gogeneratecftoken/v2@latest
 ```
 
 ### Pre-built Binary

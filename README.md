@@ -6,7 +6,7 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/gogeneratecftoken/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/gogeneratecftoken/tree/main)
 [![codecov](https://codecov.io/gh/nicholas-fedor/gogeneratecftoken/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/gogeneratecftoken)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/gogeneratecftoken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/gogeneratecftoken&amp;utm_campaign=Badge_Grade)
-[![GoDoc](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken?status.svg)](https://godoc.org/github.com/nicholas-fedor/gogeneratecftoken)
+[![GoDoc](https://pkg.go.dev/badge/github.com/nicholas-fedor/gogeneratecftoken/v2.svg)](https://pkg.go.dev/github.com/nicholas-fedor/gogeneratecftoken/v2)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/nicholas-fedor/go-remove)
 [![Latest Version](https://img.shields.io/github/tag/nicholas-fedor/gogeneratecftoken.svg)](https://github.com/nicholas-fedor/gogeneratecftoken/releases)
 [![Pulls from DockerHub](https://img.shields.io/docker/pulls/nickfedor/gogeneratecftoken.svg)](https://hub.docker.com/r/nickfedor/gogeneratecftoken)
@@ -190,7 +190,7 @@ docker run --rm -e CF_API_TOKEN="your-master-api-token" -e CF_ZONE="example.com"
 ### Source
 
 ```bash
-go install github.com/nicholas-fedor/gogeneratecftoken@latest
+go install github.com/nicholas-fedor/gogeneratecftoken/v2@latest
 ```
 
 ## Usage

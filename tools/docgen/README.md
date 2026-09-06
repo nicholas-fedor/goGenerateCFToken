@@ -82,7 +82,7 @@ www/content/cli-reference/
 docgen can also be triggered via `go:generate`:
 
 ```go
-//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/tools/docgen -out ../../www/content/cli-reference
+//go:generate go run github.com/nicholas-fedor/gogeneratecftoken/v2/tools/docgen -out ../../www/content/cli-reference
 ```
 
 ## Dependencies
