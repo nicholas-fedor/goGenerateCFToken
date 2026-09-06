@@ -21,8 +21,12 @@ While a Docker image is available for use, **goGenerateCFToken** is primarily in
 1. Install the `gogeneratecftoken` binary:
 
     ```bash
-    go install github.com/nicholas-fedor/gogeneratecftoken@latest
+    tmp=$(mktemp)
+    curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp" && sh "$tmp"
+    rm -f "$tmp"
     ```
+
+    See [Getting Started](/getting-started/) for packages, Docker, and building from source.
 
 2. Initialize the configuration and follow the prompt:
 

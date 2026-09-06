@@ -23,7 +23,9 @@ A simple CLI tool for generating and managing scoped Cloudflare API tokens.
 
 - [Quick Start](#quick-start)
 - [Installation](#installation)
-  - [Release Binaries](#release-binaries)
+  - [Install script](#install-script)
+  - [Updating and uninstalling](#updating-and-uninstalling)
+  - [Linux packages](#linux-packages)
   - [Docker](#docker)
   - [Source](#source)
 - [Usage](#usage)
@@ -36,7 +38,15 @@ A simple CLI tool for generating and managing scoped Cloudflare API tokens.
 
 ## Quick Start
 
-1. [Install](#installation) gogeneratecftoken
+1. Install gogeneratecftoken:
+
+    ```bash
+    tmp=$(mktemp)
+    curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp" && sh "$tmp"
+    rm -f "$tmp"
+    ```
+
+    See [Installation](#installation) for packages, Docker, and building from source.
 
 2. Create a Master API Key
 
@@ -85,29 +95,61 @@ A simple CLI tool for generating and managing scoped Cloudflare API tokens.
 
 ## Installation
 
-### Release Binaries
+### Install script
 
-Download and install the latest binary for your platform from the [releases page](https://github.com/nicholas-fedor/gogeneratecftoken/releases).
+```bash
+tmp=$(mktemp)
+curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp" && sh "$tmp"
+rm -f "$tmp"
+```
 
-The following are CLI scripts for installing to the user's `go/bin` directory:
+On Linux, the script installs a native package (`.deb`, `.rpm`, `.apk`, or Arch) when a package manager and root/sudo are available. Otherwise it extracts the release archive into `$HOME/go/bin`.
 
-- Windows (amd64):
+| Variable  | Meaning                                                  |
+|-----------|----------------------------------------------------------|
+| `VERSION` | Release tag (`v1.2.0` or `1.2.0`). Default: latest.      |
+| `PREFIX`  | Directory for archive installs. Default: `$HOME/go/bin`. |
+| `METHOD`  | `auto` (default), `package`, or `archive`.               |
 
-    ```powershell
-    New-Item -ItemType Directory -Path $HOME\go\bin -Force | Out-Null; iwr (iwr https://api.github.com/repos/nicholas-fedor/gogeneratecftoken/releases/latest | ConvertFrom-Json).assets.where({$_.name -like "*windows_amd64*.zip"}).browser_download_url -OutFile gogeneratecftoken.zip; Add-Type -AssemblyName System.IO.Compression.FileSystem; ($z=[System.IO.Compression.ZipFile]::OpenRead("$PWD\gogeneratecftoken.zip")).Entries | ? {$_.Name -eq 'gogeneratecftoken.exe'} | % {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$HOME\go\bin\$($_.Name)", $true)}; $z.Dispose(); rm gogeneratecftoken.zip; if (Test-Path "$HOME\go\bin\gogeneratecftoken.exe") { Write-Host "Successfully installed gogeneratecftoken.exe to $HOME\go\bin" } else { Write-Host "Failed to install gogeneratecftoken.exe" }
-    ```
+```bash
+# Pin a version
+VERSION=v1.2.0 sh scripts/install.sh
 
-- Linux (amd64):
+# Always use the tarball into a custom directory
+METHOD=archive PREFIX="$HOME/.local/bin" sh scripts/install.sh
+```
 
-    ```bash
-    mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/gogeneratecftoken/releases/latest | grep -o 'https://[^"]*linux_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin gogeneratecftoken
-    ```
+Windows: download the `.zip` from the [releases page](https://github.com/nicholas-fedor/gogeneratecftoken/releases).
 
-- macOS (amd64):
+### Updating and uninstalling
 
-    ```bash
-    mkdir -p $HOME/go/bin && curl -L $(curl -s https://api.github.com/repos/nicholas-fedor/gogeneratecftoken/releases/latest | grep -o 'https://[^"]*darwin_amd64[^"]*\.tar\.gz') | tar -xz --strip-components=1 -C $HOME/go/bin gogeneratecftoken
-    ```
+Re-run the script to replace the current install with the latest release (or `VERSION=…`). Native packages are upgraded in place (`dpkg`/`rpm`/`apk`/`pacman`); archive installs overwrite `$PREFIX/gogeneratecftoken`.
+
+```bash
+tmp=$(mktemp)
+curl -sSfL https://raw.githubusercontent.com/nicholas-fedor/goGenerateCFToken/main/scripts/install.sh -o "$tmp"
+
+# Update
+sh "$tmp" update
+
+# Uninstall (native package and/or the stored archive prefix)
+sh "$tmp" uninstall
+
+rm -f "$tmp"
+```
+
+### Linux packages
+
+GitHub Releases include distro packages built by GoReleaser (nFPM):
+
+| Format         | Distros                       |
+|----------------|-------------------------------|
+| `.deb`         | Debian, Ubuntu                |
+| `.rpm`         | Fedora, RHEL, Rocky, openSUSE |
+| `.apk`         | Alpine                        |
+| `.pkg.tar.zst` | Arch, Manjaro                 |
+
+Install a downloaded package with `dpkg -i`, `rpm -Uvh`, `apk add --allow-untrusted`, or `pacman -U`. Checksums are in `checksums.txt` on the same release.
 
 ### Docker
 

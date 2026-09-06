@@ -98,6 +98,47 @@ archives:
       mtime: "{{ .CommitTimestamp }}"
 
 ################################################################################
+# Linux Distro Packages (nFPM)
+# https://goreleaser.com/customization/package/nfpm/
+#
+# Attaches .deb, .rpm, .apk, and Arch packages to the GitHub Release.
+# File names match the archives (no ConventionalFileName: GitHub rewrites
+# '~' and would invalidate checksums).
+################################################################################
+nfpms:
+  - id: gogeneratecftoken
+    package_name: gogeneratecftoken
+    ids:
+      - gogeneratecftoken-binary
+    vendor: Nicholas Fedor
+    homepage: https://github.com/nicholas-fedor/goGenerateCFToken
+    maintainer: Nicholas Fedor <nick@nickfedor.com>
+    description: CLI for generating and managing scoped Cloudflare API tokens.
+    license: AGPL-3.0-or-later
+    formats:
+      - deb
+      - rpm
+      - apk
+      - archlinux
+    bindir: /usr/bin
+    section: utils
+    priority: optional
+    mtime: "{{ .CommitDate }}"
+    file_name_template: >-
+      {{- .PackageName }}_
+      {{- .Os }}_
+      {{- if eq .Arch "amd64" }}amd64
+      {{- else if eq .Arch "386" }}i386
+      {{- else if eq .Arch "arm" }}armhf
+      {{- else if eq .Arch "arm64" }}arm64v8
+      {{- else if eq .Arch "riscv64" }}riscv64
+      {{- else }}{{ .Arch }}{{ end }}_
+      {{- .Version }}
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/gogeneratecftoken/LICENSE
+
+################################################################################
 # Source Archive Configuration
 ################################################################################
 source:
