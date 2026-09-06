@@ -1,8 +1,6 @@
 // Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Package logging provides structured logging via zerolog and plain-text
-// user-facing output helpers.
 package logging
 
 import (
@@ -55,6 +53,30 @@ func TestSetLevel(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			SetLevel(tt.level)
+			assert.Equal(t, tt.level, zerolog.GlobalLevel())
 		})
 	}
+}
+
+func TestSetup_UsesRequestedLevel(t *testing.T) {
+	t.Cleanup(func() {
+		SetQuiet(false)
+		Setup(zerolog.InfoLevel)
+	})
+
+	Setup(zerolog.ErrorLevel)
+	assert.Equal(t, zerolog.ErrorLevel, zerolog.GlobalLevel())
+
+	Setup(zerolog.WarnLevel)
+	assert.Equal(t, zerolog.WarnLevel, zerolog.GlobalLevel())
+}
+
+func TestPrintf_HonorsQuiet(t *testing.T) {
+	t.Cleanup(func() {
+		SetQuiet(false)
+	})
+
+	SetQuiet(true)
+	Printf("should-not-panic %s", "ok")
+	Println("should-not-panic")
 }

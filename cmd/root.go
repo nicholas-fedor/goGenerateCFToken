@@ -29,8 +29,8 @@ var rootCmd = &cobra.Command{
 The configuration is loaded from an XDG-compliant config file
 ($XDG_CONFIG_HOME/gogeneratecftoken/config.yaml) or flags.
 
-The Cloudflare API token is resolved from the OS keyring or the CF_API_TOKEN environment
-variable.`,
+The Cloudflare API token is resolved from CF_API_TOKEN, CF_API_TOKEN_FILE, the OS
+keyring, or the default credential file.`,
 }
 
 func init() {
@@ -46,6 +46,7 @@ func init() {
 	rootCmd.AddCommand(config.NewCommand())
 	rootCmd.AddCommand(credentials.NewCommand())
 	rootCmd.AddCommand(token.NewCommand())
+	rootCmd.AddCommand(token.NewDeprecatedGenerateCommand())
 	rootCmd.AddCommand(version.NewCommand())
 }
 
@@ -103,18 +104,19 @@ func setupLogging(cmd *cobra.Command) error {
 
 	switch {
 	case quiet:
-		logging.SetLevel(zerolog.ErrorLevel)
-		logging.Setup(false)
+		logging.SetQuiet(true)
+		logging.Setup(zerolog.ErrorLevel)
 	case verbose:
-		logging.Setup(true)
+		logging.SetQuiet(false)
+		logging.Setup(zerolog.DebugLevel)
 	default:
 		level, perr := zerolog.ParseLevel(logLevel)
 		if perr != nil {
 			return fmt.Errorf("parse log level %q: %w", logLevel, perr)
 		}
 
-		logging.SetLevel(level)
-		logging.Setup(level <= zerolog.DebugLevel)
+		logging.SetQuiet(false)
+		logging.Setup(level)
 	}
 
 	return nil

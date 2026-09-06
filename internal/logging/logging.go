@@ -8,6 +8,7 @@ package logging
 import (
 	"fmt"
 	"os"
+	"sync/atomic"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -15,26 +16,26 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 )
 
-// Setup initializes zerolog with appropriate level and formatting.
+var quiet atomic.Bool
+
+// Setup initializes zerolog at the requested level.
 //
-// In debug mode, output is structured JSON to stderr with caller info
-// and error stack traces enabled. In normal mode, zerolog output goes
-// to stderr and user-facing messages go to stdout via Printf/Println.
+// Debug (and trace) use structured JSON to stderr with caller info.
+// Other levels write zerolog output to stderr without caller info.
+// User-facing messages go to stdout via Printf/Println unless quiet.
 //
 // Parameters:
-//   - isDebug: If true, enables debug-level logging with structured JSON output.
-func Setup(isDebug bool) {
+//   - level: Global zerolog level to apply.
+func Setup(level zerolog.Level) {
 	zerolog.TimeFieldFormat = time.RFC3339
 	zerolog.TimestampFunc = func() time.Time { return time.Now().UTC() }
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack //nolint:reassign
 
-	if isDebug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	zerolog.SetGlobalLevel(level)
 
+	if level <= zerolog.DebugLevel {
 		log.Logger = log.Output(os.Stderr).With().Caller().Logger()
 	} else {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-
 		log.Logger = log.Output(os.Stderr)
 	}
 }
@@ -57,21 +58,37 @@ func SetLevel(level zerolog.Level) {
 	zerolog.SetGlobalLevel(level)
 }
 
+// SetQuiet suppresses Printf/Println user-facing output when true.
+//
+// Parameters:
+//   - q: Whether incidental user-facing output should be discarded.
+func SetQuiet(q bool) {
+	quiet.Store(q)
+}
+
 // Printf writes a plain text message to stdout with a trailing newline.
-// Use for user-facing output in normal (non-debug) mode.
+// Use for incidental user-facing output. Honors SetQuiet.
 //
 // Parameters:
 //   - format: The format string for the message.
 //   - v: Variadic arguments for the format string.
 func Printf(format string, v ...any) {
+	if quiet.Load() {
+		return
+	}
+
 	_, _ = fmt.Fprintf(os.Stdout, format+"\n", v...)
 }
 
 // Println writes a plain text message to stdout with a trailing newline.
-// Use for user-facing output in normal (non-debug) mode.
+// Use for incidental user-facing output. Honors SetQuiet.
 //
 // Parameters:
 //   - v: Variadic arguments to print.
 func Println(v ...any) {
+	if quiet.Load() {
+		return
+	}
+
 	_, _ = fmt.Fprintln(os.Stdout, v...)
 }
