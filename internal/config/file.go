@@ -111,6 +111,13 @@ func Delete(path string) error {
 	return nil
 }
 
+// isDirNotEmpty reports whether err indicates a directory is not empty.
+//
+// Parameters:
+//   - err: The error returned by a directory removal attempt.
+//
+// Returns:
+//   - bool: True when the error message indicates the directory is not empty.
 func isDirNotEmpty(err error) bool {
 	return strings.Contains(strings.ToLower(err.Error()), "not empty")
 }

@@ -114,7 +114,11 @@ func (s *KeyringStore) Delete() error {
 	return nil
 }
 
-// Available returns true when the keyring backend was reachable at construction time.
+// Available reports whether the keyring backend was reachable at construction
+// time.
+//
+// Returns:
+//   - bool: True when a keyring backend was available.
 func (s *KeyringStore) Available() bool {
 	return s.available
 }

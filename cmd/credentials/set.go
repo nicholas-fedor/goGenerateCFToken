@@ -91,6 +91,16 @@ func runSetCmd(fromEnv bool, fromFile string) error {
 	return nil
 }
 
+// readAPIKey obtains the API key from the environment, a file, or an
+// interactive prompt.
+//
+// Parameters:
+//   - fromEnv: If true, read CF_API_TOKEN instead of prompting.
+//   - fromFile: If set, read the API key from this path instead of prompting.
+//
+// Returns:
+//   - string: The API key.
+//   - error: Non-nil if the source is empty or cannot be read.
 func readAPIKey(fromEnv bool, fromFile string) (string, error) {
 	switch {
 	case fromEnv:

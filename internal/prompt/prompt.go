@@ -102,6 +102,11 @@ func Confirm(message string) (bool, error) {
 	return result == "y" || result == "Y", nil
 }
 
+// readLine reads a single trimmed line from stdin.
+//
+// Returns:
+//   - string: The input with surrounding whitespace removed.
+//   - error: Non-nil if reading from stdin fails.
 func readLine() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 

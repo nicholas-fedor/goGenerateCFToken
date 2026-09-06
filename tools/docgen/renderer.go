@@ -36,6 +36,9 @@ type hugoRenderer struct {
 }
 
 // callerFile returns the source file path of the caller using runtime.Caller.
+//
+// Returns:
+//   - string: The caller's source file path, or empty if it cannot be determined.
 func callerFile() string {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {

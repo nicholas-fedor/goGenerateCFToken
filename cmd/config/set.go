@@ -120,6 +120,15 @@ func runSetCmd(cmd *cobra.Command, args []string, cflags *flags.ConfigFlags) err
 	return nil
 }
 
+// resolveConfigPath returns the config file path from the --config flag or
+// Locate.
+//
+// Parameters:
+//   - cmd: Cobra command used to read the config flag.
+//
+// Returns:
+//   - string: The resolved configuration file path.
+//   - error: Non-nil if the flag cannot be read or Locate fails.
 func resolveConfigPath(cmd *cobra.Command) (string, error) {
 	cfgPath, err := cmd.Flags().GetString("config")
 	if err != nil {
@@ -138,6 +147,16 @@ func resolveConfigPath(cmd *cobra.Command) (string, error) {
 	return cfgPath, nil
 }
 
+// loadOrDefault loads configuration from path, or returns defaults if zone is
+// unset.
+//
+// Parameters:
+//   - path: The configuration file path to load.
+//
+// Returns:
+//   - *config.Config: The loaded or default configuration.
+//   - error: Non-nil if the file cannot be loaded for reasons other than a
+//     missing zone.
 func loadOrDefault(path string) (*config.Config, error) {
 	cfg, err := config.Load(path)
 	if err == nil {

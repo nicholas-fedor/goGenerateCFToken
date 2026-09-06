@@ -55,6 +55,14 @@ func outputTokenJSON(cmd *cobra.Command, result *cloudflare.TokenGenerationResul
 	return writeTokenJSON(cmd, &flags.GenerateFlags{}, result, false, true)
 }
 
+// marshalTokenJSON serializes the token generation result as indented JSON.
+//
+// Parameters:
+//   - result: The token generation result to serialize.
+//
+// Returns:
+//   - []byte: Indented JSON with a trailing newline.
+//   - error: Non-nil if JSON marshaling fails.
 func marshalTokenJSON(result *cloudflare.TokenGenerationResult) ([]byte, error) {
 	data := map[string]string{
 		"token": result.Token,
@@ -74,6 +82,18 @@ func marshalTokenJSON(result *cloudflare.TokenGenerationResult) ([]byte, error) 
 	return append(jsonData, '\n'), nil
 }
 
+// writeTokenJSON writes the token result as indented JSON to a file and/or
+// stdout.
+//
+// Parameters:
+//   - cmd: Cobra command used for stdout output.
+//   - gflags: Generate flags providing the optional output file path.
+//   - result: The token generation result to serialize.
+//   - writeFile: If true, write JSON to gflags.Output.
+//   - writeStdout: If true, write JSON to stdout.
+//
+// Returns:
+//   - error: Non-nil if JSON marshaling or writing fails.
 func writeTokenJSON(
 	cmd *cobra.Command,
 	gflags *flags.GenerateFlags,
@@ -104,6 +124,17 @@ func writeTokenJSON(
 	return nil
 }
 
+// writeTokenPlain writes the raw token value to a file and/or stdout.
+//
+// Parameters:
+//   - cmd: Cobra command used for stdout output.
+//   - gflags: Generate flags providing the optional output file path.
+//   - result: The token generation result containing the token value.
+//   - writeFile: If true, write the token to gflags.Output.
+//   - writeStdout: If true, write the token to stdout.
+//
+// Returns:
+//   - error: Non-nil if writing fails.
 func writeTokenPlain(
 	cmd *cobra.Command,
 	gflags *flags.GenerateFlags,

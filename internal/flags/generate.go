@@ -105,6 +105,10 @@ func (gf *GenerateFlags) BindGet(flags *pflag.FlagSet) {
 	gf.bindTimeout(flags)
 }
 
+// bindAuth attaches the API token flag to the provided flag set.
+//
+// Parameters:
+//   - flags: The flag set to attach the token flag to.
 func (gf *GenerateFlags) bindAuth(flags *pflag.FlagSet) {
 	flags.StringVarP(
 		&gf.Token,
@@ -115,6 +119,10 @@ func (gf *GenerateFlags) bindAuth(flags *pflag.FlagSet) {
 	)
 }
 
+// bindJSON attaches the JSON output flag to the provided flag set.
+//
+// Parameters:
+//   - flags: The flag set to attach the JSON flag to.
 func (gf *GenerateFlags) bindJSON(flags *pflag.FlagSet) {
 	flags.BoolVar(
 		&gf.JSON,
@@ -124,6 +132,10 @@ func (gf *GenerateFlags) bindJSON(flags *pflag.FlagSet) {
 	)
 }
 
+// bindTimeout attaches the API timeout flag to the provided flag set.
+//
+// Parameters:
+//   - flags: The flag set to attach the timeout flag to.
 func (gf *GenerateFlags) bindTimeout(flags *pflag.FlagSet) {
 	flags.IntVar(
 		&gf.Timeout,
