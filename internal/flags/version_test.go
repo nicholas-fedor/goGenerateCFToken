@@ -23,8 +23,8 @@ func TestVersionFlags_Bind(t *testing.T) {
 		{
 			name: "binds with pre-existing values",
 			vf: &VersionFlags{
-				CommonFlags: CommonFlags{LogLevel: "debug"},
-				JSON:        true,
+				LogLevel: "debug",
+				JSON:     true,
 			},
 		},
 	}

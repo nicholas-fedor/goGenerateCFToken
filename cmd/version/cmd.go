@@ -69,7 +69,7 @@ func runVersionCmd(cmd *cobra.Command, vflags *flags.VersionFlags) error {
 //
 // Parameters:
 //   - cmd: Cobra command providing access to the verbose flag.
-//   - vflags: Version flags; if JSON is true, returns the JSON printer.
+//   - vflags: Version flags. If JSON is true, returns the JSON printer.
 //
 // Returns:
 //   - func(io.Writer) error: The selected printer function.

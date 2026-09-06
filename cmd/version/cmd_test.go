@@ -1,7 +1,6 @@
 // Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// Package version provides the CLI command for displaying application version information.
 package version
 
 import (
