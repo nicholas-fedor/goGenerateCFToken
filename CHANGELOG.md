@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Chores
+
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.50 by @renovate[bot] in [#837](https://github.com/nicholas-fedor/goGenerateCFToken/pull/837)
+
+## [2.0.1] - 2026-09-06
+
 ### Fixed
 
 - Update go module path to v2 by @nicholas-fedor in [#835](https://github.com/nicholas-fedor/goGenerateCFToken/pull/835)
@@ -899,7 +905,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.0...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.1...HEAD)
+- [2.0.1](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.0...v2.0.1)
 - [2.0.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.2.0...v2.0.0)
 - [1.2.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.14...v1.2.0)
 - [1.1.14](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.13...v1.1.14)
