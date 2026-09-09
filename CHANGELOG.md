@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update github/codeql-action action to v4.38.0 by @renovate[bot] in [#846](https://github.com/nicholas-fedor/goGenerateCFToken/pull/846)
 - Update module golang.org/x/text to v0.42.0 by @renovate[bot] in [#844](https://github.com/nicholas-fedor/goGenerateCFToken/pull/844)
 - Update module golang.org/x/term to v0.46.0 by @renovate[bot] in [#842](https://github.com/nicholas-fedor/goGenerateCFToken/pull/842)
 - Update module golang.org/x/sys to v0.48.0 by @renovate[bot] in [#841](https://github.com/nicholas-fedor/goGenerateCFToken/pull/841)
