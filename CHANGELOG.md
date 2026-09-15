@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update docker/setup-qemu-action action to v4.4.0 by @renovate[bot] in [#851](https://github.com/nicholas-fedor/goGenerateCFToken/pull/851)
+- Update docker/setup-buildx-action action to v4.4.0 by @renovate[bot] in [#850](https://github.com/nicholas-fedor/goGenerateCFToken/pull/850)
 - Update codecov/codecov-action action to v7.1.0 by @renovate[bot] in [#848](https://github.com/nicholas-fedor/goGenerateCFToken/pull/848)
 - Update github/codeql-action action to v4.38.0 by @renovate[bot] in [#846](https://github.com/nicholas-fedor/goGenerateCFToken/pull/846)
 - Update module golang.org/x/text to v0.42.0 by @renovate[bot] in [#844](https://github.com/nicholas-fedor/goGenerateCFToken/pull/844)
