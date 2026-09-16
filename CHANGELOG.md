@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update docker/setup-buildx-action action to v4.4.1 by @renovate[bot] in [#853](https://github.com/nicholas-fedor/goGenerateCFToken/pull/853)
+
+## [2.0.2] - 2026-09-15
+
+### Chores
+
 - Update docker/setup-qemu-action action to v4.4.0 by @renovate[bot] in [#851](https://github.com/nicholas-fedor/goGenerateCFToken/pull/851)
 - Update docker/setup-buildx-action action to v4.4.0 by @renovate[bot] in [#850](https://github.com/nicholas-fedor/goGenerateCFToken/pull/850)
 - Update codecov/codecov-action action to v7.1.0 by @renovate[bot] in [#848](https://github.com/nicholas-fedor/goGenerateCFToken/pull/848)
@@ -913,7 +919,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.1...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.2...HEAD)
+- [2.0.2](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.1...v2.0.2)
 - [2.0.1](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.0...v2.0.1)
 - [2.0.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.2.0...v2.0.0)
 - [1.2.0](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v1.1.14...v1.2.0)
