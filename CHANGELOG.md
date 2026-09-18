@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update golang:alpine docker digest to 4cb7ac9 by @renovate[bot] in [#861](https://github.com/nicholas-fedor/goGenerateCFToken/pull/861)
+- Update alpine:3.24.2 docker digest to 294b683 by @renovate[bot] in [#860](https://github.com/nicholas-fedor/goGenerateCFToken/pull/860)
 - Update alpine docker tag to v3.24.2 by @renovate[bot] in [#858](https://github.com/nicholas-fedor/goGenerateCFToken/pull/858)
 - Update golang:alpine docker digest to e9bbdf2 by @renovate[bot] in [#857](https://github.com/nicholas-fedor/goGenerateCFToken/pull/857)
 - Update codecov/codecov-action action to v7.1.1 by @renovate[bot] in [#855](https://github.com/nicholas-fedor/goGenerateCFToken/pull/855)
