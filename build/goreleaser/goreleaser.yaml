@@ -95,7 +95,7 @@ archives:
     files:
       - LICENSE
     builds_info:
-      mtime: "{{ .CommitTimestamp }}"
+      mtime: "{{ .CommitDate }}"
 
 ################################################################################
 # Linux Distro Packages (nFPM)
