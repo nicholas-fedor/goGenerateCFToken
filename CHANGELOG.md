@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use the commit date for archive mtime by @nicholas-fedor in [#867](https://github.com/nicholas-fedor/goGenerateCFToken/pull/867)
+
 ### Chores
 
 - Update golang:alpine docker digest to 8a5910f by @renovate[bot] in [#866](https://github.com/nicholas-fedor/goGenerateCFToken/pull/866)
