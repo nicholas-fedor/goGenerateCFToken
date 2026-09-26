@@ -6,9 +6,9 @@ package cloudflare
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/cloudflare/cloudflare-go/v7"
-	"github.com/cloudflare/cloudflare-go/v7/option"
 	"github.com/cloudflare/cloudflare-go/v7/user"
 	"github.com/cloudflare/cloudflare-go/v7/zones"
 )
@@ -18,7 +18,11 @@ type Client struct {
 	*cloudflare.Client
 }
 
-// NewClient creates a Cloudflare client from an API token.
+// NewClient creates a Cloudflare client pinned to the production API endpoint.
+//
+// The endpoint, and the set of credentials sent with every request, are fixed here rather
+// than inherited from the environment. See clientOptions for why each option is ordered the
+// way it is.
 //
 // Parameters:
 //   - apiToken: The Cloudflare API token used for authentication.
@@ -31,7 +35,22 @@ func NewClient(apiToken string) (*Client, error) {
 		return nil, ErrMissingCredentials
 	}
 
-	return &Client{cloudflare.NewClient(option.WithAPIToken(apiToken))}, nil
+	return newClient(apiToken, newHTTPClient()), nil
+}
+
+// newClient builds a client around a caller-supplied HTTP client. It exists so tests can
+// observe the requests the SDK would send without reaching the network.
+//
+// Parameters:
+//   - apiToken: The Cloudflare API token used for authentication.
+//   - httpClient: The HTTP client used to send requests.
+//
+// Returns:
+//   - *Client: A new Cloudflare client instance.
+func newClient(apiToken string, httpClient *http.Client) *Client {
+	warnIgnoredEnvironment()
+
+	return &Client{cloudflare.NewClient(clientOptions(apiToken, httpClient)...)}
 }
 
 // API defines the Cloudflare API operations used by the service layer.
