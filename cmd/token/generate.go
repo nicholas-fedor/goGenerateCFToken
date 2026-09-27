@@ -67,7 +67,7 @@ func newGenerateCommand() *cobra.Command {
   goGenerateCFToken token generate myapp --json
 
   # Write token to file with no stdout
-  goGenerateCFToken token generate myapp --output "$HOME/.secrets/myapp-token" --format none`,
+  goGenerateCFToken token generate myapp --output "$HOME/myapp-token" --format none`,
 		GroupID: tokenGroup.ID,
 		Args:    cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, _ []string) error {
