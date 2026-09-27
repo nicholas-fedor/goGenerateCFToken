@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -18,6 +17,7 @@ import (
 	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/credentials"
 	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
 	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/logging"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/securefile"
 )
 
 // newListCommand creates the token list subcommand.
@@ -105,7 +105,7 @@ func runListCmd(cmd *cobra.Command, outputPath string, jsonOutput bool, filterSt
 		}
 
 		if outputPath != "" {
-			werr := os.WriteFile(outputPath, append(data, '\n'), outputFilePerms)
+			werr := securefile.WriteFile(outputPath, append(data, '\n'), outputFilePerms)
 			if werr != nil {
 				return fmt.Errorf("write output file: %w", werr)
 			}
@@ -130,7 +130,7 @@ func runListCmd(cmd *cobra.Command, outputPath string, jsonOutput bool, filterSt
 			fmt.Fprintf(&builder, "%s  %s  %s\n", token.ID, token.Name, token.Status)
 		}
 
-		werr := os.WriteFile(outputPath, []byte(builder.String()), outputFilePerms)
+		werr := securefile.WriteFile(outputPath, []byte(builder.String()), outputFilePerms)
 		if werr != nil {
 			return fmt.Errorf("write output file: %w", werr)
 		}
