@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -59,6 +60,54 @@ func Test_outputToken(t *testing.T) {
 		assert.Equal(t, "tok-value", parsed["token"])
 		assert.Equal(t, "svc.example.com", parsed["name"])
 		assert.Empty(t, buf.String())
+	})
+
+	t.Run("plain output over a permissive file tightens permissions", func(t *testing.T) {
+		out := filepath.Join(t.TempDir(), "token.txt")
+		// os.WriteFile applies the mode subject to the process umask, so set it explicitly
+		// to guarantee the file really is permissive before the write under test.
+		require.NoError(t, os.WriteFile(out, []byte("stale\n"), 0o644))
+		require.NoError(t, os.Chmod(out, 0o644))
+
+		cmd := &cobra.Command{}
+
+		var buf bytes.Buffer
+		cmd.SetOut(&buf)
+
+		err := outputToken(cmd, &flags.GenerateFlags{Format: "none", Output: out}, result)
+		require.NoError(t, err)
+
+		data, err := os.ReadFile(out)
+		require.NoError(t, err)
+		assert.Equal(t, "tok-value\n", string(data))
+
+		info, err := os.Stat(out)
+		require.NoError(t, err)
+
+		if runtime.GOOS != "windows" {
+			assert.Equal(t, os.FileMode(0o600), info.Mode().Perm())
+		}
+	})
+
+	t.Run("json output over a permissive file tightens permissions", func(t *testing.T) {
+		out := filepath.Join(t.TempDir(), "token.json")
+		require.NoError(t, os.WriteFile(out, []byte("{}"), 0o644))
+		require.NoError(t, os.Chmod(out, 0o644))
+
+		cmd := &cobra.Command{}
+
+		var buf bytes.Buffer
+		cmd.SetOut(&buf)
+
+		err := outputToken(cmd, &flags.GenerateFlags{JSON: true, Format: "text", Output: out}, result)
+		require.NoError(t, err)
+
+		info, err := os.Stat(out)
+		require.NoError(t, err)
+
+		if runtime.GOOS != "windows" {
+			assert.Equal(t, os.FileMode(0o600), info.Mode().Perm())
+		}
 	})
 
 	t.Run("format none without output writes nothing", func(t *testing.T) {
