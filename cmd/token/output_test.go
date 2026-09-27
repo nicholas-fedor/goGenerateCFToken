@@ -26,6 +26,41 @@ func Test_outputToken(t *testing.T) {
 		Zone:  "example.com",
 	}
 
+	// assertSymlinkReplaced points gflags.Output at a symlink and asserts the link is
+	// replaced rather than written through, so the file behind it is left untouched. It
+	// returns whatever reached the symlink path, so the caller can verify the payload
+	// actually written rather than only that it differs from the target's old contents.
+	assertSymlinkReplaced := func(t *testing.T, gflags *flags.GenerateFlags) string {
+		t.Helper()
+
+		dir := t.TempDir()
+		target := filepath.Join(dir, "target")
+		out := filepath.Join(dir, "token.txt")
+
+		require.NoError(t, os.WriteFile(target, []byte("target-contents\n"), 0o600))
+		require.NoError(t, os.Symlink(target, out))
+
+		gflags.Output = out
+
+		cmd := &cobra.Command{}
+
+		var buf bytes.Buffer
+		cmd.SetOut(&buf)
+
+		err := outputToken(cmd, gflags, result)
+		require.NoError(t, err)
+		assert.Empty(t, buf.String())
+
+		data, err := os.ReadFile(target)
+		require.NoError(t, err)
+		assert.Equal(t, "target-contents\n", string(data))
+
+		data, err = os.ReadFile(out)
+		require.NoError(t, err)
+
+		return string(data)
+	}
+
 	t.Run("format none with output writes file and no stdout", func(t *testing.T) {
 		out := filepath.Join(t.TempDir(), "token.txt")
 		cmd := &cobra.Command{}
@@ -108,6 +143,27 @@ func Test_outputToken(t *testing.T) {
 		if runtime.GOOS != "windows" {
 			assert.Equal(t, os.FileMode(0o600), info.Mode().Perm())
 		}
+	})
+
+	t.Run("plain output replaces a symlink instead of writing through it", func(t *testing.T) {
+		if runtime.GOOS == "windows" {
+			t.Skip("creating a symlink requires elevated privileges on Windows")
+		}
+
+		written := assertSymlinkReplaced(t, &flags.GenerateFlags{Format: "none"})
+		assert.Equal(t, "tok-value\n", written)
+	})
+
+	t.Run("json output replaces a symlink instead of writing through it", func(t *testing.T) {
+		if runtime.GOOS == "windows" {
+			t.Skip("creating a symlink requires elevated privileges on Windows")
+		}
+
+		written := assertSymlinkReplaced(t, &flags.GenerateFlags{JSON: true, Format: "text"})
+
+		var parsed map[string]string
+		require.NoError(t, json.Unmarshal([]byte(written), &parsed))
+		assert.Equal(t, "tok-value", parsed["token"])
 	})
 
 	t.Run("format none without output writes nothing", func(t *testing.T) {
