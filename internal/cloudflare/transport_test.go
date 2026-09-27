@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/cloudflare/cloudflare-go/v7/user"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -119,7 +120,7 @@ func TestNewHTTPClient(t *testing.T) {
 	assert.NotNil(t, client.CheckRedirect)
 }
 
-func TestRefuseCrossHostRedirect(t *testing.T) {
+func TestRefuseCrossOriginRedirect(t *testing.T) {
 	first, err := http.NewRequestWithContext(
 		t.Context(),
 		http.MethodGet,
@@ -136,7 +137,7 @@ func TestRefuseCrossHostRedirect(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	assert.NoError(t, refuseCrossHostRedirect(sameHost, []*http.Request{first}))
+	assert.NoError(t, refuseCrossOriginRedirect(sameHost, []*http.Request{first}))
 
 	otherHost, err := http.NewRequestWithContext(
 		t.Context(),
@@ -146,11 +147,11 @@ func TestRefuseCrossHostRedirect(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	err = refuseCrossHostRedirect(otherHost, []*http.Request{first})
-	require.ErrorIs(t, err, ErrCrossHostRedirect)
+	err = refuseCrossOriginRedirect(otherHost, []*http.Request{first})
+	require.ErrorIs(t, err, ErrCrossOriginRedirect)
 }
 
-func TestRefuseCrossHostRedirect_TooManyRedirects(t *testing.T) {
+func TestRefuseCrossOriginRedirect_TooManyRedirects(t *testing.T) {
 	req, err := http.NewRequestWithContext(
 		t.Context(),
 		http.MethodGet,
@@ -164,8 +165,91 @@ func TestRefuseCrossHostRedirect_TooManyRedirects(t *testing.T) {
 		chain[i] = req
 	}
 
-	err = refuseCrossHostRedirect(req, chain)
+	err = refuseCrossOriginRedirect(req, chain)
 	require.ErrorIs(t, err, ErrTooManyRedirects)
+}
+
+func TestNewClient_IgnoresAmbientCustomHeaders(t *testing.T) {
+	t.Setenv("CLOUDFLARE_CUSTOM_HEADERS", "X-Injected: value\nX-Another: second\nAccept: text/html")
+
+	client, recorder := newRecordingClient("test-token-12345")
+
+	_, err := client.ListTokens(t.Context())
+	require.NoError(t, err)
+	require.Len(t, recorder.requests, 1)
+
+	header := recorder.requests[0].Header
+	assert.Empty(t, header.Get("X-Injected"))
+	assert.Empty(t, header.Get("X-Another"))
+	assert.Equal(t, "application/json", header.Get("Accept"))
+}
+
+func TestRefuseCrossOriginRedirect_SchemeDowngrade(t *testing.T) {
+	original, err := http.NewRequestWithContext(
+		t.Context(),
+		http.MethodGet,
+		"https://api.cloudflare.com/client/v4/user/tokens",
+		nil,
+	)
+	require.NoError(t, err)
+
+	downgrade, err := http.NewRequestWithContext(
+		t.Context(),
+		http.MethodGet,
+		"http://api.cloudflare.com/client/v4/user/tokens",
+		nil,
+	)
+	require.NoError(t, err)
+
+	err = refuseCrossOriginRedirect(downgrade, []*http.Request{original})
+	require.ErrorIs(t, err, ErrCrossOriginRedirect)
+}
+
+func TestRefuseCrossOriginRedirect_HostCaseInsensitive(t *testing.T) {
+	original, err := http.NewRequestWithContext(
+		t.Context(),
+		http.MethodGet,
+		"https://api.cloudflare.com/client/v4/user/tokens",
+		nil,
+	)
+	require.NoError(t, err)
+
+	upperHost, err := http.NewRequestWithContext(
+		t.Context(),
+		http.MethodGet,
+		"https://API.CLOUDFLARE.COM/client/v4/user/tokens",
+		nil,
+	)
+	require.NoError(t, err)
+
+	assert.NoError(t, refuseCrossOriginRedirect(upperHost, []*http.Request{original}))
+}
+
+func TestNewClient_CustomHeadersCannotStripAuthorization(t *testing.T) {
+	t.Setenv("CLOUDFLARE_CUSTOM_HEADERS", "Authorization: attacker-value\nX-Injected: value")
+
+	client, recorder := newRecordingClient("test-token-12345")
+
+	_, err := client.ListTokens(t.Context())
+	require.NoError(t, err)
+	require.Len(t, recorder.requests, 1)
+
+	header := recorder.requests[0].Header
+	assert.Equal(t, "Bearer test-token-12345", header.Get("Authorization"))
+	assert.Empty(t, header.Get("X-Injected"))
+}
+
+func TestNewClient_CustomHeadersPreserveContentType(t *testing.T) {
+	t.Setenv("CLOUDFLARE_CUSTOM_HEADERS", "Content-Type: text/plain")
+
+	recorder := &recordingTransport{}
+	client := newClient("test-token-12345", &http.Client{Transport: recorder})
+
+	_, err := client.CreateAPIToken(t.Context(), user.TokenNewParams{})
+	require.NoError(t, err)
+	require.Len(t, recorder.requests, 1)
+
+	assert.Equal(t, "application/json", recorder.requests[0].Header.Get("Content-Type"))
 }
 
 func TestAmbientSDKEnvVarsCoverDocumentedSDKVariables(t *testing.T) {

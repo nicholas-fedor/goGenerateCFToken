@@ -38,9 +38,9 @@ var ErrCredentialValidationFailed = errors.New("credential validation failed")
 // ErrInvalidServiceName indicates an invalid service name.
 var ErrInvalidServiceName = errors.New("invalid service name: must match ^[a-zA-Z0-9_-]+$")
 
-// ErrCrossHostRedirect indicates a redirect would have sent an authenticated request to a
-// different host.
-var ErrCrossHostRedirect = errors.New("refusing cross-host redirect")
+// ErrCrossOriginRedirect indicates a redirect would have sent an authenticated request to a
+// different origin.
+var ErrCrossOriginRedirect = errors.New("refusing cross-origin redirect")
 
 // ErrTooManyRedirects indicates a redirect chain exceeded the permitted length.
 var ErrTooManyRedirects = errors.New("too many redirects")
