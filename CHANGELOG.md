@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Stop discovering config from the working directory by @nicholas-fedor in [#889](https://github.com/nicholas-fedor/goGenerateCFToken/pull/889)
 - Prefer the token file over the environment variable by @nicholas-fedor in [#887](https://github.com/nicholas-fedor/goGenerateCFToken/pull/887)
 - Fix changelog automation workflows by @nicholas-fedor in [#883](https://github.com/nicholas-fedor/goGenerateCFToken/pull/883)
 - Tighten credential file permissions on read by @nicholas-fedor in [#881](https://github.com/nicholas-fedor/goGenerateCFToken/pull/881)
