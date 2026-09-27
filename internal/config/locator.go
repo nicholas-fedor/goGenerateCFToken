@@ -17,8 +17,6 @@ const (
 	configFileName = "config.yaml"
 	// appName is the XDG application directory name.
 	appName = "gogeneratecftoken"
-	// currentDir is the relative path for the current directory.
-	currentDir = "."
 )
 
 // DefaultDir returns the XDG config directory for this application.
@@ -50,25 +48,55 @@ func checkFilePermissions(path string) {
 
 // Locate returns the path to the configuration file that would be used.
 //
+// The search deliberately does not consider the current working directory. A config file
+// there would be picked up silently by anyone running the tool from a freshly cloned
+// repository, a scratch directory, or any location another user controls, and a generated
+// token would then be minted against whatever zone and account that file names while the
+// user believes it was their own. A local config is still fully supported by naming it
+// explicitly with --config, which never consults this search.
+//
 // Returns:
 //   - string: The path to the first found config file, or the default XDG location.
 //   - error: Always nil. Returns the default path if no config file is found.
 func Locate() (string, error) {
-	configDir := DefaultDir()
+	return locate(DefaultDir(), homeDir()), nil
+}
 
+// homeDir returns the user's home directory, or an empty string when it cannot be
+// determined, in which case the legacy home paths are skipped.
+//
+// Returns:
+//   - string: The home directory, or an empty string.
+func homeDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return ""
+	}
+
+	return home
+}
+
+// locate returns the first candidate path that holds a config file, or the XDG default when
+// none does. The directories are parameters rather than read from the environment so the
+// search order can be exercised without depending on the machine running the test.
+//
+// Parameters:
+//   - configDir: The XDG config directory for this application.
+//   - home: The user's home directory, or an empty string to skip the legacy paths.
+//
+// Returns:
+//   - string: The path to the first found config file, or filepath.Join(configDir, configFileName).
+func locate(configDir, home string) string {
 	candidates := []string{
 		filepath.Join(configDir, configFileName),
 	}
 
-	home, err := os.UserHomeDir()
-	if err == nil {
+	if home != "" {
 		candidates = append(candidates,
 			filepath.Join(home, ".gogeneratecftoken", configFileName),
 			filepath.Join(home, ".goGenerateCFToken", configFileName),
 		)
 	}
-
-	candidates = append(candidates, filepath.Join(currentDir, configFileName))
 
 	log.Debug().Str("config_dir", configDir).Msg("searching for config file")
 
@@ -77,7 +105,7 @@ func Locate() (string, error) {
 		if err == nil && info != nil {
 			log.Debug().Str("path", path).Msg("found config file")
 
-			return path, nil
+			return path
 		}
 
 		log.Debug().Str("path", path).Msg("config file not found")
@@ -86,5 +114,5 @@ func Locate() (string, error) {
 	fallback := filepath.Join(configDir, configFileName)
 	log.Debug().Str("path", fallback).Msg("no config file found, using default location")
 
-	return fallback, nil
+	return fallback
 }
