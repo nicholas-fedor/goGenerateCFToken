@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Write the token list through the hardened file writer by @nicholas-fedor in [#879](https://github.com/nicholas-fedor/goGenerateCFToken/pull/879)
 - Write generated tokens through the hardened file writer by @nicholas-fedor in [#877](https://github.com/nicholas-fedor/goGenerateCFToken/pull/877)
 - Write the API key atomically with enforced permissions by @nicholas-fedor in [#875](https://github.com/nicholas-fedor/goGenerateCFToken/pull/875)
 - Pin API endpoint and drop ambient SDK credentials by @nicholas-fedor in [#873](https://github.com/nicholas-fedor/goGenerateCFToken/pull/873)
