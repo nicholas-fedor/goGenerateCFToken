@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update codecov/codecov-action action to v7.1.1 by @renovate[bot] in [#855](https://github.com/nicholas-fedor/goGenerateCFToken/pull/855)
 - Update docker/setup-buildx-action action to v4.4.1 by @renovate[bot] in [#853](https://github.com/nicholas-fedor/goGenerateCFToken/pull/853)
 
+### Fixed
+
+- Pin API endpoint and drop ambient SDK credentials by @nicholas-fedor in [#873](https://github.com/nicholas-fedor/goGenerateCFToken/pull/873)
+
 ## [2.0.2] - 2026-09-15
 
 ### Chores
