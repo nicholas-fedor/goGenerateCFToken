@@ -154,6 +154,98 @@ func TestFileStore_SetGetDelete(t *testing.T) {
 	require.NoError(t, store.Delete())
 }
 
+func TestFileStore_ResolveTightensPermissiveFile(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Unix permission bits are not meaningful on Windows")
+	}
+
+	path := filepath.Join(t.TempDir(), "api_token")
+	require.NoError(t, os.WriteFile(path, []byte("exposed-secret\n"), 0o644))
+	require.NoError(t, os.Chmod(path, 0o644))
+
+	store := NewFileStore(path)
+
+	got, err := store.Resolve(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, "exposed-secret", got)
+
+	info, err := os.Stat(path)
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o600), info.Mode().Perm())
+}
+
+func TestFileStore_ResolveLeavesNarrowFileAlone(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Unix permission bits are not meaningful on Windows")
+	}
+
+	path := filepath.Join(t.TempDir(), "api_token")
+	require.NoError(t, os.WriteFile(path, []byte("private-secret\n"), 0o600))
+	require.NoError(t, os.Chmod(path, 0o600))
+
+	store := NewFileStore(path)
+
+	got, err := store.Resolve(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, "private-secret", got)
+
+	info, err := os.Stat(path)
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o600), info.Mode().Perm())
+}
+
+func TestFileStore_ResolveLeavesDirectoryPermissionsAlone(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("Unix permission bits are not meaningful on Windows")
+	}
+
+	path := filepath.Join(t.TempDir(), "api_token")
+	require.NoError(t, os.MkdirAll(path, 0o755))
+	require.NoError(t, os.Chmod(path, 0o755))
+
+	// Reading a directory as a credential fails on every platform, so both results are
+	// discarded; what matters here is that the directory keeps its traversal bit.
+	_, _ = NewFileStore(path).Resolve(t.Context())
+
+	info, err := os.Stat(path)
+	require.NoError(t, err)
+	assert.True(t, info.IsDir())
+	assert.Equal(t, os.FileMode(0o755), info.Mode().Perm())
+}
+
+func TestFileStore_ResolveLeavesSymlinkTargetPermissionsAlone(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("creating a symlink requires elevated privileges on Windows")
+	}
+
+	dir := t.TempDir()
+	target := filepath.Join(dir, "managed-secret")
+	path := filepath.Join(dir, "api_token")
+
+	require.NoError(t, os.WriteFile(target, []byte("managed\n"), 0o644))
+	require.NoError(t, os.Chmod(target, 0o644))
+	require.NoError(t, os.Symlink(target, path))
+
+	store := NewFileStore(path)
+
+	// The key is still read through the link; only the target's mode is left alone.
+	got, err := store.Resolve(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, "managed", got)
+
+	info, err := os.Stat(target)
+	require.NoError(t, err)
+	assert.Equal(t, os.FileMode(0o644), info.Mode().Perm())
+}
+
+func TestFileStore_ResolveMissingFileIsNoOp(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "absent")
+
+	got, err := NewFileStore(path).Resolve(t.Context())
+	require.NoError(t, err)
+	assert.Empty(t, got)
+}
+
 func TestFileStore_SetTightensExistingPermissiveFile(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "creds", "api_token")
 	require.NoError(t, os.MkdirAll(filepath.Dir(path), tokenDirMode))
