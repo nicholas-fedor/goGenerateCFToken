@@ -5,6 +5,7 @@ package credentials
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -19,6 +20,32 @@ func TestNewCredentialsConfig(t *testing.T) {
 	require.NotNil(t, got.file)
 	require.NotNil(t, got.resolver)
 	assert.Len(t, got.resolver.providers, 4)
+}
+
+func TestNewCredentialsConfig_PrefersTokenFileOverEnvVar(t *testing.T) {
+	got := NewCredentialsConfig()
+	require.NotNil(t, got.resolver)
+	require.Len(t, got.resolver.providers, 4)
+
+	assert.IsType(t, &FileProvider{}, got.resolver.providers[0])
+	assert.IsType(t, &EnvProvider{}, got.resolver.providers[1])
+}
+
+func TestResolver_PrefersTokenFileOverEnvVar(t *testing.T) {
+	tokenFile := filepath.Join(t.TempDir(), "token")
+	require.NoError(t, os.WriteFile(tokenFile, []byte("file-key\n"), 0o600))
+
+	t.Setenv(EnvVarToken, "env-key")
+	t.Setenv(EnvVarTokenFile, tokenFile)
+
+	resolver := NewResolver(
+		NewFileProvider(EnvVarTokenFile),
+		NewEnvProvider(EnvVarToken),
+	)
+
+	key, err := resolver.Resolve(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, "file-key", key)
 }
 
 func TestCredentialsConfig_Resolve(t *testing.T) {
