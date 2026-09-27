@@ -27,8 +27,10 @@ func Test_outputToken(t *testing.T) {
 	}
 
 	// assertSymlinkReplaced points gflags.Output at a symlink and asserts the link is
-	// replaced rather than written through, so the file behind it is left untouched.
-	assertSymlinkReplaced := func(t *testing.T, gflags *flags.GenerateFlags) {
+	// replaced rather than written through, so the file behind it is left untouched. It
+	// returns whatever reached the symlink path, so the caller can verify the payload
+	// actually written rather than only that it differs from the target's old contents.
+	assertSymlinkReplaced := func(t *testing.T, gflags *flags.GenerateFlags) string {
 		t.Helper()
 
 		dir := t.TempDir()
@@ -55,7 +57,8 @@ func Test_outputToken(t *testing.T) {
 
 		data, err = os.ReadFile(out)
 		require.NoError(t, err)
-		assert.NotEqual(t, "target-contents\n", string(data))
+
+		return string(data)
 	}
 
 	t.Run("format none with output writes file and no stdout", func(t *testing.T) {
@@ -147,7 +150,8 @@ func Test_outputToken(t *testing.T) {
 			t.Skip("creating a symlink requires elevated privileges on Windows")
 		}
 
-		assertSymlinkReplaced(t, &flags.GenerateFlags{Format: "none"})
+		written := assertSymlinkReplaced(t, &flags.GenerateFlags{Format: "none"})
+		assert.Equal(t, "tok-value\n", written)
 	})
 
 	t.Run("json output replaces a symlink instead of writing through it", func(t *testing.T) {
@@ -155,7 +159,11 @@ func Test_outputToken(t *testing.T) {
 			t.Skip("creating a symlink requires elevated privileges on Windows")
 		}
 
-		assertSymlinkReplaced(t, &flags.GenerateFlags{JSON: true, Format: "text"})
+		written := assertSymlinkReplaced(t, &flags.GenerateFlags{JSON: true, Format: "text"})
+
+		var parsed map[string]string
+		require.NoError(t, json.Unmarshal([]byte(written), &parsed))
+		assert.Equal(t, "tok-value", parsed["token"])
 	})
 
 	t.Run("format none without output writes nothing", func(t *testing.T) {
