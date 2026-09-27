@@ -13,6 +13,8 @@ import (
 
 	"github.com/adrg/xdg"
 	"github.com/rs/zerolog/log"
+
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/securefile"
 )
 
 const (
@@ -117,6 +119,11 @@ func (s *FileStore) Resolve(_ context.Context) (string, error) {
 
 // Set writes the API key to the file with 0600 permissions.
 //
+// The key is staged in a temporary file and moved into place, and the permissions are
+// enforced even when the file already exists, so a file left at a wider mode by a backup, a
+// copy or an earlier version is tightened rather than written through. A symlink at the
+// path is replaced rather than followed.
+//
 // Parameters:
 //   - key: The API key to store.
 //
@@ -131,7 +138,7 @@ func (s *FileStore) Set(key string) error {
 		}
 	}
 
-	err := os.WriteFile(s.path, []byte(key+"\n"), tokenFileMode)
+	err := securefile.WriteFile(s.path, []byte(key+"\n"), tokenFileMode)
 	if err != nil {
 		return fmt.Errorf("write credential file: %w", err)
 	}

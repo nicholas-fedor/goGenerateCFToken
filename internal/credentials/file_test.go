@@ -153,3 +153,26 @@ func TestFileStore_SetGetDelete(t *testing.T) {
 
 	require.NoError(t, store.Delete())
 }
+
+func TestFileStore_SetTightensExistingPermissiveFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "creds", "api_token")
+	require.NoError(t, os.MkdirAll(filepath.Dir(path), tokenDirMode))
+	require.NoError(t, os.WriteFile(path, []byte("old-secret\n"), 0o644))
+	// os.WriteFile applies the mode subject to the process umask, so a restrictive umask
+	// would leave the file owner-only and the write under test nothing to tighten.
+	require.NoError(t, os.Chmod(path, 0o644))
+
+	store := NewFileStore(path)
+	require.NoError(t, store.Set("new-secret"))
+
+	info, err := os.Stat(path)
+	require.NoError(t, err)
+
+	if runtime.GOOS != "windows" {
+		assert.Equal(t, os.FileMode(0o600), info.Mode().Perm())
+	}
+
+	got, err := store.Resolve(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, "new-secret", got)
+}
