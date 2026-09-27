@@ -6,13 +6,13 @@ package token
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/cloudflare"
 	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/flags"
+	"github.com/nicholas-fedor/gogeneratecftoken/v2/internal/securefile"
 )
 
 // outputFilePerms defines secure file permissions for written token files (owner read/write only).
@@ -108,7 +108,7 @@ func writeTokenJSON(
 	if writeFile {
 		log.Debug().Str("path", gflags.Output).Msg("writing token JSON to file")
 
-		werr := os.WriteFile(gflags.Output, jsonData, outputFilePerms)
+		werr := securefile.WriteFile(gflags.Output, jsonData, outputFilePerms)
 		if werr != nil {
 			return fmt.Errorf("write output file: %w", werr)
 		}
@@ -146,7 +146,7 @@ func writeTokenPlain(
 	if writeFile {
 		log.Debug().Str("path", gflags.Output).Msg("writing token to file")
 
-		werr := os.WriteFile(gflags.Output, body, outputFilePerms)
+		werr := securefile.WriteFile(gflags.Output, body, outputFilePerms)
 		if werr != nil {
 			return fmt.Errorf("write output file: %w", werr)
 		}
