@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Write the API key atomically with enforced permissions by @nicholas-fedor in [#875](https://github.com/nicholas-fedor/goGenerateCFToken/pull/875)
 - Pin API endpoint and drop ambient SDK credentials by @nicholas-fedor in [#873](https://github.com/nicholas-fedor/goGenerateCFToken/pull/873)
 
+### Tests
+
+- Cover the output symlink path at the command level by @nicholas-fedor in [#885](https://github.com/nicholas-fedor/goGenerateCFToken/pull/885)
+
 ## [2.0.2] - 2026-09-15
 
 ### Chores
