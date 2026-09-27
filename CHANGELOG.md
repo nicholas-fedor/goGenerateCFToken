@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/pretty to v1.2.2 by @renovate[bot] in [#891](https://github.com/nicholas-fedor/goGenerateCFToken/pull/891)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.11.0 by @renovate[bot] in [#870](https://github.com/nicholas-fedor/goGenerateCFToken/pull/870)
 - Update github/codeql-action action to v4.38.2 by @renovate[bot] in [#869](https://github.com/nicholas-fedor/goGenerateCFToken/pull/869)
 - Update golang:alpine docker digest to 8a5910f by @renovate[bot] in [#866](https://github.com/nicholas-fedor/goGenerateCFToken/pull/866)
