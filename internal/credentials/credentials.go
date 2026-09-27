@@ -14,7 +14,7 @@ var defaultConfig = sync.OnceValue(NewCredentialsConfig)
 
 // ResolveAPIKey returns the Cloudflare API key.
 //
-// Priority: CF_API_TOKEN env var > CF_API_TOKEN_FILE file > OS keyring >
+// Priority: CF_API_TOKEN_FILE file > CF_API_TOKEN env var > OS keyring >
 // default credential file.
 //
 // Returns:

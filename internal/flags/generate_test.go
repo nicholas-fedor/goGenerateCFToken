@@ -114,3 +114,47 @@ func TestGenerateFlags_BindGet(t *testing.T) {
 	assert.Nil(t, fs.Lookup("zone"))
 	assert.Nil(t, fs.Lookup("dry-run"))
 }
+
+func TestGenerateFlags_TokenFlagIsDeprecated(t *testing.T) {
+	tests := []struct {
+		name string
+		bind func(*GenerateFlags, *pflag.FlagSet)
+	}{
+		{
+			name: "token generate",
+			bind: (*GenerateFlags).Bind,
+		},
+		{
+			name: "token get",
+			bind: (*GenerateFlags).BindGet,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gf := &GenerateFlags{}
+			fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
+			tt.bind(gf, fs)
+
+			token := fs.Lookup("token")
+			require.NotNil(t, token)
+
+			assert.NotEmpty(t, token.Deprecated)
+			assert.Contains(t, token.Deprecated, "CF_API_TOKEN_FILE")
+			assert.True(t, token.Hidden, "a deprecated flag should not be advertised in help")
+		})
+	}
+}
+
+func TestGenerateFlags_TokenFlagStillParses(t *testing.T) {
+	gf := &GenerateFlags{}
+	fs := pflag.NewFlagSet("test", pflag.ContinueOnError)
+	gf.Bind(fs)
+
+	// Deprecation must not break existing callers, so the flag still parses and still
+	// reaches the flag struct.
+	err := fs.Parse([]string{"--token", "legacy-secret"})
+
+	require.NoError(t, err)
+	assert.Equal(t, "legacy-secret", gf.Token)
+}
