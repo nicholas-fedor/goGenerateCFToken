@@ -33,10 +33,15 @@ var ErrEmptyAPIKey = errors.New("API key cannot be empty")
 
 // NewCredentialsConfig creates a CredentialsConfig with default providers.
 // The resolver chain priority is:
-//  1. CF_API_TOKEN environment variable
-//  2. CF_API_TOKEN_FILE file (Docker Secrets)
+//  1. CF_API_TOKEN_FILE file (Docker Secrets)
+//  2. CF_API_TOKEN environment variable
 //  3. OS keyring (gracefully skipped when unavailable)
 //  4. Default credential file under the XDG config directory
+//
+// The file-based source is preferred over the environment variable because it keeps the
+// secret out of the process environment entirely: the variable holds a path, not a
+// credential, so a host inspecting the environment or a process table sees nothing
+// sensitive. A deployment that sets both now resolves the file.
 //
 // Returns:
 //   - *CredentialsConfig: A new config with env, file, and keyring providers.
@@ -44,8 +49,8 @@ func NewCredentialsConfig() *CredentialsConfig {
 	store := NewKeyringStore(KeyringService, KeyringUser)
 	file := NewFileStore(DefaultTokenFile())
 	resolver := NewResolver(
-		NewEnvProvider(EnvVarToken),
 		NewFileProvider(EnvVarTokenFile),
+		NewEnvProvider(EnvVarToken),
 		NewKeyringProvider(store),
 		file,
 	)

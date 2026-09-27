@@ -29,8 +29,9 @@ var rootCmd = &cobra.Command{
 The configuration is loaded from an XDG-compliant config file
 ($XDG_CONFIG_HOME/gogeneratecftoken/config.yaml) or flags.
 
-The Cloudflare API token is resolved from CF_API_TOKEN, CF_API_TOKEN_FILE, the OS
-keyring, or the default credential file.`,
+The Cloudflare API token is resolved from CF_API_TOKEN_FILE, CF_API_TOKEN, the OS
+keyring, or the default credential file, in that order. CF_API_TOKEN_FILE is
+preferred because it holds a path rather than the secret itself.`,
 }
 
 func init() {
