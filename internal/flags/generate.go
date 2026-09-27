@@ -11,7 +11,8 @@ import (
 type GenerateFlags struct {
 	CommonFlags
 
-	// Token is the Cloudflare API token override (prefer CF_API_TOKEN env var or keyring).
+	// Token is the Cloudflare API token override. Prefer CF_API_TOKEN_FILE, which keeps
+	// the secret out of the argument list; see bindAuth for why this flag is deprecated.
 	Token string
 	// Zone is the Cloudflare zone name (overrides config file).
 	Zone string
@@ -107,6 +108,13 @@ func (gf *GenerateFlags) BindGet(flags *pflag.FlagSet) {
 
 // bindAuth attaches the API token flag to the provided flag set.
 //
+// The flag is marked deprecated because a secret passed as an argument is exposed to every
+// local user through process listings, is readable from /proc/<pid>/cmdline by any process
+// running as the same user, and is persisted in shell history and in any CI log that echoes
+// the command. It keeps working, but pflag hides it from help once marked, so the flag is
+// no longer advertised. A local file supplied through CF_API_TOKEN_FILE keeps the secret out
+// of both the argument list and the environment.
+//
 // Parameters:
 //   - flags: The flag set to attach the token flag to.
 func (gf *GenerateFlags) bindAuth(flags *pflag.FlagSet) {
@@ -115,7 +123,16 @@ func (gf *GenerateFlags) bindAuth(flags *pflag.FlagSet) {
 		"token",
 		"t",
 		"",
-		"Cloudflare API token (prefer CF_API_TOKEN env var or keyring)",
+		"Cloudflare API token (prefer CF_API_TOKEN_FILE or the OS keyring)",
+	)
+
+	// The error is unreachable: the flag was registered on this same set immediately above,
+	// and MarkDeprecated only fails when the name is absent. bindAuth has no error return and
+	// giving it one would change the signatures of Bind and BindGet for an impossible case.
+	_ = flags.MarkDeprecated(
+		"token",
+		"the --token flag exposes the API key through process listings, shell history and CI logs; "+
+			"set CF_API_TOKEN_FILE, set CF_API_TOKEN, or run 'credentials set' instead",
 	)
 }
 

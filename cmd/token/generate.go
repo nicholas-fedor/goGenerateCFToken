@@ -50,7 +50,7 @@ func newGenerateCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate <service-name>",
 		Short: "Generate a Cloudflare API token",
-		Long:  "Generate a new Cloudflare API token with DNS edit permissions for the specified service.\n\nThe token name defaults to `service-name.zone`. Use --name to override.\nThe zone is loaded from the config file or --zone flag.\nThe API token is resolved from CF_API_TOKEN env var or the OS keyring.",
+		Long:  "Generate a new Cloudflare API token with DNS edit permissions for the specified service.\n\nThe token name defaults to `service-name.zone`. Use --name to override.\nThe zone is loaded from the config file or --zone flag.\nThe API token is resolved from CF_API_TOKEN_FILE, CF_API_TOKEN, the OS keyring, or the default credential file, in that order.",
 		Example: `  # Generate a token using the zone from config
   goGenerateCFToken token generate myapp
 
@@ -67,7 +67,7 @@ func newGenerateCommand() *cobra.Command {
   goGenerateCFToken token generate myapp --json
 
   # Write token to file with no stdout
-  goGenerateCFToken token generate myapp --output /tmp/token.txt --format none`,
+  goGenerateCFToken token generate myapp --output "$HOME/.secrets/myapp-token" --format none`,
 		GroupID: tokenGroup.ID,
 		Args:    cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, _ []string) error {
