@@ -40,7 +40,14 @@ func TestLocate_PrefersXDGOverLegacyHomePaths(t *testing.T) {
 	require.NoError(t, os.MkdirAll(legacy, 0o700))
 	require.NoError(t, os.WriteFile(filepath.Join(legacy, configFileName), []byte("zone: \"legacy.example\"\n"), 0o600))
 
+	// With only a legacy path present it is still found, so the legacy candidates are
+	// reachable rather than merely shadowed.
 	assert.Equal(t, filepath.Join(legacy, configFileName), locate(xdg, home))
+
+	// With both present the XDG path takes precedence.
+	require.NoError(t, os.WriteFile(filepath.Join(xdg, configFileName), []byte("zone: \"xdg.example\"\n"), 0o600))
+
+	assert.Equal(t, filepath.Join(xdg, configFileName), locate(xdg, home))
 }
 
 func TestLocate_FallsBackToXDGDefault(t *testing.T) {
