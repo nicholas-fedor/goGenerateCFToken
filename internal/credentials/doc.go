@@ -14,4 +14,11 @@
 // The file-based source comes first because the variable holds a path rather
 // than a credential, so preferring it keeps the secret out of the process
 // environment. A deployment that sets both resolves the file.
+//
+// # Logging
+//
+// Every log call in this package records the name of the source it resolved
+// from, or the path of the file involved, and never the key itself. That is what
+// keeps a master API key out of the log, and it should be preserved: a new log
+// call here takes a source or a path, not a resolved value.
 package credentials
