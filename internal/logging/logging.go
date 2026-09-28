@@ -3,6 +3,14 @@
 
 // Package logging provides structured logging via zerolog and plain-text
 // user-facing output helpers.
+//
+// # Redaction
+//
+// Log names and paths, never values. A credential is never rendered: the credential path
+// logs the source it resolved from and the path it wrote to, and that convention is what
+// keeps a master API key out of the log. When a value genuinely must reach a log call,
+// wrap it with NewSecret, which renders as a redaction marker through fmt, the encoding
+// marshalers and the zerolog hooks, rather than passing the raw value.
 package logging
 
 import (
