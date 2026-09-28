@@ -41,7 +41,10 @@ jobs:
           name: Run tests
           command: |
             mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests.xml
+            # Flags before `--` are gotestsum's own; everything after it is passed to
+            # `go test`, including the package pattern. Without `./...` only the root
+            # package would be tested.
+            gotestsum --junitfile /tmp/test-reports/unit-tests.xml -- -race -timeout 60s ./...
       - store_test_results:
           path: /tmp/test-reports
 
