@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Lint the whole tree instead of only the pull request diff by @nicholas-fedor in [#897](https://github.com/nicholas-fedor/goGenerateCFToken/pull/897)
 - Use the commit date for archive mtime by @nicholas-fedor in [#867](https://github.com/nicholas-fedor/goGenerateCFToken/pull/867)
 
 ### Chores
