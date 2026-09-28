@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Add a Secret type and document the redaction invariant by @nicholas-fedor in [#895](https://github.com/nicholas-fedor/goGenerateCFToken/pull/895)
 - Deprecate the --token flag and stop advertising it by @nicholas-fedor in [#893](https://github.com/nicholas-fedor/goGenerateCFToken/pull/893)
 - Stop discovering config from the working directory by @nicholas-fedor in [#889](https://github.com/nicholas-fedor/goGenerateCFToken/pull/889)
 - Prefer the token file over the environment variable by @nicholas-fedor in [#887](https://github.com/nicholas-fedor/goGenerateCFToken/pull/887)
