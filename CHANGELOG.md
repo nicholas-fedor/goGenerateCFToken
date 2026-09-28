@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Lint changes to the lint configuration itself by @nicholas-fedor in [#903](https://github.com/nicholas-fedor/goGenerateCFToken/pull/903)
 - Scan internal and tools in the security workflow by @nicholas-fedor in [#901](https://github.com/nicholas-fedor/goGenerateCFToken/pull/901)
 - Run the race detector in CI and converge the test timeout by @nicholas-fedor in [#899](https://github.com/nicholas-fedor/goGenerateCFToken/pull/899)
 - Lint the whole tree instead of only the pull request diff by @nicholas-fedor in [#897](https://github.com/nicholas-fedor/goGenerateCFToken/pull/897)
