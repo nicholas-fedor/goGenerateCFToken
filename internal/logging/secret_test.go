@@ -58,6 +58,22 @@ func TestSecret_NeverRendersTheValue(t *testing.T) {
 	}
 }
 
+func TestSecret_PercentPUsesFmtDiagnostic(t *testing.T) {
+	const raw = "super-secret-value"
+
+	// This is a characterisation test, not a safety guarantee, and it is the inverse of the
+	// one above: the assertion is that the credential DOES appear. fmt handles the p verb
+	// before it looks for any method, so a value type always renders its fields inside its
+	// own diagnostic and no method on Secret can intervene.
+	//
+	// It exists so that a change in fmt behaviour fails here and prompts the limitation
+	// recorded on the type to be revisited, rather than the hole being discovered later.
+	got := fmt.Sprintf("%p", NewSecret(raw))
+
+	assert.Contains(t, got, raw, "if this no longer leaks, fmt behaviour changed and the type's documentation should be updated")
+	assert.Contains(t, got, "%!p", "the malformed diagnostic is what makes the leak visible to a reader")
+}
+
 func TestSecret_ProtectsThePlainTextHelpers(t *testing.T) {
 	const raw = "super-secret-value"
 
