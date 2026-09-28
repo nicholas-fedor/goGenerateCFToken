@@ -8,6 +8,7 @@ on:
       - cmd/**
       - internal/**
       - tools/**
+      - build/golangci-lint/**
       - go.mod
       - go.sum
       - main.go
