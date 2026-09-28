@@ -5,12 +5,16 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    # Kept identical to the test and lint workflows, so a pull request that is tested is
+    # also scanned. This previously listed pkg/**, which does not exist in this repository,
+    # while omitting internal/**, where all credential handling lives.
     paths:
       - cmd/**
-      - pkg/**
-      - main.go
+      - internal/**
+      - tools/**
       - go.mod
       - go.sum
+      - main.go
   schedule:
     - cron: "0 0 * * *"
 
