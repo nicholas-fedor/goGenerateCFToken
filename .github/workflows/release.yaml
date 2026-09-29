@@ -17,8 +17,25 @@ permissions:
   contents: read # Set default read-only permissions
 
 jobs:
+  validate-tag:
+    name: Validate Release Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require a Production Tag Format
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::'$TAG' is not a vMAJOR.MINOR.PATCH production tag."
+            exit 1
+          fi
+          echo "Releasing $TAG"
   test:
     name: Run Tests
+    needs: [validate-tag]
     uses: ./.github/workflows/test.yaml
     secrets: inherit
     permissions:
