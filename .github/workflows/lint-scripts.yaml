@@ -32,4 +32,4 @@ jobs:
           sudo apt-get install --yes shellcheck
 
       - name: Run shellcheck
-        run: shellcheck -s sh -x scripts/install.sh
+        run: shellcheck -s sh -x scripts/*.sh
