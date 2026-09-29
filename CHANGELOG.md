@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Cancel superseded changelog runs by @nicholas-fedor in [#915](https://github.com/nicholas-fedor/goGenerateCFToken/pull/915)
 - Guard the changelog auto-merge on the pull request head by @nicholas-fedor in [#913](https://github.com/nicholas-fedor/goGenerateCFToken/pull/913)
 - Lint the install script with shellcheck by @nicholas-fedor in [#908](https://github.com/nicholas-fedor/goGenerateCFToken/pull/908)
 - Reject release tags that are not vMAJOR.MINOR.PATCH by @nicholas-fedor in [#905](https://github.com/nicholas-fedor/goGenerateCFToken/pull/905)
