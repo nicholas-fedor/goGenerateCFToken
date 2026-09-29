@@ -3,7 +3,7 @@ ARG BASE_IMAGE=golang:alpine@sha256:8a5910f31396cd4d89662f56c68b3ae31d374308270a
 # Builder Stage
 FROM ${BASE_IMAGE} AS builder
 
-RUN apk add --no-cache ca-certificates tzdata git alpine-sdk
+RUN apk add --no-cache ca-certificates tzdata alpine-sdk
 
 WORKDIR /gogeneratecftoken
 
@@ -14,14 +14,18 @@ RUN go mod download
 
 COPY . /gogeneratecftoken
 
+ARG VERSION=dev
+ARG COMMIT_SHA=unknown
+ARG BUILD_TIME=unknown
+
 RUN CGO_ENABLED=0 GOOS=linux go build \
     -trimpath \
     -a \
     -ldflags "\
     -s -w \
-    -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.Version=$(git describe --tags --always) \
-    -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.CommitSHA=$(git rev-parse --short HEAD)$(if [ -n "$(git status --porcelain)" ]; then echo "-dirty"; fi) \
-    -X github.com/nicholas-fedor/gogeneratecftoken/internal/metadata.BuildTime=$(date -u +%Y-%m-%d_%H:%M:%S) \
+    -X github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata.Version=${VERSION} \
+    -X github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata.CommitSHA=${COMMIT_SHA} \
+    -X github.com/nicholas-fedor/gogeneratecftoken/v2/internal/metadata.BuildTime=${BUILD_TIME} \
     " \
     -o ./bin/gogeneratecftoken \
     .
