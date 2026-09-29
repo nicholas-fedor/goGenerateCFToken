@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Reject release tags that are not vMAJOR.MINOR.PATCH by @nicholas-fedor in [#905](https://github.com/nicholas-fedor/goGenerateCFToken/pull/905)
 - Lint changes to the lint configuration itself by @nicholas-fedor in [#903](https://github.com/nicholas-fedor/goGenerateCFToken/pull/903)
 - Scan internal and tools in the security workflow by @nicholas-fedor in [#901](https://github.com/nicholas-fedor/goGenerateCFToken/pull/901)
 - Run the race detector in CI and converge the test timeout by @nicholas-fedor in [#899](https://github.com/nicholas-fedor/goGenerateCFToken/pull/899)
