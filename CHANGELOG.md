@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Correct the ldflags paths in the self-build images by @nicholas-fedor in [#911](https://github.com/nicholas-fedor/goGenerateCFToken/pull/911)
 - Update nicholas-fedor/go-proxy-pull-action action to v1.1.52 by @renovate[bot] in [#907](https://github.com/nicholas-fedor/goGenerateCFToken/pull/907)
 - Update module github.com/tidwall/pretty to v1.2.2 by @renovate[bot] in [#891](https://github.com/nicholas-fedor/goGenerateCFToken/pull/891)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.11.0 by @renovate[bot] in [#870](https://github.com/nicholas-fedor/goGenerateCFToken/pull/870)
