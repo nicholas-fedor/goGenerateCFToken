@@ -14,17 +14,18 @@ set -eu
 
 PR_NUMBER="${1:?usage: merge-changelog-pr.sh <pull-request-number>}"
 
+# Must match the branch configured for create-pull-request in the changelog workflow.
+EXPECTED_BRANCH=docs/update-changelog
+
 head_ref="$(gh pr view "$PR_NUMBER" --json headRefName --jq .headRefName)"
+head_sha="$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)"
 
-case "$head_ref" in
-  docs/*) ;;
-  *)
-    echo "::error::Refusing to merge a changelog pull request from '$head_ref'."
-    exit 1
-    ;;
-esac
+if [ "$head_ref" != "$EXPECTED_BRANCH" ]; then
+  echo "::error::Refusing to merge a pull request from '$head_ref'."
+  exit 1
+fi
 
-if ! gh pr merge --auto --squash "$PR_NUMBER"; then
+if ! gh pr merge --auto --squash --match-head-commit "$head_sha" "$PR_NUMBER"; then
   echo "Auto-merge is unavailable; merging the clean pull request directly"
-  gh pr merge --squash "$PR_NUMBER"
+  gh pr merge --squash --match-head-commit "$head_sha" "$PR_NUMBER"
 fi
