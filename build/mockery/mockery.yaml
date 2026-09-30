@@ -164,11 +164,9 @@ template: "testify"
 # Map of template-specific options passed to the template engine.
 # Options vary by template; commonly includes boilerplate-file for license headers.
 # Default: {}
-# template-data:
-#   # Specify a file containing boilerplate text (e.g., license headers) to prepend to all mocks.
-#   # Path is relative to the config file or working directory.
-#   # Default: ""
-#   boilerplate-file: ""
+template-data:
+  # Prepended to every generated mock.
+  boilerplate-file: "build/mockery/boilerplate.txt"
 
 # JSON schema URL for validating template-data configuration.
 # Provides validation against template-specific options.
