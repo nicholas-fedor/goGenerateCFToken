@@ -212,6 +212,11 @@ linters:
     - wsl # deprecated, replaced by wsl_v5 (whitespace linter)
     - zerologlint # Detects the wrong usage of zerolog that a user forgets to dispatch with Send or Msg.
   settings:
+    goheader:
+      # Bump the year below when the copyright line is updated.
+      template: |-
+        Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
+        SPDX-License-Identifier: AGPL-3.0-or-later
     revive:
       enable-all-rules: false
       # Configure rules
