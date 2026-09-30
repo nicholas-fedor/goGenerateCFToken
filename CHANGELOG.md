@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Generate mocks with the AGPL header by @nicholas-fedor in [#921](https://github.com/nicholas-fedor/goGenerateCFToken/pull/921)
 - Give the goheader linter a template by @nicholas-fedor in [#919](https://github.com/nicholas-fedor/goGenerateCFToken/pull/919)
 - Update module github.com/imfing/hextra to v0.13.0 by @renovate[bot] in [#917](https://github.com/nicholas-fedor/goGenerateCFToken/pull/917)
 - Correct the ldflags paths in the self-build images by @nicholas-fedor in [#911](https://github.com/nicholas-fedor/goGenerateCFToken/pull/911)
