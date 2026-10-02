@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.12.0 by @renovate[bot] in [#923](https://github.com/nicholas-fedor/goGenerateCFToken/pull/923)
 - Generate mocks with the AGPL header by @nicholas-fedor in [#921](https://github.com/nicholas-fedor/goGenerateCFToken/pull/921)
 - Give the goheader linter a template by @nicholas-fedor in [#919](https://github.com/nicholas-fedor/goGenerateCFToken/pull/919)
 - Update module github.com/imfing/hextra to v0.13.0 by @renovate[bot] in [#917](https://github.com/nicholas-fedor/goGenerateCFToken/pull/917)
