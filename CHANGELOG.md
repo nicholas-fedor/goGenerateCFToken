@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/gjson to v1.20.0 by @renovate[bot] in [#927](https://github.com/nicholas-fedor/goGenerateCFToken/pull/927)
 - Update anchore/sbom-action action to v0.24.3 by @renovate[bot] in [#925](https://github.com/nicholas-fedor/goGenerateCFToken/pull/925)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.12.0 by @renovate[bot] in [#923](https://github.com/nicholas-fedor/goGenerateCFToken/pull/923)
 - Generate mocks with the AGPL header by @nicholas-fedor in [#921](https://github.com/nicholas-fedor/goGenerateCFToken/pull/921)
