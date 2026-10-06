@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update step-security/harden-runner action to v2.22.0 by @renovate[bot] in [#930](https://github.com/nicholas-fedor/goGenerateCFToken/pull/930)
+- Update module github.com/mattn/go-colorable to v0.1.16 by @renovate[bot] in [#929](https://github.com/nicholas-fedor/goGenerateCFToken/pull/929)
 - Update module github.com/tidwall/gjson to v1.20.0 by @renovate[bot] in [#927](https://github.com/nicholas-fedor/goGenerateCFToken/pull/927)
 - Update anchore/sbom-action action to v0.24.3 by @renovate[bot] in [#925](https://github.com/nicholas-fedor/goGenerateCFToken/pull/925)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.12.0 by @renovate[bot] in [#923](https://github.com/nicholas-fedor/goGenerateCFToken/pull/923)
