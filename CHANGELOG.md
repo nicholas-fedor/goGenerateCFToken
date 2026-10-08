@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update github/codeql-action action to v4.38.3 by @renovate[bot] in [#936](https://github.com/nicholas-fedor/goGenerateCFToken/pull/936)
 - Update step-security/harden-runner action to v2.22.1 by @renovate[bot] in [#934](https://github.com/nicholas-fedor/goGenerateCFToken/pull/934)
 - Update actions/upload-artifact action to v7.0.2 by @renovate[bot] in [#932](https://github.com/nicholas-fedor/goGenerateCFToken/pull/932)
 - Update step-security/harden-runner action to v2.22.0 by @renovate[bot] in [#930](https://github.com/nicholas-fedor/goGenerateCFToken/pull/930)
