@@ -43,10 +43,7 @@ Always run `task lint` then `task vet` before tests. Do not use `go build` for v
 
 ## CI
 
-Both GitHub Actions and CircleCI are used:
-
-- GitHub Actions (`.github/workflows/`): tests, lint-go, lint-gh, security, scorecard, release, build, docs, changelog updates. Path-filtered on `cmd/**`, `internal/**`, `tools/**`, `go.mod`, `go.sum`, `main.go`.
-- CircleCI (`.circleci/config.yml` → `.circleci/continue-config.yml`): dynamic path-filtered job that continues to run tests when `cmd/`, `internal/`, `main.go`, `go.mod`, or `go.sum` change.
+GitHub Actions (`.github/workflows/`) runs tests, lint-go, lint-gh, security, scorecard, release, build, docs, and changelog updates. Workflows are path-filtered on `cmd/**`, `internal/**`, `tools/**`, `go.mod`, `go.sum`, `main.go`.
 
 ## Docs
 
