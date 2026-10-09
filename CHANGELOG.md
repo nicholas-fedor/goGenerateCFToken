@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/govulncheck-action action to v1.1.0 by @renovate[bot] in [#943](https://github.com/nicholas-fedor/goGenerateCFToken/pull/943)
 - Update golang:alpine docker digest to 738d1cf by @renovate[bot] in [#940](https://github.com/nicholas-fedor/goGenerateCFToken/pull/940)
 - Update go module directive to v1.27.2 by @renovate[bot] in [#938](https://github.com/nicholas-fedor/goGenerateCFToken/pull/938)
 - Update github/codeql-action action to v4.38.3 by @renovate[bot] in [#936](https://github.com/nicholas-fedor/goGenerateCFToken/pull/936)
