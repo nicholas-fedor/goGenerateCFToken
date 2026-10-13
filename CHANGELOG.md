@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/godbus/dbus/v5 to v5.2.4 by @renovate[bot] in [#967](https://github.com/nicholas-fedor/goGenerateCFToken/pull/967)
 - Update module github.com/stretchr/objx to v0.7.0 by @renovate[bot] in [#965](https://github.com/nicholas-fedor/goGenerateCFToken/pull/965)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.13.0 by @renovate[bot] in [#963](https://github.com/nicholas-fedor/goGenerateCFToken/pull/963)
 - Update nicholas-fedor/govulncheck-action action to v1.1.1 by @renovate[bot] in [#960](https://github.com/nicholas-fedor/goGenerateCFToken/pull/960)
