@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/govulncheck-action action to v1.1.1 by @renovate[bot] in [#960](https://github.com/nicholas-fedor/goGenerateCFToken/pull/960)
+- Update goreleaser/goreleaser-action action to v7.3.0 by @renovate[bot] in [#961](https://github.com/nicholas-fedor/goGenerateCFToken/pull/961)
 - Update ossf/scorecard-action action to v2.5.0 by @renovate[bot] in [#958](https://github.com/nicholas-fedor/goGenerateCFToken/pull/958)
 - Update module github.com/godbus/dbus/v5 to v5.2.3 by @renovate[bot] in [#956](https://github.com/nicholas-fedor/goGenerateCFToken/pull/956)
 - Update golang:alpine docker digest to f92b6ef by @renovate[bot] in [#954](https://github.com/nicholas-fedor/goGenerateCFToken/pull/954)
