@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update github/codeql-action action to v4.39.0 by @renovate[bot] in [#971](https://github.com/nicholas-fedor/goGenerateCFToken/pull/971)
 - Update module github.com/stretchr/objx to v0.8.0 by @renovate[bot] in [#969](https://github.com/nicholas-fedor/goGenerateCFToken/pull/969)
 - Update module github.com/godbus/dbus/v5 to v5.2.4 by @renovate[bot] in [#967](https://github.com/nicholas-fedor/goGenerateCFToken/pull/967)
 - Update module github.com/stretchr/objx to v0.7.0 by @renovate[bot] in [#965](https://github.com/nicholas-fedor/goGenerateCFToken/pull/965)
