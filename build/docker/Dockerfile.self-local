@@ -1,7 +1,7 @@
 # Copyright (c) Nicholas Fedor 2026 <nick@nickfedor.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-ARG BASE_IMAGE=golang:alpine@sha256:f92b6ef800e499660581efdabdf25d9d817a9d124eaf900924f0504e7e27e12d
+ARG BASE_IMAGE=golang:alpine@sha256:f2c872bcee949b7be9c490efd02b48a8a2fbf947cdf533f1c58525ec9d8170fd
 
 # Builder Stage
 FROM ${BASE_IMAGE} AS builder
