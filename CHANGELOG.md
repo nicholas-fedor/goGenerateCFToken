@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update nicholas-fedor/govulncheck-action action to v1.1.2 by @renovate[bot] in [#980](https://github.com/nicholas-fedor/goGenerateCFToken/pull/980)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.13.1 by @renovate[bot] in [#978](https://github.com/nicholas-fedor/goGenerateCFToken/pull/978)
 - Update step-security/harden-runner action to v2.22.2 by @renovate[bot] in [#977](https://github.com/nicholas-fedor/goGenerateCFToken/pull/977)
 - Update go module directive to v1.27.3 by @renovate[bot] in [#974](https://github.com/nicholas-fedor/goGenerateCFToken/pull/974)
