@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.13.1 by @renovate[bot] in [#978](https://github.com/nicholas-fedor/goGenerateCFToken/pull/978)
 - Update step-security/harden-runner action to v2.22.2 by @renovate[bot] in [#977](https://github.com/nicholas-fedor/goGenerateCFToken/pull/977)
 - Update go module directive to v1.27.3 by @renovate[bot] in [#974](https://github.com/nicholas-fedor/goGenerateCFToken/pull/974)
 - Update golang:alpine docker digest to f2c872b by @renovate[bot] in [#973](https://github.com/nicholas-fedor/goGenerateCFToken/pull/973)
