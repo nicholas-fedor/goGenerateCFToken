@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update securego/gosec action to v2.30.0 by @renovate[bot] in [#995](https://github.com/nicholas-fedor/goGenerateCFToken/pull/995)
+- Update docker/login-action action to v4.7.0 by @renovate[bot] in [#994](https://github.com/nicholas-fedor/goGenerateCFToken/pull/994)
 - Update alpine:3.24.3 docker digest to be26560 by @renovate[bot] in [#992](https://github.com/nicholas-fedor/goGenerateCFToken/pull/992)
 - Update golang:alpine docker digest to b8c9b82 by @renovate[bot] in [#990](https://github.com/nicholas-fedor/goGenerateCFToken/pull/990)
 - Update alpine:3.24.3 docker digest to b341357 by @renovate[bot] in [#988](https://github.com/nicholas-fedor/goGenerateCFToken/pull/988)
