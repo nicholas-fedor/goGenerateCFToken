@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update step-security/harden-runner action to v2.22.3 by @renovate[bot] in [#999](https://github.com/nicholas-fedor/goGenerateCFToken/pull/999)
 - Update golang:alpine docker digest to d200d2d by @renovate[bot] in [#997](https://github.com/nicholas-fedor/goGenerateCFToken/pull/997)
 
 ## [2.0.3] - 2026-10-23
