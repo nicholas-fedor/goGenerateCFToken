@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module go.yaml.in/yaml/v4 to v4.0.0-rc.9 by @renovate[bot] in [#1007](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1007)
 - Update module go.yaml.in/yaml/v4 to v4.0.0-rc.8 by @renovate[bot] in [#1005](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1005)
 - Update module go.yaml.in/yaml/v4 to v4.0.0-rc.7 by @renovate[bot] in [#1002](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1002)
 - Update module go.yaml.in/yaml/v3 to v3.0.6 by @renovate[bot] in [#1001](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1001)
