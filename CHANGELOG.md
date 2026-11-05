@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module go.yaml.in/yaml/v3 to v3.0.6 by @renovate[bot] in [#1019](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1019)
 - Update module go.yaml.in/yaml/v3 to v4 by @renovate[bot] in [#1016](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1016)
 - Update module go.yaml.in/yaml/v4 to v4.0.0 by @renovate[bot] in [#1015](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1015)
 - Update sigstore/cosign-installer action to v4.1.3 by @renovate[bot] in [#1012](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1012)
