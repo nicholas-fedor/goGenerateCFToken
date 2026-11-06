@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update golang:alpine docker digest to dbaa054 by @renovate[bot] in [#1024](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1024)
 - Update docker/login-action action to v4.8.0 by @renovate[bot] in [#1022](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1022)
 - Update module go.yaml.in/yaml/v3 to v3.0.6 by @renovate[bot] in [#1019](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1019)
 - Update module go.yaml.in/yaml/v3 to v4 by @renovate[bot] in [#1016](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1016)
