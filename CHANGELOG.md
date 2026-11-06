@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/gjson to v1.20.1 by @renovate[bot] in [#1034](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1034)
 - Update module github.com/tidwall/sjson to v1.2.7 by @renovate[bot] in [#1035](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1035)
 - Update module github.com/cloudflare/cloudflare-go/v7 to v7.14.0 by @renovate[bot] in [#1032](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1032)
 - Update module github.com/tidwall/sjson to v1.2.6 by @renovate[bot] in [#1031](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1031)
