@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/sjson to v1.2.7 by @renovate[bot] in [#1035](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1035)
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.14.0 by @renovate[bot] in [#1032](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1032)
 - Update module github.com/tidwall/sjson to v1.2.6 by @renovate[bot] in [#1031](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1031)
 - Update alpine:3.24.4 docker digest to 93b41ef by @renovate[bot] in [#1028](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1028)
 - Update golang:alpine docker digest to fa3d596 by @renovate[bot] in [#1029](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1029)
