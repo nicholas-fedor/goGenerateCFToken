@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/gjson to v1.20.2 by @renovate[bot] in [#1043](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1043)
 - Update alpine:3.24.4 docker digest to f59abe6 by @renovate[bot] in [#1041](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1041)
 - Update module github.com/spf13/pflag to v1.1.0 by @renovate[bot] in [#1038](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1038)
 - Update step-security/harden-runner action to v2.22.4 by @renovate[bot] in [#1037](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1037)
