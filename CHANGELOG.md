@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/sjson to v1.2.9 by @renovate[bot] in [#1047](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1047)
 - Update module github.com/tidwall/sjson to v1.2.8 by @renovate[bot] in [#1044](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1044)
 - Update module github.com/tidwall/gjson to v1.20.2 by @renovate[bot] in [#1043](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1043)
 - Update alpine:3.24.4 docker digest to f59abe6 by @renovate[bot] in [#1041](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1041)
