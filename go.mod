@@ -1,6 +1,6 @@
 module github.com/nicholas-fedor/gogeneratecftoken/v2
 
-go 1.27.3
+go 1.27.4
 
 require (
 	github.com/adrg/xdg v0.5.3
