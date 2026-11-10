@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module golang.org/x/sys to v0.50.0 by @renovate[bot] in [#1051](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1051)
+- Update module github.com/cloudflare/cloudflare-go/v7 to v7.15.0 by @renovate[bot] in [#1052](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1052)
 - Update peter-evans/create-pull-request action to v8.1.2 by @renovate[bot] in [#1048](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1048)
 - Update module github.com/tidwall/sjson to v1.2.9 by @renovate[bot] in [#1047](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1047)
 - Update module github.com/tidwall/sjson to v1.2.8 by @renovate[bot] in [#1044](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1044)
