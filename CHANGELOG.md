@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update go module directive to v1.27.4 by @renovate[bot] in [#1058](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1058)
 - Update module golang.org/x/text to v0.44.0 by @renovate[bot] in [#1055](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1055)
 - Update module golang.org/x/term to v0.48.0 by @renovate[bot] in [#1054](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1054)
 - Update module golang.org/x/sys to v0.50.0 by @renovate[bot] in [#1051](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1051)
