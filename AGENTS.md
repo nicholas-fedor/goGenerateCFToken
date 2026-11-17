@@ -3,12 +3,12 @@
 ## Project Overview
 
 `goGenerateCFToken` is a Cobra-based Go CLI for generating Cloudflare API tokens.
-Module: `github.com/nicholas-fedor/gogeneratecftoken/v2`, Go 1.27.1.
+Module: `github.com/nicholas-fedor/gogeneratecftoken/v2`, Go 1.27.4.
 
 - Entrypoint: `main.go` → `cmd.Execute()` → `cmd/root.go`
 - Commands: `cmd/token/`, `cmd/config/`, `cmd/credentials/`
 - Internal logic: `internal/cloudflare/`, `internal/credentials/`, `internal/config/`, `internal/flags/`, `internal/logging/`, `internal/metadata/`
-- Aggressively strict linting: 60+ linters enabled via `build/golangci-lint/golangci-lint.yaml`
+- Aggressively strict linting: 60+ linters enabled via `build/golangci-lint/golangci.yaml`
 
 ## Commands
 
@@ -18,11 +18,12 @@ Use `task` (Taskfile.yml), not `make`. There is no Makefile.
 - `task build` — builds `bin/gogeneratecftoken`
 - `task test` — `go test -race -test.fullpath=true -timeout 60s -covermode atomic -v ./...`
 - `task test-coverage` — produces `coverage.out`
-- `task lint` — `golangci-lint run --fix --config build/golangci-lint/golangci-lint.yaml ./...`
+- `task lint` — `golangci-lint run --fix --config build/golangci-lint/golangci.yaml ./...`
 - `task vet` — `go vet ./...`
 - `task mock` — regenerates mocks via Mockery v3 (`build/mockery/mockery.yaml`)
 - `task docs` — generates CLI docs to `www/content/cli-reference`
 - `task docs-serve` — Hugo dev server on `www/`
+- `task tag:bump-patch`, `tag:bump-minor`, or `tag:bump-major`: tag the next release. The task fetches origin first. It refuses unless HEAD is a clean `main` that matches `origin/main` and has no release tag. It also refuses a version whose major does not match the `/vN` suffix of the module path in `go.mod`. It asks for confirmation and then pushes an annotated `vX.Y.Z` tag, which starts `release.yaml`. If the push fails, it deletes the local tag.
 
 ## Validation Order
 
