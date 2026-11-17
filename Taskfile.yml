@@ -85,6 +85,74 @@ tasks:
     cmds:
       - hugo server --buildDrafts --disableFastRender --baseURL http://localhost:1313 --source www
 
+  # Releases
+
+  tag:bump-major:
+    desc: Tag the next major release on main, vX.0.0, and push it to origin
+    cmds:
+      - task: tag:release
+        vars: { PART: major }
+
+  tag:bump-minor:
+    desc: Tag the next minor release on main, vX.Y.0, and push it to origin
+    cmds:
+      - task: tag:release
+        vars: { PART: minor }
+
+  tag:bump-patch:
+    desc: Tag the next patch release on main, vX.Y.Z, and push it to origin
+    cmds:
+      - task: tag:release
+        vars: { PART: patch }
+
+  tag:release:
+    internal: true
+    requires:
+      vars:
+        - name: PART
+          enum: [major, minor, patch]
+    vars:
+      RELEASE_TAG: '^v[0-9]+\.[0-9]+\.[0-9]+$'
+      LATEST:
+        sh: |
+          git fetch --quiet --tags origin main
+          git tag --list 'v*' | grep -E '{{.RELEASE_TAG}}' | sort -V | tail -n 1
+      NEXT:
+        sh: |
+          echo "{{.LATEST | default "v0.0.0"}}" | awk -F. -v part={{.PART}} '{
+            major = substr($1, 2); minor = $2; patch = $3
+            if (part == "major") { major++; minor = 0; patch = 0 }
+            if (part == "minor") { minor++; patch = 0 }
+            if (part == "patch") { patch++ }
+            printf "v%d.%d.%d\n", major, minor, patch }'
+      MODULE:
+        sh: awk '$1 == "module" { print $2 }' go.mod
+    preconditions:
+      - sh: '[ "$(git branch --show-current)" = main ]'
+        msg: Releases are tagged on main
+      - sh: '[ -z "$(git status --porcelain)" ]'
+        msg: Commit or stash the changes in the working tree first
+      - sh: '[ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ]'
+        msg: main must match origin/main, so pull or push first
+      - sh: '[ -z "$(git tag --points-at HEAD | grep -E "{{.RELEASE_TAG}}")" ]'
+        msg: HEAD already has a release tag
+      # Go resolves a vN tag, for N of 2 or more, only when the module path ends in /vN.
+      - sh: |
+          module="{{.MODULE}}"
+          major="{{.NEXT}}"
+          major="${major#v}"
+          major="${major%%.*}"
+          case "$module" in
+            */v[0-9]*) [ "${module##*/v}" = "$major" ] ;;
+            *) [ "$major" -le 1 ] ;;
+          esac
+        msg: "{{.NEXT}} does not match the major version of {{.MODULE}}, so update the module path in go.mod first"
+    prompt: Tag {{.NEXT}} after {{.LATEST | default "no release"}} and push it to origin?
+    cmds:
+      - git tag {{.NEXT}} -m "Release {{.NEXT}}"
+      - defer: "{{if .EXIT_CODE}}git tag -d {{.NEXT}}{{end}}"
+      - git push origin refs/tags/{{.NEXT}}
+
   install:
     desc: "Install the application (full pipeline: tools, generate, install)"
     cmds:
