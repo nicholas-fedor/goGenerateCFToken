@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Add tasks that tag the next release by @nicholas-fedor in [#1071](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1071)
 - Update actions/setup-go action to v7.1.0 by @renovate[bot] in [#1069](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1069)
 - Update module github.com/tidwall/gjson to v1.20.4 by @renovate[bot] in [#1067](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1067)
 - Update golang:alpine docker digest to 70bd7dd by @renovate[bot] in [#1065](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1065)
