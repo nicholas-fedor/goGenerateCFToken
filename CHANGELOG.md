@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update step-security/harden-runner action to v2.23.0 by @renovate[bot] in [#1075](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1075)
+
+## [2.0.4] - 2026-11-17
+
+### Chores
+
 - Update module github.com/tidwall/sjson to v1.2.10 by @renovate[bot] in [#1073](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1073)
 - Add tasks that tag the next release by @nicholas-fedor in [#1071](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1071)
 - Update actions/setup-go action to v7.1.0 by @renovate[bot] in [#1069](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1069)
@@ -1052,7 +1058,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.3...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.4...HEAD)
+- [2.0.4](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.3...v2.0.4)
 - [2.0.3](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.2...v2.0.3)
 - [2.0.2](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.1...v2.0.2)
 - [2.0.1](https://github.com/nicholas-fedor/goGenerateCFToken/compare/v2.0.0...v2.0.1)
