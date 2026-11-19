@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update ossf/scorecard-action action to v2.6.0 by @renovate[bot] in [#1077](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1077)
 - Update step-security/harden-runner action to v2.23.0 by @renovate[bot] in [#1075](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1075)
 
 ## [2.0.4] - 2026-11-17
