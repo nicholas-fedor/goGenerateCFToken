@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/sjson to v1.2.11 by @renovate[bot] in [#1080](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1080)
+- Update module github.com/tidwall/gjson to v1.20.5 by @renovate[bot] in [#1079](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1079)
 - Update ossf/scorecard-action action to v2.6.0 by @renovate[bot] in [#1077](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1077)
 - Update step-security/harden-runner action to v2.23.0 by @renovate[bot] in [#1075](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1075)
 
