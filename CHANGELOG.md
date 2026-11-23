@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/pretty to v1.3.1 by @renovate[bot] in [#1086](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1086)
 - Update module github.com/tidwall/gjson to v1.20.6 by @renovate[bot] in [#1084](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1084)
 - Update github/codeql-action action to v4.39.4 by @renovate[bot] in [#1082](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1082)
 - Update module github.com/tidwall/sjson to v1.2.11 by @renovate[bot] in [#1080](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1080)
