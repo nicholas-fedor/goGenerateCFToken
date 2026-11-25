@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Update module github.com/tidwall/gjson to v1.20.7 by @renovate[bot] in [#1093](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1093)
 - Update sigstore/cosign-installer action to v4.1.4 by @renovate[bot] in [#1091](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1091)
 - Update github/codeql-action action to v4.39.5 by @renovate[bot] in [#1090](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1090)
 - Update anchore/sbom-action action to v0.24.4 by @renovate[bot] in [#1088](https://github.com/nicholas-fedor/goGenerateCFToken/pull/1088)
